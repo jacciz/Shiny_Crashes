@@ -4,24 +4,46 @@ library(shinydashboard)
 library(shinyWidgets)
 library(DT)
 
-county_list = c(2, 13, 34,35)
-
 ui <- dashboardPage(
-  dashboardHeader(title = "My first app"),
-  
-  dashboardSidebar(                                 # SIDEBAR
+  #                                                                 HEADER
+  dashboardHeader(title = "Crash Data Dashboard"),
+  #                                                                 SIDEBAR
+  dashboardSidebar(
     # The dynamically-generated user panel
     # uiOutput("userpanel")
-    pickerInput("cntynum", "County",
-                choices = sort(unique(all_crashes$CNTYCODE)),
-                options = list("actions-box" = TRUE),
-                multiple = FALSE,
-                selected = "42")  # this does not work after I set in cnty names
+    pickerInput(
+      "cntynum",
+      "County",
+      choices = sort(unique(all_crashes$CNTYCODE)),
+      options = list("actions-box" = TRUE),
+      multiple = FALSE,
+      selected = "42"
+    )  # this does not work after I set in cnty names
+  ),
+  #                                                                BODY first row
+  dashboardBody(
+    fluidRow(
+      box(
+        title = "Bike Crashes",
+        width = 4,
+        solidHeader = TRUE,
+        plotOutput("bikeflag")
+      ),
+      box(
+        title = "Pedestrian Crashes",
+        width = 4,
+        solidHeader = TRUE,
+        plotOutput("pedflag")
+      ),
+      box(
+        title = "Alcohol Flag Crashes",
+        width = 4,
+        solidHeader = TRUE,
+        plotOutput("alcflag")
+      )
     ),
-  dashboardBody(                                    # BODY
-      
-      plotOutput("bikeflag"),
-      
-      DTOutput("biketable")
-    )
-  )
+    #                                                             BODY second row
+    fluidRow(box(
+      width = 6, DTOutput("biketable", height = 600)
+    )))
+)

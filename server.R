@@ -1,12 +1,15 @@
-library(dplyr)
-library(ggplot2)
-library(DT)
-library(expss)
+library(dplyr) # select, filter functions
+library(ggplot2) # make pretty graphs
+library(DT)    # create pretty tables
+library(expss) # format freq tables
 
 setwd("W:/HSSA/Keep/Jaclyn Ziebert/R_WD_Data/Shiny_Crashes")
-# all_crashes <- read.csv("data/2020_crash.csv")
+# all_crashes <- read.csv("data/2020_crash.csv")    # pull either 2019 or 2020
+all_crashes <- read.csv("data/2019_crash.csv")
+
 county_recode <- read.csv("data/county_recode.csv")
-# setNames(county_recode$CountyCode, county_recode$CountyName)
+# setNames(county_recode$CountyCode, county_recode$CountyName)  # don't need this, in updatePickerInput
+windowsFonts("Cambria" = windowsFont("Cambria"))
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -25,7 +28,7 @@ server <- function(input, output, session) {
   
   output$biketable <- renderDT({
     all_crashes %>% 
-      tab_cells(CNTYCODE) %>%       # stuff to put in the rows
+      tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
       tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
       tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
       tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
@@ -34,7 +37,7 @@ server <- function(input, output, session) {
       datatable(rownames = FALSE)
   })
   
-  
+#                                                        First row charts                       
   output$bikeflag <- renderPlot({
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()
@@ -45,6 +48,43 @@ server <- function(input, output, session) {
     
     all_crashes %>% 
     ggplot() +
+      theme_classic() +
+      geom_bar(mapping = aes(x=CRSHMTH, y=..count..))
+  })
+  
+  output$pedflag <- renderPlot({
+    # all_crashes <- rbind(crash_month())  #take variable of what was inputted
+    # all_crashes$group <- c()
+    
+    all_crashes <- all_crashes %>% 
+      # group_by(CRSHMTH) %>%
+      filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    
+    all_crashes %>% 
+      ggplot() +
+      theme_classic() +
+      geom_bar(mapping = aes(x=CRSHMTH, y=..count..)) +
+      theme(axis.line=element_blank(),
+            legend.position = "none",
+            axis.text.y=element_blank(),axis.ticks=element_blank(),
+            axis.text.x = element_text(size = 12, family = "Cambria")
+      ) +
+      scale_x_discrete(limits = month.name, name = "") +
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +  # y starts at 0, adds 5% gap on top
+      geom_text(stat = "count", family = "Cambria", size = 6, aes(x = CRSHMTH, y = ..count.. + ..count../6, label = ..count..)) 
+  })
+  
+  output$alcflag <- renderPlot({
+    # all_crashes <- rbind(crash_month())  #take variable of what was inputted
+    # all_crashes$group <- c()
+    
+    all_crashes <- all_crashes %>% 
+      # group_by(CRSHMTH) %>%
+      filter(ALCFLAG == "Yes", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    
+    all_crashes %>% 
+      ggplot() +
+      theme_classic() +
       geom_bar(mapping = aes(x=CRSHMTH, y=..count..))
   })
   
