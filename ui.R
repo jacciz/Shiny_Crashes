@@ -17,7 +17,7 @@ ui <- dashboardPage(
       choices = sort(unique(all_crashes$CNTYCODE)),
       options = list("actions-box" = TRUE),
       multiple = FALSE,
-      selected = "42"
+      selected = "13"
     )  # this does not work after I set in cnty names
   ),
   #                                                                BODY first row
