@@ -11,9 +11,23 @@ server <- function(input, output, session) {
     }
   })
 #                                                       INPUTS
-
-  updatePickerInput(session, "cntynum", choices = setNames(county_recode$CountyCode, county_recode$CountyName))
+  # all_crashes %>% rename(m_names = MUNICODE)
   
+  updatePickerInput(session,
+                    "cntynum",
+                    choices = setNames(county_recode$CountyCode, county_recode$CountyName))
+  
+  observeEvent(input$cntynum, {
+    muni_codes <- all_crashes %>% 
+      filter(CNTYCODE == input$cntynum) %>% 
+      pull(MUNICODE)
+    
+    updatePickerInput(session,
+                      "muni_names",
+                      choices = sort(unique(muni_codes)))
+  }) 
+  # setNames(muni_recode$MUNICODE, muni_recode$MUNICIPALITY) # set above to see names
+#                                                                               TABLES
   output$biketable <- renderDT({
     all_crashes %>% 
       tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
@@ -25,7 +39,52 @@ server <- function(input, output, session) {
       datatable(rownames = FALSE)
   })
   
-#                                                        First row charts                       
+  # output$passvehicles <- renderValueBox({   # to get vehicle type count
+  #   all_vehicles <- all_vehicles %>%
+  #     # group_by(CRSHMTH) %>%
+  #     filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+  #   
+  # 
+  # })
+  #                                                          First row charts  
+  output$passveh_box <- renderInfoBox({
+    valueBox(
+      3400, "Passenger Vehicles", icon = icon("car"),
+      color = "purple"
+    )
+  })
+  output$light_truck_box <- renderInfoBox({
+    valueBox(
+      32, "Light Trucks", icon = icon("truck"),
+      color = "red"
+    )
+  })
+  output$large_truck_box <- renderInfoBox({
+    valueBox(
+      6, "Large Trucks", icon = icon("truck-moving"),
+      color = "green"
+    )
+  })
+  output$motorcycle_box <- renderInfoBox({
+    valueBox(
+      12, "Motorcycles", icon = icon("motorcycle"),
+      color = "blue"
+    )
+  })
+  output$bike_box <- renderInfoBox({
+    valueBox(
+      4, "Bicycles", icon = icon("bicycle"),
+      color = "orange"
+    )
+  })
+  output$ped_box <- renderInfoBox({
+    valueBox(
+      23, "Pedestrians", icon = icon("walking"),
+      color = "yellow"
+    )
+  })
+  
+#                                                          Second row charts                       
   output$bikeflag <- renderPlot({
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()

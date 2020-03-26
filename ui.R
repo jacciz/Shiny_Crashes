@@ -1,4 +1,6 @@
-## ui.R ##
+library(shinydashboard)
+library(shinyWidgets)
+library(DT)
 #                                                   SIDEBAR
 sidebar <- dashboardSidebar(sidebarMenu(
   menuItem(
@@ -11,7 +13,6 @@ sidebar <- dashboardSidebar(sidebarMenu(
     "Tables",
     icon = icon("th"),
     tabName = "tables",
-    badgeLabel = "new",
     badgeColor = "green"
   ),    pickerInput(
     "cntynum",
@@ -20,12 +21,31 @@ sidebar <- dashboardSidebar(sidebarMenu(
     options = list("actions-box" = TRUE),
     multiple = FALSE,
     selected = "13"
-  )
+    ),  pickerInput(
+      "muni_names",
+      "Municipality",
+      choices = sort(unique(all_crashes$MUNICODE)),
+      options = list("actions-box" = TRUE),
+      multiple = FALSE
+    )
 ))
-#                                                     BODY DASHBOARD
+#                                                     BODY
 body <- dashboardBody(tabItems(
   tabItem(tabName = "dashboard",
           h2("Dashboard tab content"),
+  #                                                     First row
+          fluidRow(
+            box("Vehicle Type", width = 12)
+            ,
+            # Dynamic infoBoxes
+            valueBoxOutput("passveh_box", width = 2),
+            valueBoxOutput("light_truck_box", width = 2),
+            valueBoxOutput("large_truck_box", width = 2),
+            valueBoxOutput("motorcycle_box", width = 2),
+            valueBoxOutput("bike_box", width = 2),
+            valueBoxOutput("ped_box", width = 2)
+          ),
+  #                                                     Second row          
           fluidRow(
             box(
               title = "Bike Crashes",
@@ -51,14 +71,12 @@ body <- dashboardBody(tabItems(
   #                                               BODY TABLES
   tabItem(tabName = "tables",
           h2("Tables tab content"),
+          
           fluidRow(box(
             width = 6, DTOutput("biketable", height = 600)
           ))
           )
 ))
-
-
-
 
 
 # Put them together into a dashboardPage
