@@ -10,13 +10,8 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  
-  # crash_month <- reactive({              # INPUTS: user selects from county list
-  #   all_crashes%>%filter(
-  #     CNTYCODE %in% input$cntynum)
-  #     })
-  # 
-  
+#                                                       INPUTS
+
   updatePickerInput(session, "cntynum", choices = setNames(county_recode$CountyCode, county_recode$CountyName))
   
   output$biketable <- renderDT({
