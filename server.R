@@ -2,6 +2,7 @@ library(dplyr) # select, filter functions
 library(ggplot2) # make pretty graphs
 library(DT)    # create pretty tables
 library(expss) # format freq tables
+library(forcats) # reorder freq in charts
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -154,11 +155,18 @@ server <- function(input, output, session) {
       # group_by(CRSHMTH) %>%
       filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
+    all_crashes$MNRCOLL <- fct_infreq(all_crashes$MNRCOLL) %>% fct_rev()
+    
     all_crashes %>%
-      count(MNRCOLL) %>% 
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
       theme_classic() +
-      stat_count(geom = "bar") +
+      theme(axis.line=element_blank(),
+            legend.position = "none",
+            axis.ticks=element_blank(),
+            axis.text.x = element_text(size = 12)
+      ) +
+      geom_bar() +
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       coord_flip()
   })
   # mapping = aes(x = reorder(MNRCOLL, -count), y = count)
