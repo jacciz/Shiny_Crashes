@@ -1,1932 +1,1932 @@
-﻿MUNICIPALITY,MUNITYPE,MUNICODE,CNTYOCDE
-Adams,T,0101,01
-Big Flats,T,0102,01
-Colburn,T,0103,01
-Dell Prairie,T,0104,01
-Easton,T,0105,01
-Jackson,T,0106,01
-Leola,T,0107,01
-Lincoln,T,0108,01
-Monroe,T,0109,01
-New Chester,T,0110,01
-New Haven,T,0111,01
-Preston,T,0112,01
-Quincy,T,0113,01
-Richfield,T,0114,01
-Rome,T,0115,01
-Springville,T,0116,01
-Strongs Prairie,T,0117,01
-Friendship,V,0151,01
-Adams,C,0152,01
-Wisconsin Dells,C,0153,01
-Agenda,T,0201,02
-Ashland,T,0202,02
-Chippewa,T,0203,02
-Gingles,T,0204,02
-Gordon,T,0205,02
-Jacobs,T,0206,02
-La Pointe,T,0207,02
-Marengo,T,0208,02
-Morse,T,0209,02
-Peeksville,T,0210,02
-Sanborn,T,0211,02
-Shanagolden,T,0212,02
-White River,T,0213,02
-Butternut,V,0251,02
-Ashland,C,0252,02
-Mellen,C,0253,02
-Almena,T,0301,03
-Arland,T,0302,03
-Barron,T,0303,03
-Bear Lake,T,0304,03
-Cedar Lake,T,0305,03
-Chetek,T,0306,03
-Clinton,T,0307,03
-Crystal Lake,T,0308,03
-Cumberland,T,0309,03
-Dallas,T,0310,03
-Dovre,T,0311,03
-Doyle,T,0312,03
-Lakeland,T,0313,03
-Maple Grove,T,0314,03
-Maple Plain,T,0315,03
-Oak Grove,T,0316,03
-Prairie Farm,T,0317,03
-Prairie Lake,T,0318,03
-Rice Lake,T,0319,03
-Sioux Creek,T,0320,03
-Stanfold,T,0321,03
-Stanley,T,0322,03
-Sumner,T,0323,03
-Turtle Lake,T,0324,03
-Vance Creek,T,0325,03
-Cameron,V,0351,03
-Dallas,V,0352,03
-Haugen,V,0353,03
-Prairie Farm,V,0354,03
-Turtle Lake,V,0355,03
-Barron,C,0356,03
-Chetek,C,0357,03
-Cumberland,C,0358,03
-Rice Lake,C,0359,03
-Almena,V,0360,03
-New Auburn,V,0361,03
-Barksdale,T,0401,04
-Barnes,T,0402,04
-Bayfield,T,0403,04
-Bay View,T,0404,04
-Bell,T,0405,04
-Cable,T,0406,04
-Clover,T,0407,04
-Delta,T,0408,04
-Drummond,T,0409,04
-Eileen,T,0410,04
-Hughes,T,0411,04
-Iron River,T,0412,04
-Kelly,T,0413,04
-Keystone,T,0414,04
-Lincoln,T,0415,04
-Mason,T,0416,04
-Namekagon,T,0417,04
-Orienta,T,0418,04
-Oulu,T,0419,04
-Pilsen,T,0420,04
-Port Wing,T,0421,04
-Grand View,T,0422,04
-Russell,T,0423,04
-Tripp,T,0424,04
-Washburn,T,0425,04
-Cable,V,0451,04
-Mason,V,0452,04
-Bayfield,C,0453,04
-Washburn,C,0454,04
-Ashwaubenon,T,0502,05
-Bellevue,T,0503,05
-De Pere,T,0504,05
-Eaton,T,0505,05
-Glenmore,T,0506,05
-Green Bay,T,0507,05
-Hobart,T,0508,05
-Holland,T,0509,05
-Humboldt,T,0511,05
-Lawrence,T,0512,05
-Morrison,T,0513,05
-New Denmark,T,0514,05
-Pittsfield,T,0515,05
-Rockland,T,0517,05
-Scott,T,0518,05
-Suamico,T,0519,05
-Wrightstown,T,0520,05
-Ledgeview,T,0521,05
-Denmark,V,0551,05
-Pulaski,V,0552,05
-Wrightstown,V,0553,05
-De Pere,C,0554,05
-Ashwaubenon,V,0555,05
-Green Bay,C,0556,05
-Howard,V,0557,05
-Allouez,V,0558,05
-Hobart,V,0559,05
-Bellevue,V,0560,05
-Suamico,V,0561,05
-Alma,T,0601,06
-Belvidere,T,0602,06
-Buffalo,T,0603,06
-Canton,T,0604,06
-Cross,T,0605,06
-Dover,T,0606,06
-Gilmanton,T,0607,06
-Glencoe,T,0608,06
-Lincoln,T,0609,06
-Maxville,T,0610,06
-Milton,T,0611,06
-Modena,T,0612,06
-Mondovi,T,0613,06
-Montana,T,0614,06
-Naples,T,0615,06
-Nelson,T,0616,06
-Waumandee,T,0617,06
-Cochrane,V,0651,06
-Alma,C,0652,06
-Buffalo City,C,0653,06
-Fountain City,C,0654,06
-Mondovi,C,0655,06
-Nelson,V,0656,06
-Anderson,T,0701,07
-Blaine,T,0702,07
-Daniels,T,0703,07
-Dewey,T,0704,07
-Grantsburg,T,0705,07
-Jackson,T,0706,07
-La Follette,T,0707,07
-Lincoln,T,0708,07
-Meenon,T,0709,07
-Oakland,T,0710,07
-Roosevelt,T,0711,07
-Rusk,T,0712,07
-Sand Lake,T,0713,07
-Scott,T,0714,07
-Siren,T,0715,07
-Swiss,T,0716,07
-Trade Lake,T,0717,07
-Union,T,0718,07
-Webb Lake,T,0719,07
-West Marshland,T,0720,07
-Wood River,T,0721,07
-Grantsburg,V,0751,07
-Webster,V,0752,07
-Siren,V,0753,07
-Brillion,T,0801,08
-Brothertown,T,0802,08
-Charlestown,T,0803,08
-Chilton,T,0804,08
-Harrison,T,0805,08
-New Holstein,T,0806,08
-Rantoul,T,0807,08
-Stockbridge,T,0808,08
-Woodville,T,0809,08
-Brillion,C,0851,08
-Hilbert,V,0852,08
-Stockbridge,V,0853,08
-Chilton,C,0854,08
-Kiel,C,0855,08
-New Holstein,C,0856,08
-Appleton,C,0857,08
-Sherwood,V,0858,08
-Potter,V,0859,08
-Menasha,C,0860,08
-Kaukauna,C,0861,08
-Harrison,V,0862,08
-Anson,T,0901,09
-Arthur,T,0902,09
-Auburn,T,0903,09
-Birch Creek,T,0904,09
-Bloomer,T,0905,09
-Cleveland,T,0906,09
-Colburn,T,0907,09
-Cooks Valley,T,0908,09
-Delmar,T,0909,09
-Eagle Point,T,0910,09
-Edson,T,0911,09
-Estella,T,0912,09
-Goetz,T,0913,09
-Hallie,T,0914,09
-Lake Holcombe,T,0915,09
-Howard,T,0916,09
-Lafayette,T,0917,09
-Ruby,T,0918,09
-Sampson,T,0919,09
-Sigel,T,0920,09
-Tilden,T,0921,09
-Wheaton,T,0922,09
-Woodmohr,T,0923,09
-Boyd,V,0951,09
-Cadott,V,0952,09
-Cornell,C,0953,09
-New Auburn,V,0954,09
-Bloomer,C,0955,09
-Chippewa Falls,C,0956,09
-Stanley,C,0957,09
-Eau Claire,C,0958,09
-Lake Hallie,V,0959,09
-Beaver,T,1001,10
-Butler,T,1002,10
-Colby,T,1003,10
-Dewhurst,T,1004,10
-Eaton,T,1005,10
-Foster,T,1006,10
-Fremont,T,1007,10
-Grant,T,1008,10
-Green Grove,T,1009,10
-Hendren,T,1010,10
-Hewett,T,1011,10
-Hixon,T,1012,10
-Hoard,T,1013,10
-Levis,T,1014,10
-Loyal,T,1015,10
-Longwood,T,1016,10
-Lynn,T,1017,10
-Mayville,T,1018,10
-Mead,T,1019,10
-Mentor,T,1020,10
-Pine Valley,T,1021,10
-Reseburg,T,1022,10
-Seif,T,1023,10
-Sherman,T,1024,10
-Sherwood,T,1025,10
-Thorp,T,1026,10
-Unity,T,1027,10
-Warner,T,1028,10
-Washburn,T,1029,10
-Weston,T,1030,10
-Withee,T,1031,10
-Worden,T,1032,10
-York,T,1033,10
-Abbotsford,C,1051,10
-Curtiss,V,1052,10
-Dorchester,V,1053,10
-Granton,V,1054,10
-Loyal,C,1055,10
-Thorp,C,1056,10
-Unity,V,1057,10
-Withee,V,1058,10
-Colby,C,1059,10
-Greenwood,C,1060,10
-Neillsville,C,1061,10
-Owen,C,1062,10
-Stanley,C,1063,10
-Arlington,T,1101,11
-Caledonia,T,1102,11
-Columbus,T,1103,11
-Courtland,T,1104,11
-Dekorra,T,1105,11
-Fort Winnebago,T,1106,11
-Fountain Prairie,T,1107,11
-Hampden,T,1108,11
-Leeds,T,1109,11
-Lewiston,T,1110,11
-Lodi,T,1111,11
-Lowville,T,1112,11
-Marcellon,T,1113,11
-Newport,T,1114,11
-Otsego,T,1115,11
-Pacific,T,1116,11
-Randolph,T,1117,11
-Scott,T,1118,11
-Springvale,T,1119,11
-West Point,T,1120,11
-Wyocena,T,1121,11
-Cambria,V,1151,11
-Doylestown,V,1152,11
-Fall River,V,1153,11
-Lodi,C,1154,11
-Pardeeville,V,1155,11
-Poynette,V,1156,11
-Randolph,V,1157,11
-Rio,V,1158,11
-Wyocena,V,1159,11
-Columbus,C,1160,11
-Wisconsin Dells,C,1161,11
-Portage,C,1162,11
-Arlington,V,1163,11
-Friesland,V,1164,11
-Bridgeport,T,1201,12
-Clayton,T,1202,12
-Eastman,T,1203,12
-Freeman,T,1204,12
-Haney,T,1205,12
-Marietta,T,1206,12
-Prairie Du Chien,T,1207,12
-Scott,T,1208,12
-Seneca,T,1209,12
-Utica,T,1210,12
-Wauzeka,T,1211,12
-Bell Center,V,1251,12
-De Soto,V,1252,12
-Eastman,V,1253,12
-Ferryville,V,1254,12
-Gays Mills,V,1255,12
-Lynxville,V,1256,12
-Soldiers Grove,V,1257,12
-Steuben,V,1258,12
-Wauzeka,V,1259,12
-Prairie Du Chien,C,1260,12
-Mount Sterling,V,1261,12
-Albion,T,1301,13
-Berry,T,1302,13
-Black Earth,T,1303,13
-Blooming Grove,T,1304,13
-Blue Mounds,T,1305,13
-Bristol,T,1306,13
-Burke,T,1307,13
-Christiana,T,1308,13
-Cottage Grove,T,1309,13
-Cross Plains,T,1310,13
-Dane,T,1311,13
-Deerfield,T,1312,13
-Dunkirk,T,1313,13
-Dunn,T,1314,13
-Madison,T,1316,13
-Mazomanie,T,1317,13
-Medina,T,1318,13
-Middleton,T,1319,13
-Montrose,T,1320,13
-Oregon,T,1321,13
-Perry,T,1322,13
-Pleasant Springs,T,1323,13
-Primrose,T,1324,13
-Roxbury,T,1325,13
-Rutland,T,1326,13
-Springdale,T,1327,13
-Springfield,T,1328,13
-Sun Prairie,T,1329,13
-Vermont,T,1330,13
-Verona,T,1331,13
-Vienna,T,1332,13
-Westport,T,1333,13
-Windsor,T,1334,13
-York,T,1335,13
-Belleville,V,1351,13
-Black Earth,V,1352,13
-Blue Mounds,V,1353,13
-Brooklyn,V,1354,13
-Cambridge,V,1355,13
-Cottage Grove,V,1356,13
-Cross Plains,V,1357,13
-Dane,V,1358,13
-Deerfield,V,1359,13
-De Forest,V,1360,13
-Maple Bluff,V,1361,13
-Mc Farland,V,1362,13
-Marshall,V,1363,13
-Mazomanie,V,1364,13
-Middleton,C,1365,13
-Mount Horeb,V,1366,13
-Oregon,V,1367,13
-Rockdale,V,1368,13
-Shorewood Hills,V,1369,13
-Sun Prairie,C,1370,13
-Verona,C,1371,13
-Waunakee,V,1372,13
-Madison,C,1373,13
-Stoughton,C,1374,13
-Monona,C,1375,13
-Fitchburg,C,1376,13
-Edgerton,C,1377,13
-Ashippun,T,1401,14
-Beaver Dam,T,1402,14
-Burnett,T,1403,14
-Calamus,T,1404,14
-Chester,T,1405,14
-Clyman,T,1406,14
-Elba,T,1407,14
-Emmet,T,1408,14
-Fox Lake,T,1409,14
-Herman,T,1410,14
-Hubbard,T,1411,14
-Hustisford,T,1412,14
-Lebanon,T,1413,14
-Le Roy,T,1414,14
-Lomira,T,1415,14
-Lowell,T,1416,14
-Oak Grove,T,1417,14
-Portland,T,1418,14
-Rubicon,T,1419,14
-Shields,T,1420,14
-Theresa,T,1421,14
-Trenton,T,1422,14
-Westford,T,1423,14
-Williamstown,T,1424,14
-Hartford,C,1450,14
-Clyman,V,1451,14
-Fox Lake,C,1452,14
-Hustisford,V,1453,14
-Iron Ridge,V,1454,14
-Lomira,V,1455,14
-Lowell,V,1456,14
-Neosho,V,1457,14
-Randolph,V,1458,14
-Reeseville,V,1459,14
-Theresa,V,1460,14
-Beaver Dam,C,1461,14
-Horicon,C,1462,14
-Juneau,C,1463,14
-Mayville,C,1464,14
-Watertown,C,1465,14
-Waupun,C,1466,14
-Brownsville,V,1467,14
-Kekoskee,V,1468,14
-Columbus,C,1469,14
-Baileys Harbor,T,1501,15
-Brussels,T,1502,15
-Clay Banks,T,1503,15
-Egg Harbor,T,1504,15
-Forestville,T,1505,15
-Gardner,T,1506,15
-Gibraltar,T,1507,15
-Jacksonport,T,1508,15
-Liberty Grove,T,1509,15
-Nasewaupee,T,1510,15
-Sevastopol,T,1511,15
-Sturgeon Bay,T,1512,15
-Union,T,1513,15
-Washington,T,1514,15
-Ephraim,V,1551,15
-Sister Bay,V,1552,15
-Sturgeon Bay,C,1553,15
-Forestville,V,1554,15
-Egg Harbor,V,1555,15
-Amnicon,T,1601,16
-Bennett,T,1602,16
-Brule,T,1603,16
-Cloverland,T,1604,16
-Dairyland,T,1605,16
-Gordon,T,1606,16
-Hawthorne,T,1607,16
-Highland,T,1608,16
-Lakeside,T,1609,16
-Maple,T,1610,16
-Oakland,T,1611,16
-Parkland,T,1612,16
-Solon Springs,T,1613,16
-Summit,T,1614,16
-Superior,T,1615,16
-Wascott,T,1616,16
-Lake Nebagamon,V,1651,16
-Oliver,V,1652,16
-Poplar,V,1653,16
-Solon Springs,V,1654,16
-Superior,C,1655,16
-Superior Village,V,1656,16
-Colfax,T,1701,17
-Dunn,T,1702,17
-Eau Galle,T,1703,17
-Elk Mound,T,1704,17
-Grant,T,1705,17
-Hay River,T,1706,17
-Lucas,T,1707,17
-Menomonie,T,1708,17
-New Haven,T,1709,17
-Otter Creek,T,1710,17
-Peru,T,1711,17
-Red Cedar,T,1712,17
-Rock Creek,T,1713,17
-Sand Creek,T,1714,17
-Sheridan,T,1715,17
-Sherman,T,1716,17
-Springbrook,T,1717,17
-Stanton,T,1718,17
-Tainter,T,1719,17
-Tiffany,T,1720,17
-Weston,T,1721,17
-Wilson,T,1722,17
-Boyceville,V,1751,17
-Colfax,V,1752,17
-Downing,V,1753,17
-Elk Mound,V,1754,17
-Knapp,V,1755,17
-Ridgeland,V,1756,17
-Wheeler,V,1757,17
-Menomonie,C,1758,17
-Bridge Creek,T,1801,18
-Brunswick,T,1802,18
-Clear Creek,T,1803,18
-Drammen,T,1804,18
-Fairchild,T,1805,18
-Lincoln,T,1806,18
-Ludington,T,1807,18
-Otter Creek,T,1808,18
-Pleasant Valley,T,1809,18
-Seymour,T,1810,18
-Union,T,1811,18
-Washington,T,1812,18
-Wilson,T,1813,18
-Fairchild,V,1851,18
-Fall Creek,V,1852,18
-Altoona,C,1853,18
-Augusta,C,1854,18
-Eau Claire,C,1855,18
-Aurora,T,1901,19
-Commonwealth,T,1902,19
-Fence,T,1903,19
-Fern,T,1904,19
-Florence,T,1905,19
-Homestead,T,1906,19
-Long Lake,T,1907,19
-Tipler,T,1908,19
-Alto,T,2001,20
-Ashford,T,2002,20
-Auburn,T,2003,20
-Byron,T,2004,20
-Calumet,T,2005,20
-Eden,T,2006,20
-Eldorado,T,2007,20
-Empire,T,2008,20
-Fond Du Lac,T,2009,20
-Forest,T,2010,20
-Friendship,T,2011,20
-Lamartine,T,2012,20
-Marshfield,T,2013,20
-Metomen,T,2014,20
-Oakfield,T,2015,20
-Osceola,T,2016,20
-Ripon,T,2017,20
-Rosendale,T,2018,20
-Springvale,T,2019,20
-Taycheedah,T,2020,20
-Waupun,T,2021,20
-Brandon,V,2051,20
-Campbellsport,V,2052,20
-Eden,V,2053,20
-Fairwater,V,2054,20
-North Fond Du Lac,V,2055,20
-Oakfield,V,2056,20
-Rosendale,V,2057,20
-Saint Cloud,V,2058,20
-Fond Du Lac,C,2059,20
-Ripon,C,2060,20
-Waupun,C,2061,20
-Mount Calvary,V,2062,20
-Kewaskum,V,2063,20
-Alvin,T,2101,21
-Argonne,T,2102,21
-Armstrong Creek,T,2103,21
-Blackwell,T,2104,21
-Caswell,T,2105,21
-Crandon,T,2106,21
-Freedom,T,2107,21
-Hiles,T,2108,21
-Laona,T,2109,21
-Lincoln,T,2110,21
-Nashville,T,2111,21
-Popple River,T,2112,21
-Ross,T,2113,21
-Wabeno,T,2114,21
-Crandon,C,2151,21
-Beetown,T,2201,22
-Bloomington,T,2202,22
-Boscobel,T,2203,22
-Cassville,T,2204,22
-Castle Rock,T,2205,22
-Clifton,T,2206,22
-Ellenboro,T,2207,22
-Fennimore,T,2208,22
-Glen Haven,T,2209,22
-Harrison,T,2210,22
-Hazel Green,T,2211,22
-Hickory Grove,T,2212,22
-Jamestown,T,2213,22
-Liberty,T,2214,22
-Lima,T,2215,22
-Little Grant,T,2216,22
-Marion,T,2217,22
-Millville,T,2218,22
-Mount Hope,T,2219,22
-Mount Ida,T,2220,22
-Muscoda,T,2221,22
-North Lancaster,T,2222,22
-Paris,T,2223,22
-Patch Grove,T,2224,22
-Platteville,T,2225,22
-Potosi,T,2226,22
-Smelser,T,2227,22
-South Lancaster,T,2228,22
-Waterloo,T,2229,22
-Watterstown,T,2230,22
-Wingville,T,2231,22
-Woodman,T,2232,22
-Wyalusing,T,2233,22
-Bagley,V,2251,22
-Bloomington,V,2252,22
-Blue River,V,2253,22
-Cassville,V,2254,22
-Hazel Green,V,2255,22
-Livingston,V,2256,22
-Montfort,V,2257,22
-Mount Hope,V,2258,22
-Muscoda,V,2259,22
-Patch Grove,V,2260,22
-Potosi,V,2261,22
-Woodman,V,2262,22
-Boscobel,C,2263,22
-Cuba City,C,2264,22
-Fennimore,C,2265,22
-Lancaster,C,2266,22
-Platteville,C,2267,22
-Tennyson,V,2268,22
-Dickeyville,V,2269,22
-Adams,T,2301,23
-Albany,T,2302,23
-Brooklyn,T,2303,23
-Cadiz,T,2304,23
-Clarno,T,2305,23
-Decatur,T,2306,23
-Exeter,T,2307,23
-Jefferson,T,2308,23
-Jordan,T,2309,23
-Monroe,T,2310,23
-Mount Pleasant,T,2311,23
-New Glarus,T,2312,23
-Spring Grove,T,2313,23
-Sylvester,T,2314,23
-Washington,T,2315,23
-York,T,2316,23
-Albany,V,2351,23
-Brooklyn,V,2352,23
-Browntown,V,2353,23
-Monticello,V,2354,23
-New Glarus,V,2355,23
-Brodhead,C,2356,23
-Monroe,C,2357,23
-Belleville,V,2358,23
-Berlin,T,2401,24
-Brooklyn,T,2402,24
-Green Lake,T,2403,24
-Kingston,T,2404,24
-Mackford,T,2405,24
-Manchester,T,2406,24
-Marquette,T,2407,24
-Princeton,T,2408,24
-Saint Marie,T,2409,24
-Seneca,T,2410,24
-Green Lake,C,2451,24
-Kingston,V,2452,24
-Markesan,C,2453,24
-Berlin,C,2454,24
-Princeton,C,2455,24
-Marquette,V,2456,24
-Arena,T,2501,25
-Brigham,T,2502,25
-Clyde,T,2503,25
-Dodgeville,T,2504,25
-Eden,T,2505,25
-Highland,T,2506,25
-Linden,T,2507,25
-Mifflin,T,2508,25
-Mineral Point,T,2509,25
-Moscow,T,2510,25
-Pulaski,T,2511,25
-Ridgeway,T,2512,25
-Waldwick,T,2513,25
-Wyoming,T,2514,25
-Arena,V,2551,25
-Avoca,V,2552,25
-Barneveld,V,2553,25
-Cobb,V,2554,25
-Highland,V,2555,25
-Hollandale,V,2556,25
-Linden,V,2557,25
-Livingston,V,2558,25
-Rewey,V,2559,25
-Ridgeway,V,2560,25
-Dodgeville,C,2561,25
-Mineral Point,C,2562,25
-Blanchardville,V,2563,25
-Montfort,V,2564,25
-Muscoda,V,2565,25
-Anderson,T,2601,26
-Carey,T,2602,26
-Gurney,T,2603,26
-Kimball,T,2604,26
-Knight,T,2605,26
-Mercer,T,2606,26
-Oma,T,2607,26
-Pence,T,2608,26
-Saxon,T,2609,26
-Sherman,T,2610,26
-Hurley,C,2651,26
-Montreal,C,2652,26
-Albion,T,2701,27
-Alma,T,2702,27
-Bear Bluff,T,2703,27
-Brockway,T,2704,27
-City Point,T,2705,27
-Cleveland,T,2706,27
-Curran,T,2707,27
-Franklin,T,2708,27
-Garden Valley,T,2709,27
-Garfield,T,2710,27
-Hixton,T,2711,27
-Irving,T,2712,27
-Knapp,T,2713,27
-Komensky,T,2714,27
-Manchester,T,2715,27
-Melrose,T,2716,27
-Millston,T,2717,27
-North Bend,T,2718,27
-Northfield,T,2719,27
-Springfield,T,2720,27
-Adams,T,2721,27
-Alma Center,V,2751,27
-Hixton,V,2752,27
-Melrose,V,2753,27
-Merrillan,V,2754,27
-Taylor,V,2755,27
-Black River Falls,C,2756,27
-Aztalan,T,2801,28
-Cold Spring,T,2802,28
-Concord,T,2803,28
-Farmington,T,2804,28
-Hebron,T,2805,28
-Ixonia,T,2806,28
-Jefferson,T,2807,28
-Koshkonong,T,2808,28
-Lake Mills,T,2809,28
-Milford,T,2810,28
-Oakland,T,2811,28
-Palmyra,T,2812,28
-Sullivan,T,2813,28
-Sumner,T,2814,28
-Waterloo,T,2815,28
-Watertown,T,2816,28
-Johnson Creek,V,2851,28
-Palmyra,V,2852,28
-Sullivan,V,2853,28
-Waterloo,C,2854,28
-Fort Atkinson,C,2855,28
-Jefferson,C,2856,28
-Lake Mills,C,2857,28
-Watertown,C,2858,28
-Whitewater,C,2859,28
-Cambridge,V,2860,28
-Lac La Belle,V,2861,28
-Armenia,T,2901,29
-Clearfield,T,2902,29
-Cutler,T,2903,29
-Finley,T,2904,29
-Fountain,T,2905,29
-Germantown,T,2906,29
-Kildare,T,2907,29
-Kingston,T,2908,29
-Lemonweir,T,2909,29
-Lindina,T,2910,29
-Lisbon,T,2911,29
-Lyndon,T,2912,29
-Marion,T,2913,29
-Necedah,T,2914,29
-Orange,T,2915,29
-Plymouth,T,2916,29
-Seven Mile Creek,T,2917,29
-Summit,T,2918,29
-Wonewoc,T,2919,29
-Camp Douglas,V,2951,29
-Hustler,V,2952,29
-Lyndon Station,V,2953,29
-Necedah,V,2954,29
-Union Center,V,2955,29
-Wonewoc,V,2956,29
-Elroy,C,2957,29
-Mauston,C,2958,29
-New Lisbon,C,2959,29
-Wisconsin Dells,C,2960,29
-Brighton,T,3001,30
-Bristol,T,3002,30
-Paris,T,3003,30
-Pleasant Prairie,T,3004,30
-Randall,T,3005,30
-Salem,T,3006,30
-Somers,T,3007,30
-Wheatland,T,3008,30
-Silver Lake,V,3051,30
-Kenosha,C,3052,30
-Twin Lakes,V,3053,30
-Paddock Lake,V,3054,30
-Genoa City,V,3055,30
-Pleasant Prairie,V,3056,30
-Bristol,V,3057,30
-Ahnapee,T,3101,31
-Carlton,T,3102,31
-Casco,T,3103,31
-Franklin,T,3104,31
-Lincoln,T,3105,31
-Luxemburg,T,3106,31
-Montpelier,T,3107,31
-Pierce,T,3108,31
-Red River,T,3109,31
-West Kewaunee,T,3110,31
-Casco,V,3151,31
-Luxemburg,V,3152,31
-Algoma,C,3153,31
-Kewaunee,C,3154,31
-Bangor,T,3201,32
-Barre,T,3202,32
-Burns,T,3203,32
-Campbell,T,3204,32
-Farmington,T,3205,32
-Greenfield,T,3206,32
-Hamilton,T,3207,32
-Holland,T,3208,32
-Onalaska,T,3209,32
-Shelby,T,3210,32
-Washington,T,3211,32
-Medary,T,3212,32
-Bangor,V,3251,32
-Rockland,V,3252,32
-West Salem,V,3253,32
-La Crosse,C,3254,32
-Onalaska,C,3255,32
-Holmen,V,3256,32
-Argyle,T,3301,33
-Belmont,T,3302,33
-Benton,T,3303,33
-Blanchard,T,3304,33
-Darlington,T,3305,33
-Elk Grove,T,3306,33
-Fayette,T,3307,33
-Gratiot,T,3308,33
-Kendall,T,3309,33
-Lamont,T,3310,33
-Monticello,T,3311,33
-New Diggings,T,3312,33
-Seymour,T,3313,33
-Shullsburg,T,3314,33
-Wayne,T,3315,33
-White Oak Springs,T,3316,33
-Willow Springs,T,3317,33
-Wiota,T,3318,33
-Argyle,V,3351,33
-Belmont,V,3352,33
-Benton,V,3353,33
-Blanchardville,V,3354,33
-Gratiot,V,3355,33
-South Wayne,V,3356,33
-Darlington,C,3357,33
-Shullsburg,C,3358,33
-Cuba City,C,3359,33
-Hazel Green,V,3360,33
-Ackley,T,3401,34
-Ainsworth,T,3402,34
-Antigo,T,3403,34
-Elcho,T,3404,34
-Evergreen,T,3405,34
-Langlade,T,3406,34
-Neva,T,3407,34
-Norwood,T,3408,34
-Parrish,T,3409,34
-Peck,T,3410,34
-Polar,T,3411,34
-Price,T,3412,34
-Rolling,T,3413,34
-Summit,T,3414,34
-Upham,T,3415,34
-Vilas,T,3416,34
-Wolf River,T,3417,34
-White Lake,V,3451,34
-Antigo,C,3452,34
-Birch,T,3501,35
-Bradley,T,3502,35
-Corning,T,3503,35
-Harding,T,3504,35
-Harrison,T,3505,35
-King,T,3506,35
-Merrill,T,3507,35
-Pine River,T,3508,35
-Rock Falls,T,3509,35
-Russell,T,3510,35
-Schley,T,3511,35
-Scott,T,3512,35
-Skanawan,T,3513,35
-Somo,T,3514,35
-Tomahawk,T,3515,35
-Wilson,T,3516,35
-Merrill,C,3551,35
-Tomahawk,C,3552,35
-Cato,T,3601,36
-Centerville,T,3602,36
-Cooperstown,T,3603,36
-Eaton,T,3604,36
-Franklin,T,3605,36
-Gibson,T,3606,36
-Kossuth,T,3607,36
-Liberty,T,3608,36
-Manitowoc,T,3609,36
-Manitowoc Rapids,T,3610,36
-Maple Grove,T,3611,36
-Meeme,T,3612,36
-Mishicot,T,3613,36
-Newton,T,3614,36
-Rockland,T,3615,36
-Schleswig,T,3616,36
-Two Creeks,T,3617,36
-Two Rivers,T,3618,36
-Reedsville,V,3651,36
-Valders,V,3652,36
-Kiel,C,3653,36
-Manitowoc,C,3654,36
-Two Rivers,C,3655,36
-Mishicot,V,3656,36
-Saint Nazianz,V,3657,36
-Whitelaw,V,3658,36
-Cleveland,V,3659,36
-Francis Creek,V,3660,36
-Maribel,V,3661,36
-Kellnersville,V,3662,36
-Bergen,T,3701,37
-Berlin,T,3702,37
-Bern,T,3703,37
-Bevent,T,3704,37
-Brighton,T,3705,37
-Cassel,T,3706,37
-Cleveland,T,3707,37
-Day,T,3708,37
-Easton,T,3709,37
-Eau Pleine,T,3710,37
-Elderon,T,3711,37
-Emmett,T,3712,37
-Frankfort,T,3713,37
-Franzen,T,3714,37
-Green Valley,T,3715,37
-Guenther,T,3716,37
-Halsey,T,3717,37
-Hamburg,T,3718,37
-Harrison,T,3719,37
-Hewitt,T,3720,37
-Holton,T,3721,37
-Hull,T,3722,37
-Johnson,T,3723,37
-Knowlton,T,3724,37
-Kronenwetter,T,3725,37
-Mc Millan,T,3726,37
-Maine,T,3727,37
-Marathon,T,3728,37
-Mosinee,T,3729,37
-Norrie,T,3730,37
-Plover,T,3731,37
-Rib Falls,T,3732,37
-Rib Mountain,T,3733,37
-Reid,T,3734,37
-Rietbrock,T,3735,37
-Ringle,T,3736,37
-Spencer,T,3737,37
-Stettin,T,3738,37
-Texas,T,3739,37
-Wausau,T,3740,37
-Wien,T,3741,37
-Weston,T,3742,37
-Abbotsford,C,3751,37
-Athens,V,3752,37
-Brokaw,V,3753,37
-Edgar,V,3754,37
-Elderon,V,3755,37
-Fenwood,V,3756,37
-Hatley,V,3757,37
-Marathon City,V,3758,37
-Mosinee,C,3759,37
-Rothschild,V,3760,37
-Schofield,C,3761,37
-Spencer,V,3762,37
-Stratford,V,3763,37
-Unity,V,3764,37
-Colby,C,3765,37
-Wausau,C,3766,37
-Marshfield,C,3767,37
-Birnamwood,V,3768,37
-Dorchester,V,3769,37
-Weston,V,3770,37
-Kronewetter,V,3771,37
-Amberg,T,3801,38
-Athelstane,T,3802,38
-Beaver,T,3803,38
-Beecher,T,3804,38
-Dunbar,T,3805,38
-Goodman,T,3806,38
-Grover,T,3807,38
-Lake,T,3808,38
-Middle Inlet,T,3809,38
-Niagara,T,3810,38
-Pembine,T,3811,38
-Peshtigo,T,3812,38
-Porterfield,T,3813,38
-Pound,T,3814,38
-Silver Cliff,T,3815,38
-Stephenson,T,3816,38
-Wagner,T,3817,38
-Wausaukee,T,3818,38
-Coleman,V,3851,38
-Niagara,V,3852,38
-Pound,V,3853,38
-Wausaukee,V,3854,38
-Marinette,C,3855,38
-Peshtigo,C,3856,38
-Crivitz,V,3857,38
-Niagara,C,3858,38
-Buffalo,T,3901,39
-Crystal Lake,T,3902,39
-Douglas,T,3903,39
-Harris,T,3904,39
-Mecan,T,3905,39
-Montello,T,3906,39
-Moundville,T,3907,39
-Neshkoro,T,3908,39
-Newton,T,3909,39
-Oxford,T,3910,39
-Packwaukee,T,3911,39
-Shields,T,3912,39
-Springfield,T,3913,39
-Westfield,T,3914,39
-Oxford,V,3951,39
-Montello,C,3952,39
-Neshkoro,V,3953,39
-Westfield,V,3954,39
-Endeavor,V,3955,39
-Fox Point,V,4051,40
-River Hills,V,4052,40
-Shorewood,V,4053,40
-West Milwaukee,V,4054,40
-Whitefish Bay,V,4055,40
-Cudahy,C,4056,40
-Milwaukee,C,4057,40
-South Milwaukee,C,4058,40
-Wauwatosa,C,4059,40
-West Allis,C,4060,40
-Greendale,V,4061,40
-Glendale,C,4062,40
-Saint Francis,C,4063,40
-Hales Corners,V,4064,40
-Bayside,V,4065,40
-Brown Deer,V,4066,40
-Oak Creek,C,4067,40
-Franklin,C,4068,40
-Greenfield,C,4069,40
-Adrian,T,4101,41
-Angelo,T,4102,41
-Byron,T,4103,41
-Clifton,T,4104,41
-Glendale,T,4105,41
-Grant,T,4106,41
-Greenfield,T,4107,41
-Jefferson,T,4108,41
-La Fayette,T,4109,41
-La Grange,T,4110,41
-Leon,T,4111,41
-Lincoln,T,4112,41
-Little Falls,T,4113,41
-New Lyme,T,4114,41
-Oakdale,T,4115,41
-Portland,T,4116,41
-Ridgeville,T,4117,41
-Scott,T,4118,41
-Sheldon,T,4119,41
-Sparta,T,4120,41
-Tomah,T,4121,41
-Wellington,T,4122,41
-Wells,T,4123,41
-Wilton,T,4124,41
-Cashton,V,4151,41
-Kendall,V,4152,41
-Melvina,V,4153,41
-Norwalk,V,4154,41
-Oakdale,V,4155,41
-Wilton,V,4156,41
-Wyeville,V,4157,41
-Sparta,C,4158,41
-Tomah,C,4159,41
-Warrens,V,4160,41
-Ontario,V,4162,41
-Abrams,T,4201,42
-Armstrong,T,4202,42
-Bagley,T,4203,42
-Brazeau,T,4204,42
-Breed,T,4205,42
-Chase,T,4206,42
-Doty,T,4207,42
-Gillett,T,4208,42
-How,T,4209,42
-Lena,T,4210,42
-Little River,T,4211,42
-Little Suamico,T,4212,42
-Maple Valley,T,4213,42
-Morgan,T,4214,42
-Oconto,T,4215,42
-Oconto Falls,T,4216,42
-Pensaukee,T,4217,42
-Riverview,T,4218,42
-Spruce,T,4219,42
-Stiles,T,4220,42
-Townsend,T,4221,42
-Underhill,T,4222,42
-Lakewood,T,4223,42
-Mountain,T,4224,42
-Pulaski,V,4250,42
-Gillett,C,4251,42
-Lena,V,4252,42
-Suring,V,4253,42
-Oconto,C,4254,42
-Oconto Falls,C,4255,42
-Cassian,T,4301,43
-Crescent,T,4302,43
-Enterprise,T,4303,43
-Hazelhurst,T,4304,43
-Lake Tomahawk,T,4305,43
-Little Rice,T,4306,43
-Lynne,T,4307,43
-Minocqua,T,4308,43
-Monico,T,4309,43
-Newbold,T,4310,43
-Pelican,T,4311,43
-Piehl,T,4312,43
-Pine Lake,T,4313,43
-Schoepke,T,4314,43
-Stella,T,4315,43
-Sugar Camp,T,4316,43
-Three Lakes,T,4317,43
-Woodboro,T,4318,43
-Woodruff,T,4319,43
-Nokomis,T,4320,43
-Rhinelander,C,4351,43
-Black Creek,T,4401,44
-Bovina,T,4402,44
-Buchanan,T,4403,44
-Center,T,4404,44
-Cicero,T,4405,44
-Dale,T,4406,44
-Deer Creek,T,4407,44
-Ellington,T,4408,44
-Freedom,T,4409,44
-Grand Chute,T,4410,44
-Greenville,T,4411,44
-Hortonia,T,4412,44
-Kaukauna,T,4413,44
-Liberty,T,4414,44
-Maine,T,4415,44
-Maple Creek,T,4416,44
-Oneida,T,4417,44
-Osborne,T,4418,44
-Seymour,T,4419,44
-Vandenbroek,T,4420,44
-Bear Creek,V,4451,44
-Black Creek,V,4452,44
-Combined Locks,V,4453,44
-Hortonville,V,4454,44
-Kimberly,V,4455,44
-Little Chute,V,4456,44
-Shiocton,V,4457,44
-Appleton,C,4458,44
-Kaukauna,C,4459,44
-New London,C,4460,44
-Seymour,C,4461,44
-Nichols,V,4462,44
-Howard,V,4463,44
-Wrightstown,V,4464,44
-Harrison,V,4465,44
-Belgium,T,4501,45
-Cedarburg,T,4502,45
-Fredonia,T,4503,45
-Grafton,T,4504,45
-Port Washington,T,4506,45
-Saukville,T,4507,45
-Belgium,V,4551,45
-Fredonia,V,4552,45
-Grafton,V,4553,45
-Saukville,V,4554,45
-Thiensville,V,4555,45
-Cedarburg,C,4556,45
-Port Washington,C,4557,45
-Mequon,C,4558,45
-Bayside,V,4559,45
-Newburg,V,4560,45
-Albany,T,4601,46
-Durand,T,4602,46
-Frankfort,T,4603,46
-Lima,T,4604,46
-Pepin,T,4605,46
-Stockholm,T,4606,46
-Waterville,T,4607,46
-Waubeek,T,4608,46
-Pepin,V,4651,46
-Stockholm,V,4652,46
-Durand,C,4653,46
-Clifton,T,4701,47
-Diamond Bluff,T,4702,47
-Ellsworth,T,4703,47
-El Paso,T,4704,47
-Gilman,T,4705,47
-Hartland,T,4706,47
-Isabelle,T,4707,47
-Maiden Rock,T,4708,47
-Martell,T,4709,47
-Oak Grove,T,4710,47
-River Falls,T,4711,47
-Rock Elm,T,4712,47
-Salem,T,4713,47
-Spring Lake,T,4714,47
-Trenton,T,4715,47
-Trimbelle,T,4716,47
-Union,T,4717,47
-Bay City,V,4751,47
-Ellsworth,V,4752,47
-Elmwood,V,4753,47
-Maiden Rock,V,4754,47
-Plum City,V,4755,47
-Spring Valley,V,4756,47
-Prescott,C,4757,47
-River Falls,C,4758,47
-Alden,T,4801,48
-Apple River,T,4802,48
-Balsam Lake,T,4803,48
-Beaver,T,4804,48
-Black Brook,T,4805,48
-Bone Lake,T,4806,48
-Clam Falls,T,4807,48
-Clayton,T,4808,48
-Clear Lake,T,4809,48
-Eureka,T,4810,48
-Farmington,T,4811,48
-Garfield,T,4812,48
-Georgetown,T,4813,48
-Johnstown,T,4814,48
-Laketown,T,4815,48
-Lincoln,T,4816,48
-Lorain,T,4817,48
-Luck,T,4818,48
-Mc Kinley,T,4819,48
-Milltown,T,4820,48
-Osceola,T,4821,48
-Saint Croix Falls,T,4822,48
-Sterling,T,4823,48
-West Sweden,T,4824,48
-Balsam Lake,V,4851,48
-Centuria,V,4852,48
-Clayton,V,4853,48
-Clear Lake,V,4854,48
-Dresser,V,4855,48
-Frederic,V,4856,48
-Luck,V,4857,48
-Milltown,V,4858,48
-Osceola,V,4859,48
-Saint Croix Falls,C,4860,48
-Amery,C,4861,48
-Turtle Lake,V,4862,48
-Alban,T,4901,49
-Almond,T,4902,49
-Amherst,T,4903,49
-Belmont,T,4904,49
-Buena Vista,T,4905,49
-Carson,T,4906,49
-Dewey,T,4907,49
-Eau Pleine,T,4908,49
-Wisconsin Rapids,C,4909,49
-Hull,T,4910,49
-Lanark,T,4911,49
-Linwood,T,4912,49
-New Hope,T,4913,49
-Pine Grove,T,4914,49
-Plover,T,4915,49
-Sharon,T,4916,49
-Stockton,T,4917,49
-Grant,T,4918,49
-Almond,V,4951,49
-Amherst,V,4952,49
-Amherst Junction,V,4953,49
-Junction City,V,4954,49
-Nelsonville,V,4955,49
-Rosholt,V,4957,49
-Stevens Point,C,4958,49
-Park Ridge,V,4959,49
-Whiting,V,4960,49
-Plover,V,4961,49
-Milladore,V,4962,49
-Catawba,T,5001,50
-Eisenstein,T,5002,50
-Elk,T,5003,50
-Emery,T,5004,50
-Fifield,T,5005,50
-Flambeau,T,5006,50
-Georgetown,T,5007,50
-Hackett,T,5008,50
-Harmony,T,5009,50
-Hill,T,5010,50
-Kennan,T,5011,50
-Knox,T,5012,50
-Lake,T,5013,50
-Ogema,T,5014,50
-Prentice,T,5015,50
-Spirit,T,5016,50
-Worcester,T,5017,50
-Catawba,V,5051,50
-Kennan,V,5052,50
-Prentice,V,5053,50
-Park Falls,C,5054,50
-Phillips,C,5055,50
-Burlington,T,5101,51
-Caledonia,T,5102,51
-Dover,T,5103,51
-Mount Pleasant,T,5104,51
-Norway,T,5105,51
-Raymond,T,5106,51
-Rochester,T,5107,51
-Waterford,T,5108,51
-Yorkville,T,5109,51
-Rochester,V,5151,51
-Sturtevant,V,5152,51
-Union Grove,V,5153,51
-Waterford,V,5154,51
-Burlington,C,5155,51
-Racine,C,5156,51
-North Bay,V,5157,51
-Wind Point,V,5158,51
-Elmwood Park,V,5159,51
-Mount Pleasant,V,5160,51
-Caledonia,V,5161,51
-Akan,T,5201,52
-Bloom,T,5202,52
-Buena Vista,T,5203,52
-Dayton,T,5204,52
-Eagle,T,5205,52
-Forest,T,5206,52
-Henrietta,T,5207,52
-Ithaca,T,5208,52
-Marshall,T,5209,52
-Orion,T,5210,52
-Richland,T,5211,52
-Richwood,T,5212,52
-Rockbridge,T,5213,52
-Sylvan,T,5214,52
-Westford,T,5215,52
-Willow,T,5216,52
-Cazenovia,V,5251,52
-Lone Rock,V,5252,52
-Viola,V,5253,52
-Richland Center,C,5254,52
-Yuba,V,5255,52
-Boaz,V,5256,52
-Avon,T,5301,53
-Beloit,T,5302,53
-Bradford,T,5303,53
-Center,T,5304,53
-Clinton,T,5305,53
-Fulton,T,5306,53
-Harmony,T,5307,53
-Janesville,T,5308,53
-Johnstown,T,5309,53
-La Prairie,T,5310,53
-Lima,T,5311,53
-Magnolia,T,5312,53
-Milton,T,5313,53
-Newark,T,5314,53
-Plymouth,T,5315,53
-Porter,T,5316,53
-Rock,T,5317,53
-Spring Valley,T,5318,53
-Turtle,T,5319,53
-Union,T,5320,53
-Clinton,V,5351,53
-Footville,V,5352,53
-Milton,C,5353,53
-Orfordville,V,5354,53
-Beloit,C,5355,53
-Edgerton,C,5356,53
-Evansville,C,5357,53
-Janesville,C,5358,53
-Brodhead,C,5359,53
-Atlanta,T,5401,54
-Big Bend,T,5402,54
-Big Falls,T,5403,54
-Cedar Rapids,T,5404,54
-Dewey,T,5405,54
-Flambeau,T,5406,54
-Grant,T,5407,54
-Grow,T,5408,54
-Hawkins,T,5409,54
-Hubbard,T,5410,54
-Lawrence,T,5411,54
-Marshall,T,5412,54
-Murry,T,5413,54
-Richland,T,5414,54
-Rusk,T,5415,54
-South Forks,T,5416,54
-Strickland,T,5417,54
-Stubbs,T,5418,54
-Thornapple,T,5419,54
-True,T,5420,54
-Washington,T,5421,54
-Wilkinson,T,5422,54
-Willard,T,5423,54
-Wilson,T,5424,54
-Bruce,V,5451,54
-Conrath,V,5452,54
-Glen Flora,V,5453,54
-Hawkins,V,5454,54
-Ingram,V,5455,54
-Sheldon,V,5456,54
-Tony,V,5457,54
-Weyerhaeuser,V,5458,54
-Ladysmith,C,5459,54
-Baldwin,T,5501,55
-Cady,T,5502,55
-Cylon,T,5503,55
-Eau Galle,T,5504,55
-Emerald,T,5505,55
-Erin Prairie,T,5506,55
-Forest,T,5507,55
-Glenwood,T,5508,55
-Hammond,T,5509,55
-Hudson,T,5510,55
-Kinnickinnic,T,5511,55
-Pleasant Valley,T,5512,55
-Richmond,T,5513,55
-Rush River,T,5514,55
-Saint Joseph,T,5515,55
-Somerset,T,5516,55
-Springfield,T,5517,55
-Stanton,T,5518,55
-Star Prairie,T,5519,55
-Troy,T,5520,55
-Warren,T,5521,55
-Baldwin,V,5551,55
-Deer Park,V,5552,55
-Hammond,V,5553,55
-North Hudson,V,5554,55
-Somerset,V,5555,55
-Star Prairie,V,5556,55
-Wilson,V,5557,55
-Woodville,V,5558,55
-Glenwood City,C,5559,55
-Hudson,C,5560,55
-New Richmond,C,5561,55
-River Falls,C,5562,55
-Roberts,V,5563,55
-Spring Valley,V,5564,55
-Baraboo,T,5601,56
-Bear Creek,T,5602,56
-Dellona,T,5603,56
-Delton,T,5604,56
-Excelsior,T,5605,56
-Fairfield,T,5606,56
-Franklin,T,5607,56
-Freedom,T,5608,56
-Greenfield,T,5609,56
-Honey Creek,T,5610,56
-Ironton,T,5611,56
-La Valle,T,5612,56
-Merrimac,T,5613,56
-Prairie Du Sac,T,5614,56
-Reedsburg,T,5615,56
-Spring Green,T,5616,56
-Sumpter,T,5617,56
-Troy,T,5618,56
-Washington,T,5619,56
-Westfield,T,5620,56
-Winfield,T,5621,56
-Woodland,T,5622,56
-Rock Springs,V,5651,56
-Ironton,V,5652,56
-La Valle,V,5653,56
-Lime Ridge,V,5654,56
-Loganville,V,5655,56
-Merrimac,V,5656,56
-North Freedom,V,5657,56
-Plain,V,5658,56
-Prairie Du Sac,V,5659,56
-Sauk City,V,5660,56
-Spring Green,V,5661,56
-Baraboo,C,5662,56
-Reedsburg,C,5663,56
-Lake Delton,V,5664,56
-West Baraboo,V,5665,56
-Wisconsin Dells,C,5666,56
-Cazenovia,V,5667,56
-Bass Lake,T,5701,57
-Couderay,T,5702,57
-Draper,T,5703,57
-Edgewater,T,5704,57
-Hayward,T,5706,57
-Hunter,T,5707,57
-Lenroot,T,5708,57
-Meadow Brook,T,5709,57
-Meteor,T,5710,57
-Ojibwa,T,5711,57
-Radisson,T,5712,57
-Round Lake,T,5713,57
-Sand Lake,T,5714,57
-Spider Lake,T,5715,57
-Weirgor,T,5716,57
-Winter,T,5717,57
-Couderay,V,5751,57
-Exeland,V,5752,57
-Hayward,C,5753,57
-Radisson,V,5754,57
-Winter,V,5755,57
-Almon,T,5801,58
-Angelica,T,5802,58
-Aniwa,T,5803,58
-Bartelme,T,5804,58
-Belle Plaine,T,5805,58
-Birnamwood,T,5806,58
-Fairbanks,T,5807,58
-Germania,T,5808,58
-Grant,T,5809,58
-Green Valley,T,5810,58
-Hartland,T,5811,58
-Herman,T,5812,58
-Hutchins,T,5813,58
-Lessor,T,5814,58
-Maple Grove,T,5815,58
-Morris,T,5816,58
-Navarino,T,5817,58
-Pella,T,5818,58
-Red Springs,T,5819,58
-Richmond,T,5820,58
-Seneca,T,5821,58
-Washington,T,5822,58
-Waukechon,T,5823,58
-Wescott,T,5824,58
-Wittenberg,T,5825,58
-Stockbridge,T,5826,58
-Aniwa,V,5851,58
-Birnamwood,V,5852,58
-Bonduel,V,5853,58
-Bowler,V,5854,58
-Cecil,V,5855,58
-Eland,V,5856,58
-Gresham,V,5857,58
-Mattoon,V,5858,58
-Tigerton,V,5859,58
-Wittenberg,V,5860,58
-Shawano,C,5861,58
-Pulaski,V,5862,58
-Marion,C,5863,58
-Greenbush,T,5901,59
-Herman,T,5902,59
-Holland,T,5903,59
-Lima,T,5904,59
-Lyndon,T,5905,59
-Mitchell,T,5906,59
-Mosel,T,5907,59
-Plymouth,T,5908,59
-Rhine,T,5909,59
-Russell,T,5910,59
-Scott,T,5911,59
-Sheboygan,T,5912,59
-Sheboygan Falls,T,5913,59
-Sherman,T,5914,59
-Wilson,T,5915,59
-Adell,V,5951,59
-Cascade,V,5952,59
-Cedar Grove,V,5953,59
-Elkhart Lake,V,5954,59
-Glenbeulah,V,5955,59
-Kohler,V,5956,59
-Oostburg,V,5957,59
-Random Lake,V,5958,59
-Waldo,V,5959,59
-Plymouth,C,5960,59
-Sheboygan,C,5961,59
-Sheboygan Falls,C,5962,59
-Howards Grove,V,5963,59
-Aurora,T,6001,60
-Browning,T,6002,60
-Chelsea,T,6003,60
-Cleveland,T,6004,60
-Deer Creek,T,6005,60
-Ford,T,6006,60
-Goodrich,T,6007,60
-Greenwood,T,6008,60
-Grover,T,6009,60
-Hammel,T,6010,60
-Holway,T,6011,60
-Jump River,T,6012,60
-Little Black,T,6013,60
-Mc Kinley,T,6014,60
-Maplehurst,T,6015,60
-Medford,T,6016,60
-Molitor,T,6017,60
-Pershing,T,6018,60
-Rib Lake,T,6019,60
-Roosevelt,T,6020,60
-Taft,T,6021,60
-Westboro,T,6022,60
-Gilman,V,6051,60
-Lublin,V,6052,60
-Rib Lake,V,6053,60
-Medford,C,6054,60
-Stetsonville,V,6055,60
-Albion,T,6101,61
-Arcadia,T,6102,61
-Burnside,T,6103,61
-Caledonia,T,6104,61
-Chimney Rock,T,6105,61
-Dodge,T,6106,61
-Ettrick,T,6107,61
-Gale,T,6108,61
-Hale,T,6109,61
-Lincoln,T,6110,61
-Pigeon,T,6111,61
-Preston,T,6112,61
-Sumner,T,6113,61
-Trempealeau,T,6114,61
-Unity,T,6115,61
-Blair,C,6151,61
-Eleva,V,6152,61
-Galesville,C,6153,61
-Independence,C,6154,61
-Osseo,C,6155,61
-Trempealeau,V,6156,61
-Whitehall,C,6157,61
-Arcadia,C,6158,61
-Ettrick,V,6159,61
-Strum,V,6160,61
-Pigeon Falls,V,6161,61
-Bergen,T,6201,62
-Christiana,T,6202,62
-Clinton,T,6203,62
-Coon,T,6204,62
-Forest,T,6205,62
-Franklin,T,6206,62
-Genoa,T,6207,62
-Greenwood,T,6208,62
-Hamburg,T,6209,62
-Harmony,T,6210,62
-Hillsboro,T,6211,62
-Jefferson,T,6212,62
-Kickapoo,T,6213,62
-Liberty,T,6214,62
-Stark,T,6215,62
-Sterling,T,6216,62
-Union,T,6217,62
-Viroqua,T,6218,62
-Webster,T,6219,62
-Wheatland,T,6220,62
-Whitestown,T,6221,62
-Chaseburg,V,6251,62
-Coon Valley,V,6252,62
-De Soto,V,6253,62
-Hillsboro,C,6254,62
-La Farge,V,6255,62
-Ontario,V,6256,62
-Readstown,V,6257,62
-Stoddard,V,6258,62
-Viola,V,6259,62
-Viroqua,C,6260,62
-Westby,C,6261,62
-Genoa,V,6262,62
-Arbor Vitae,T,6301,63
-Boulder Junction,T,6302,63
-Cloverland,T,6303,63
-Conover,T,6304,63
-Flambeau,T,6305,63
-Lincoln,T,6306,63
-Phelps,T,6307,63
-Plum Lake,T,6308,63
-Presque Isle,T,6309,63
-Saint Germain,T,6310,63
-Manitowish Waters,T,6311,63
-Land O'Lakes,T,6312,63
-Washington,T,6313,63
-Winchester,T,6314,63
-Eagle River,C,6351,63
-Bloomfield,T,6401,64
-Darien,T,6402,64
-Delavan,T,6403,64
-East Troy,T,6404,64
-Geneva,T,6405,64
-La Fayette,T,6406,64
-La Grange,T,6407,64
-Linn,T,6408,64
-Lyons,T,6409,64
-Richmond,T,6410,64
-Sharon,T,6411,64
-Spring Prairie,T,6412,64
-Sugar Creek,T,6413,64
-Troy,T,6414,64
-Walworth,T,6415,64
-Whitewater,T,6416,64
-East Troy,V,6451,64
-Fontana,V,6452,64
-Genoa City,V,6453,64
-Sharon,V,6454,64
-Walworth,V,6455,64
-Williams Bay,V,6456,64
-Delavan,C,6457,64
-Elkhorn,C,6458,64
-Lake Geneva,C,6459,64
-Whitewater,C,6460,64
-Darien,V,6461,64
-Burlington,C,6462,64
-Mukwonago,V,6463,64
-Bloomfield,V,6464,64
-Barronett,T,6501,65
-Bashaw,T,6502,65
-Bass Lake,T,6503,65
-Beaver Brook,T,6504,65
-Birchwood,T,6505,65
-Brooklyn,T,6506,65
-Casey,T,6507,65
-Chicog,T,6508,65
-Crystal,T,6509,65
-Evergreen,T,6510,65
-Frog Creek,T,6511,65
-Gull Lake,T,6512,65
-Long Lake,T,6513,65
-Madge,T,6514,65
-Minong,T,6515,65
-Sarona,T,6516,65
-Spooner,T,6517,65
-Springbrook,T,6518,65
-Stinnett,T,6519,65
-Stone Lake,T,6520,65
-Trego,T,6521,65
-Birchwood,V,6551,65
-Minong,V,6552,65
-Shell Lake,C,6553,65
-Spooner,C,6554,65
-Addison,T,6601,66
-Barton,T,6602,66
-Erin,T,6603,66
-Farmington,T,6604,66
-Germantown,T,6605,66
-Hartford,T,6606,66
-Jackson,T,6607,66
-Kewaskum,T,6608,66
-Polk,T,6609,66
-Richfield,T,6610,66
-Trenton,T,6611,66
-Wayne,T,6612,66
-West Bend,T,6613,66
-Germantown,V,6652,66
-Jackson,V,6653,66
-Kewaskum,V,6654,66
-Slinger,V,6655,66
-Hartford,C,6656,66
-West Bend,C,6657,66
-Milwaukee,C,6658,66
-Newburg,V,6659,66
-Richfield,V,6666,66
-Brookfield,T,6701,67
-Delafield,T,6702,67
-Eagle,T,6703,67
-Genesee,T,6704,67
-Lisbon,T,6705,67
-Merton,T,6707,67
-Mukwonago,T,6708,67
-Oconomowoc,T,6711,67
-Ottawa,T,6712,67
-Pewaukee,T,6713,67
-Summit,T,6714,67
-Vernon,T,6715,67
-Waukesha,T,6716,67
-Big Bend,V,6751,67
-Butler,V,6752,67
-Chenequa,V,6753,67
-Dousman,V,6754,67
-Eagle,V,6755,67
-Hartland,V,6756,67
-Lac La Belle,V,6757,67
-Lannon,V,6758,67
-Menomonee Falls,V,6759,67
-Merton,V,6760,67
-Mukwonago,V,6761,67
-North Prairie,V,6762,67
-Pewaukee,V,6763,67
-Sussex,V,6764,67
-Wales,V,6765,67
-Oconomowoc,C,6766,67
-Waukesha,C,6767,67
-Elm Grove,V,6768,67
-Brookfield,C,6769,67
-Nashotah,V,6770,67
-New Berlin,C,6771,67
-Delafield,C,6772,67
-Oconomowoc Lake,V,6773,67
-Muskego,C,6774,67
-East Troy,V,6775,67
-Pewaukee,C,6776,67
-Milwaukee,C,6777,67
-Summit,V,6778,67
-Bear Creek,T,6801,68
-Caledonia,T,6802,68
-Dayton,T,6803,68
-Dupont,T,6804,68
-Farmington,T,6805,68
-Fremont,T,6806,68
-Harrison,T,6807,68
-Helvetia,T,6808,68
-Iola,T,6809,68
-Larrabee,T,6810,68
-Lebanon,T,6811,68
-Lind,T,6812,68
-Little Wolf,T,6813,68
-Matteson,T,6814,68
-Mukwa,T,6815,68
-Royalton,T,6816,68
-Saint Lawrence,T,6817,68
-Scandinavia,T,6818,68
-Union,T,6819,68
-Waupaca,T,6820,68
-Weyauwega,T,6821,68
-Wyoming,T,6822,68
-Big Falls,V,6851,68
-Embarrass,V,6852,68
-Fremont,V,6853,68
-Iola,V,6854,68
-Manawa,C,6855,68
-Marion,C,6856,68
-Ogdensburg,V,6857,68
-Scandinavia,V,6859,68
-Weyauwega,C,6860,68
-Clintonville,C,6861,68
-New London,C,6862,68
-Waupaca,C,6863,68
-Aurora,T,6901,69
-Bloomfield,T,6902,69
-Coloma,T,6903,69
-Dakota,T,6904,69
-Deerfield,T,6905,69
-Hancock,T,6906,69
-Leon,T,6907,69
-Marion,T,6908,69
-Mount Morris,T,6909,69
-Oasis,T,6910,69
-Plainfield,T,6911,69
-Poy Sippi,T,6912,69
-Richford,T,6913,69
-Rose,T,6914,69
-Saxeville,T,6915,69
-Springwater,T,6916,69
-Warren,T,6917,69
-Wautoma,T,6918,69
-Hancock,V,6951,69
-Lohrville,V,6952,69
-Plainfield,V,6953,69
-Redgranite,V,6954,69
-Wautoma,C,6955,69
-Wild Rose,V,6956,69
-Berlin,C,6957,69
-Coloma,V,6958,69
-Algoma,T,7001,70
-Black Wolf,T,7002,70
-Clayton,T,7003,70
-Menasha,T,7004,70
-Neenah,T,7005,70
-Nekimi,T,7006,70
-Nepeuskum,T,7007,70
-Omro,T,7008,70
-Oshkosh,T,7009,70
-Poygan,T,7010,70
-Rushford,T,7011,70
-Utica,T,7012,70
-Vinland,T,7013,70
-Winchester,T,7014,70
-Winneconne,T,7015,70
-Wolf River,T,7016,70
-Omro,C,7051,70
-Winneconne,V,7052,70
-Menasha,C,7053,70
-Neenah,C,7054,70
-Oshkosh,C,7055,70
-Appleton,C,7056,70
-Arpin,T,7101,71
-Auburndale,T,7102,71
-Cameron,T,7103,71
-Cary,T,7104,71
-Cranmoor,T,7105,71
-Dexter,T,7106,71
-Grand Rapids,T,7107,71
-Hansen,T,7108,71
-Hiles,T,7109,71
-Lincoln,T,7110,71
-Marshfield,T,7111,71
-Milladore,T,7112,71
-Port Edwards,T,7113,71
-Remington,T,7114,71
-Richfield,T,7115,71
-Rock,T,7116,71
-Rudolph,T,7117,71
-Saratoga,T,7118,71
-Seneca,T,7119,71
-Sherry,T,7120,71
-Sigel,T,7121,71
-Wood,T,7122,71
-Auburndale,V,7151,71
-Biron,V,7152,71
-Port Edwards,V,7153,71
-Marshfield,C,7154,71
-Nekoosa,C,7155,71
-Pittsville,C,7156,71
-Wisconsin Rapids,C,7157,71
-Milladore,V,7158,71
-Vesper,V,7159,71
-Rudolph,V,7160,71
-Hewitt,V,7161,71
-Arpin,V,7162,71
-Menominee,T,7301,73
+Municipality	MuniType	MuniCode	CntyCode
+Adams	T	101	1
+Big Flats	T	102	1
+Colburn	T	103	1
+Dell Prairie	T	104	1
+Easton	T	105	1
+Jackson	T	106	1
+Leola	T	107	1
+Lincoln	T	108	1
+Monroe	T	109	1
+New Chester	T	110	1
+New Haven	T	111	1
+Preston	T	112	1
+Quincy	T	113	1
+Richfield	T	114	1
+Rome	T	115	1
+Springville	T	116	1
+Strongs Prairie	T	117	1
+Friendship	V	151	1
+Adams	C	152	1
+Wisconsin Dells	C	153	1
+Agenda	T	201	2
+Ashland	T	202	2
+Chippewa	T	203	2
+Gingles	T	204	2
+Gordon	T	205	2
+Jacobs	T	206	2
+La Pointe	T	207	2
+Marengo	T	208	2
+Morse	T	209	2
+Peeksville	T	210	2
+Sanborn	T	211	2
+Shanagolden	T	212	2
+White River	T	213	2
+Butternut	V	251	2
+Ashland	C	252	2
+Mellen	C	253	2
+Almena	T	301	3
+Arland	T	302	3
+Barron	T	303	3
+Bear Lake	T	304	3
+Cedar Lake	T	305	3
+Chetek	T	306	3
+Clinton	T	307	3
+Crystal Lake	T	308	3
+Cumberland	T	309	3
+Dallas	T	310	3
+Dovre	T	311	3
+Doyle	T	312	3
+Lakeland	T	313	3
+Maple Grove	T	314	3
+Maple Plain	T	315	3
+Oak Grove	T	316	3
+Prairie Farm	T	317	3
+Prairie Lake	T	318	3
+Rice Lake	T	319	3
+Sioux Creek	T	320	3
+Stanfold	T	321	3
+Stanley	T	322	3
+Sumner	T	323	3
+Turtle Lake	T	324	3
+Vance Creek	T	325	3
+Cameron	V	351	3
+Dallas	V	352	3
+Haugen	V	353	3
+Prairie Farm	V	354	3
+Turtle Lake	V	355	3
+Barron	C	356	3
+Chetek	C	357	3
+Cumberland	C	358	3
+Rice Lake	C	359	3
+Almena	V	360	3
+New Auburn	V	361	3
+Barksdale	T	401	4
+Barnes	T	402	4
+Bayfield	T	403	4
+Bay View	T	404	4
+Bell	T	405	4
+Cable	T	406	4
+Clover	T	407	4
+Delta	T	408	4
+Drummond	T	409	4
+Eileen	T	410	4
+Hughes	T	411	4
+Iron River	T	412	4
+Kelly	T	413	4
+Keystone	T	414	4
+Lincoln	T	415	4
+Mason	T	416	4
+Namekagon	T	417	4
+Orienta	T	418	4
+Oulu	T	419	4
+Pilsen	T	420	4
+Port Wing	T	421	4
+Grand View	T	422	4
+Russell	T	423	4
+Tripp	T	424	4
+Washburn	T	425	4
+Cable	V	451	4
+Mason	V	452	4
+Bayfield	C	453	4
+Washburn	C	454	4
+Ashwaubenon	T	502	5
+Bellevue	T	503	5
+De Pere	T	504	5
+Eaton	T	505	5
+Glenmore	T	506	5
+Green Bay	T	507	5
+Hobart	T	508	5
+Holland	T	509	5
+Humboldt	T	511	5
+Lawrence	T	512	5
+Morrison	T	513	5
+New Denmark	T	514	5
+Pittsfield	T	515	5
+Rockland	T	517	5
+Scott	T	518	5
+Suamico	T	519	5
+Wrightstown	T	520	5
+Ledgeview	T	521	5
+Denmark	V	551	5
+Pulaski	V	552	5
+Wrightstown	V	553	5
+De Pere	C	554	5
+Ashwaubenon	V	555	5
+Green Bay	C	556	5
+Howard	V	557	5
+Allouez	V	558	5
+Hobart	V	559	5
+Bellevue	V	560	5
+Suamico	V	561	5
+Alma	T	601	6
+Belvidere	T	602	6
+Buffalo	T	603	6
+Canton	T	604	6
+Cross	T	605	6
+Dover	T	606	6
+Gilmanton	T	607	6
+Glencoe	T	608	6
+Lincoln	T	609	6
+Maxville	T	610	6
+Milton	T	611	6
+Modena	T	612	6
+Mondovi	T	613	6
+Montana	T	614	6
+Naples	T	615	6
+Nelson	T	616	6
+Waumandee	T	617	6
+Cochrane	V	651	6
+Alma	C	652	6
+Buffalo City	C	653	6
+Fountain City	C	654	6
+Mondovi	C	655	6
+Nelson	V	656	6
+Anderson	T	701	7
+Blaine	T	702	7
+Daniels	T	703	7
+Dewey	T	704	7
+Grantsburg	T	705	7
+Jackson	T	706	7
+La Follette	T	707	7
+Lincoln	T	708	7
+Meenon	T	709	7
+Oakland	T	710	7
+Roosevelt	T	711	7
+Rusk	T	712	7
+Sand Lake	T	713	7
+Scott	T	714	7
+Siren	T	715	7
+Swiss	T	716	7
+Trade Lake	T	717	7
+Union	T	718	7
+Webb Lake	T	719	7
+West Marshland	T	720	7
+Wood River	T	721	7
+Grantsburg	V	751	7
+Webster	V	752	7
+Siren	V	753	7
+Brillion	T	801	8
+Brothertown	T	802	8
+Charlestown	T	803	8
+Chilton	T	804	8
+Harrison	T	805	8
+New Holstein	T	806	8
+Rantoul	T	807	8
+Stockbridge	T	808	8
+Woodville	T	809	8
+Brillion	C	851	8
+Hilbert	V	852	8
+Stockbridge	V	853	8
+Chilton	C	854	8
+Kiel	C	855	8
+New Holstein	C	856	8
+Appleton	C	857	8
+Sherwood	V	858	8
+Potter	V	859	8
+Menasha	C	860	8
+Kaukauna	C	861	8
+Harrison	V	862	8
+Anson	T	901	9
+Arthur	T	902	9
+Auburn	T	903	9
+Birch Creek	T	904	9
+Bloomer	T	905	9
+Cleveland	T	906	9
+Colburn	T	907	9
+Cooks Valley	T	908	9
+Delmar	T	909	9
+Eagle Point	T	910	9
+Edson	T	911	9
+Estella	T	912	9
+Goetz	T	913	9
+Hallie	T	914	9
+Lake Holcombe	T	915	9
+Howard	T	916	9
+Lafayette	T	917	9
+Ruby	T	918	9
+Sampson	T	919	9
+Sigel	T	920	9
+Tilden	T	921	9
+Wheaton	T	922	9
+Woodmohr	T	923	9
+Boyd	V	951	9
+Cadott	V	952	9
+Cornell	C	953	9
+New Auburn	V	954	9
+Bloomer	C	955	9
+Chippewa Falls	C	956	9
+Stanley	C	957	9
+Eau Claire	C	958	9
+Lake Hallie	V	959	9
+Beaver	T	1001	10
+Butler	T	1002	10
+Colby	T	1003	10
+Dewhurst	T	1004	10
+Eaton	T	1005	10
+Foster	T	1006	10
+Fremont	T	1007	10
+Grant	T	1008	10
+Green Grove	T	1009	10
+Hendren	T	1010	10
+Hewett	T	1011	10
+Hixon	T	1012	10
+Hoard	T	1013	10
+Levis	T	1014	10
+Loyal	T	1015	10
+Longwood	T	1016	10
+Lynn	T	1017	10
+Mayville	T	1018	10
+Mead	T	1019	10
+Mentor	T	1020	10
+Pine Valley	T	1021	10
+Reseburg	T	1022	10
+Seif	T	1023	10
+Sherman	T	1024	10
+Sherwood	T	1025	10
+Thorp	T	1026	10
+Unity	T	1027	10
+Warner	T	1028	10
+Washburn	T	1029	10
+Weston	T	1030	10
+Withee	T	1031	10
+Worden	T	1032	10
+York	T	1033	10
+Abbotsford	C	1051	10
+Curtiss	V	1052	10
+Dorchester	V	1053	10
+Granton	V	1054	10
+Loyal	C	1055	10
+Thorp	C	1056	10
+Unity	V	1057	10
+Withee	V	1058	10
+Colby	C	1059	10
+Greenwood	C	1060	10
+Neillsville	C	1061	10
+Owen	C	1062	10
+Stanley	C	1063	10
+Arlington	T	1101	11
+Caledonia	T	1102	11
+Columbus	T	1103	11
+Courtland	T	1104	11
+Dekorra	T	1105	11
+Fort Winnebago	T	1106	11
+Fountain Prairie	T	1107	11
+Hampden	T	1108	11
+Leeds	T	1109	11
+Lewiston	T	1110	11
+Lodi	T	1111	11
+Lowville	T	1112	11
+Marcellon	T	1113	11
+Newport	T	1114	11
+Otsego	T	1115	11
+Pacific	T	1116	11
+Randolph	T	1117	11
+Scott	T	1118	11
+Springvale	T	1119	11
+West Point	T	1120	11
+Wyocena	T	1121	11
+Cambria	V	1151	11
+Doylestown	V	1152	11
+Fall River	V	1153	11
+Lodi	C	1154	11
+Pardeeville	V	1155	11
+Poynette	V	1156	11
+Randolph	V	1157	11
+Rio	V	1158	11
+Wyocena	V	1159	11
+Columbus	C	1160	11
+Wisconsin Dells	C	1161	11
+Portage	C	1162	11
+Arlington	V	1163	11
+Friesland	V	1164	11
+Bridgeport	T	1201	12
+Clayton	T	1202	12
+Eastman	T	1203	12
+Freeman	T	1204	12
+Haney	T	1205	12
+Marietta	T	1206	12
+Prairie Du Chien	T	1207	12
+Scott	T	1208	12
+Seneca	T	1209	12
+Utica	T	1210	12
+Wauzeka	T	1211	12
+Bell Center	V	1251	12
+De Soto	V	1252	12
+Eastman	V	1253	12
+Ferryville	V	1254	12
+Gays Mills	V	1255	12
+Lynxville	V	1256	12
+Soldiers Grove	V	1257	12
+Steuben	V	1258	12
+Wauzeka	V	1259	12
+Prairie Du Chien	C	1260	12
+Mount Sterling	V	1261	12
+Albion	T	1301	13
+Berry	T	1302	13
+Black Earth	T	1303	13
+Blooming Grove	T	1304	13
+Blue Mounds	T	1305	13
+Bristol	T	1306	13
+Burke	T	1307	13
+Christiana	T	1308	13
+Cottage Grove	T	1309	13
+Cross Plains	T	1310	13
+Dane	T	1311	13
+Deerfield	T	1312	13
+Dunkirk	T	1313	13
+Dunn	T	1314	13
+Madison	T	1316	13
+Mazomanie	T	1317	13
+Medina	T	1318	13
+Middleton	T	1319	13
+Montrose	T	1320	13
+Oregon	T	1321	13
+Perry	T	1322	13
+Pleasant Springs	T	1323	13
+Primrose	T	1324	13
+Roxbury	T	1325	13
+Rutland	T	1326	13
+Springdale	T	1327	13
+Springfield	T	1328	13
+Sun Prairie	T	1329	13
+Vermont	T	1330	13
+Verona	T	1331	13
+Vienna	T	1332	13
+Westport	T	1333	13
+Windsor	T	1334	13
+York	T	1335	13
+Belleville	V	1351	13
+Black Earth	V	1352	13
+Blue Mounds	V	1353	13
+Brooklyn	V	1354	13
+Cambridge	V	1355	13
+Cottage Grove	V	1356	13
+Cross Plains	V	1357	13
+Dane	V	1358	13
+Deerfield	V	1359	13
+De Forest	V	1360	13
+Maple Bluff	V	1361	13
+Mc Farland	V	1362	13
+Marshall	V	1363	13
+Mazomanie	V	1364	13
+Middleton	C	1365	13
+Mount Horeb	V	1366	13
+Oregon	V	1367	13
+Rockdale	V	1368	13
+Shorewood Hills	V	1369	13
+Sun Prairie	C	1370	13
+Verona	C	1371	13
+Waunakee	V	1372	13
+Madison	C	1373	13
+Stoughton	C	1374	13
+Monona	C	1375	13
+Fitchburg	C	1376	13
+Edgerton	C	1377	13
+Ashippun	T	1401	14
+Beaver Dam	T	1402	14
+Burnett	T	1403	14
+Calamus	T	1404	14
+Chester	T	1405	14
+Clyman	T	1406	14
+Elba	T	1407	14
+Emmet	T	1408	14
+Fox Lake	T	1409	14
+Herman	T	1410	14
+Hubbard	T	1411	14
+Hustisford	T	1412	14
+Lebanon	T	1413	14
+Le Roy	T	1414	14
+Lomira	T	1415	14
+Lowell	T	1416	14
+Oak Grove	T	1417	14
+Portland	T	1418	14
+Rubicon	T	1419	14
+Shields	T	1420	14
+Theresa	T	1421	14
+Trenton	T	1422	14
+Westford	T	1423	14
+Williamstown	T	1424	14
+Hartford	C	1450	14
+Clyman	V	1451	14
+Fox Lake	C	1452	14
+Hustisford	V	1453	14
+Iron Ridge	V	1454	14
+Lomira	V	1455	14
+Lowell	V	1456	14
+Neosho	V	1457	14
+Randolph	V	1458	14
+Reeseville	V	1459	14
+Theresa	V	1460	14
+Beaver Dam	C	1461	14
+Horicon	C	1462	14
+Juneau	C	1463	14
+Mayville	C	1464	14
+Watertown	C	1465	14
+Waupun	C	1466	14
+Brownsville	V	1467	14
+Kekoskee	V	1468	14
+Columbus	C	1469	14
+Baileys Harbor	T	1501	15
+Brussels	T	1502	15
+Clay Banks	T	1503	15
+Egg Harbor	T	1504	15
+Forestville	T	1505	15
+Gardner	T	1506	15
+Gibraltar	T	1507	15
+Jacksonport	T	1508	15
+Liberty Grove	T	1509	15
+Nasewaupee	T	1510	15
+Sevastopol	T	1511	15
+Sturgeon Bay	T	1512	15
+Union	T	1513	15
+Washington	T	1514	15
+Ephraim	V	1551	15
+Sister Bay	V	1552	15
+Sturgeon Bay	C	1553	15
+Forestville	V	1554	15
+Egg Harbor	V	1555	15
+Amnicon	T	1601	16
+Bennett	T	1602	16
+Brule	T	1603	16
+Cloverland	T	1604	16
+Dairyland	T	1605	16
+Gordon	T	1606	16
+Hawthorne	T	1607	16
+Highland	T	1608	16
+Lakeside	T	1609	16
+Maple	T	1610	16
+Oakland	T	1611	16
+Parkland	T	1612	16
+Solon Springs	T	1613	16
+Summit	T	1614	16
+Superior	T	1615	16
+Wascott	T	1616	16
+Lake Nebagamon	V	1651	16
+Oliver	V	1652	16
+Poplar	V	1653	16
+Solon Springs	V	1654	16
+Superior	C	1655	16
+Superior Village	V	1656	16
+Colfax	T	1701	17
+Dunn	T	1702	17
+Eau Galle	T	1703	17
+Elk Mound	T	1704	17
+Grant	T	1705	17
+Hay River	T	1706	17
+Lucas	T	1707	17
+Menomonie	T	1708	17
+New Haven	T	1709	17
+Otter Creek	T	1710	17
+Peru	T	1711	17
+Red Cedar	T	1712	17
+Rock Creek	T	1713	17
+Sand Creek	T	1714	17
+Sheridan	T	1715	17
+Sherman	T	1716	17
+Springbrook	T	1717	17
+Stanton	T	1718	17
+Tainter	T	1719	17
+Tiffany	T	1720	17
+Weston	T	1721	17
+Wilson	T	1722	17
+Boyceville	V	1751	17
+Colfax	V	1752	17
+Downing	V	1753	17
+Elk Mound	V	1754	17
+Knapp	V	1755	17
+Ridgeland	V	1756	17
+Wheeler	V	1757	17
+Menomonie	C	1758	17
+Bridge Creek	T	1801	18
+Brunswick	T	1802	18
+Clear Creek	T	1803	18
+Drammen	T	1804	18
+Fairchild	T	1805	18
+Lincoln	T	1806	18
+Ludington	T	1807	18
+Otter Creek	T	1808	18
+Pleasant Valley	T	1809	18
+Seymour	T	1810	18
+Union	T	1811	18
+Washington	T	1812	18
+Wilson	T	1813	18
+Fairchild	V	1851	18
+Fall Creek	V	1852	18
+Altoona	C	1853	18
+Augusta	C	1854	18
+Eau Claire	C	1855	18
+Aurora	T	1901	19
+Commonwealth	T	1902	19
+Fence	T	1903	19
+Fern	T	1904	19
+Florence	T	1905	19
+Homestead	T	1906	19
+Long Lake	T	1907	19
+Tipler	T	1908	19
+Alto	T	2001	20
+Ashford	T	2002	20
+Auburn	T	2003	20
+Byron	T	2004	20
+Calumet	T	2005	20
+Eden	T	2006	20
+Eldorado	T	2007	20
+Empire	T	2008	20
+Fond Du Lac	T	2009	20
+Forest	T	2010	20
+Friendship	T	2011	20
+Lamartine	T	2012	20
+Marshfield	T	2013	20
+Metomen	T	2014	20
+Oakfield	T	2015	20
+Osceola	T	2016	20
+Ripon	T	2017	20
+Rosendale	T	2018	20
+Springvale	T	2019	20
+Taycheedah	T	2020	20
+Waupun	T	2021	20
+Brandon	V	2051	20
+Campbellsport	V	2052	20
+Eden	V	2053	20
+Fairwater	V	2054	20
+North Fond Du Lac	V	2055	20
+Oakfield	V	2056	20
+Rosendale	V	2057	20
+Saint Cloud	V	2058	20
+Fond Du Lac	C	2059	20
+Ripon	C	2060	20
+Waupun	C	2061	20
+Mount Calvary	V	2062	20
+Kewaskum	V	2063	20
+Alvin	T	2101	21
+Argonne	T	2102	21
+Armstrong Creek	T	2103	21
+Blackwell	T	2104	21
+Caswell	T	2105	21
+Crandon	T	2106	21
+Freedom	T	2107	21
+Hiles	T	2108	21
+Laona	T	2109	21
+Lincoln	T	2110	21
+Nashville	T	2111	21
+Popple River	T	2112	21
+Ross	T	2113	21
+Wabeno	T	2114	21
+Crandon	C	2151	21
+Beetown	T	2201	22
+Bloomington	T	2202	22
+Boscobel	T	2203	22
+Cassville	T	2204	22
+Castle Rock	T	2205	22
+Clifton	T	2206	22
+Ellenboro	T	2207	22
+Fennimore	T	2208	22
+Glen Haven	T	2209	22
+Harrison	T	2210	22
+Hazel Green	T	2211	22
+Hickory Grove	T	2212	22
+Jamestown	T	2213	22
+Liberty	T	2214	22
+Lima	T	2215	22
+Little Grant	T	2216	22
+Marion	T	2217	22
+Millville	T	2218	22
+Mount Hope	T	2219	22
+Mount Ida	T	2220	22
+Muscoda	T	2221	22
+North Lancaster	T	2222	22
+Paris	T	2223	22
+Patch Grove	T	2224	22
+Platteville	T	2225	22
+Potosi	T	2226	22
+Smelser	T	2227	22
+South Lancaster	T	2228	22
+Waterloo	T	2229	22
+Watterstown	T	2230	22
+Wingville	T	2231	22
+Woodman	T	2232	22
+Wyalusing	T	2233	22
+Bagley	V	2251	22
+Bloomington	V	2252	22
+Blue River	V	2253	22
+Cassville	V	2254	22
+Hazel Green	V	2255	22
+Livingston	V	2256	22
+Montfort	V	2257	22
+Mount Hope	V	2258	22
+Muscoda	V	2259	22
+Patch Grove	V	2260	22
+Potosi	V	2261	22
+Woodman	V	2262	22
+Boscobel	C	2263	22
+Cuba City	C	2264	22
+Fennimore	C	2265	22
+Lancaster	C	2266	22
+Platteville	C	2267	22
+Tennyson	V	2268	22
+Dickeyville	V	2269	22
+Adams	T	2301	23
+Albany	T	2302	23
+Brooklyn	T	2303	23
+Cadiz	T	2304	23
+Clarno	T	2305	23
+Decatur	T	2306	23
+Exeter	T	2307	23
+Jefferson	T	2308	23
+Jordan	T	2309	23
+Monroe	T	2310	23
+Mount Pleasant	T	2311	23
+New Glarus	T	2312	23
+Spring Grove	T	2313	23
+Sylvester	T	2314	23
+Washington	T	2315	23
+York	T	2316	23
+Albany	V	2351	23
+Brooklyn	V	2352	23
+Browntown	V	2353	23
+Monticello	V	2354	23
+New Glarus	V	2355	23
+Brodhead	C	2356	23
+Monroe	C	2357	23
+Belleville	V	2358	23
+Berlin	T	2401	24
+Brooklyn	T	2402	24
+Green Lake	T	2403	24
+Kingston	T	2404	24
+Mackford	T	2405	24
+Manchester	T	2406	24
+Marquette	T	2407	24
+Princeton	T	2408	24
+Saint Marie	T	2409	24
+Seneca	T	2410	24
+Green Lake	C	2451	24
+Kingston	V	2452	24
+Markesan	C	2453	24
+Berlin	C	2454	24
+Princeton	C	2455	24
+Marquette	V	2456	24
+Arena	T	2501	25
+Brigham	T	2502	25
+Clyde	T	2503	25
+Dodgeville	T	2504	25
+Eden	T	2505	25
+Highland	T	2506	25
+Linden	T	2507	25
+Mifflin	T	2508	25
+Mineral Point	T	2509	25
+Moscow	T	2510	25
+Pulaski	T	2511	25
+Ridgeway	T	2512	25
+Waldwick	T	2513	25
+Wyoming	T	2514	25
+Arena	V	2551	25
+Avoca	V	2552	25
+Barneveld	V	2553	25
+Cobb	V	2554	25
+Highland	V	2555	25
+Hollandale	V	2556	25
+Linden	V	2557	25
+Livingston	V	2558	25
+Rewey	V	2559	25
+Ridgeway	V	2560	25
+Dodgeville	C	2561	25
+Mineral Point	C	2562	25
+Blanchardville	V	2563	25
+Montfort	V	2564	25
+Muscoda	V	2565	25
+Anderson	T	2601	26
+Carey	T	2602	26
+Gurney	T	2603	26
+Kimball	T	2604	26
+Knight	T	2605	26
+Mercer	T	2606	26
+Oma	T	2607	26
+Pence	T	2608	26
+Saxon	T	2609	26
+Sherman	T	2610	26
+Hurley	C	2651	26
+Montreal	C	2652	26
+Albion	T	2701	27
+Alma	T	2702	27
+Bear Bluff	T	2703	27
+Brockway	T	2704	27
+City Point	T	2705	27
+Cleveland	T	2706	27
+Curran	T	2707	27
+Franklin	T	2708	27
+Garden Valley	T	2709	27
+Garfield	T	2710	27
+Hixton	T	2711	27
+Irving	T	2712	27
+Knapp	T	2713	27
+Komensky	T	2714	27
+Manchester	T	2715	27
+Melrose	T	2716	27
+Millston	T	2717	27
+North Bend	T	2718	27
+Northfield	T	2719	27
+Springfield	T	2720	27
+Adams	T	2721	27
+Alma Center	V	2751	27
+Hixton	V	2752	27
+Melrose	V	2753	27
+Merrillan	V	2754	27
+Taylor	V	2755	27
+Black River Falls	C	2756	27
+Aztalan	T	2801	28
+Cold Spring	T	2802	28
+Concord	T	2803	28
+Farmington	T	2804	28
+Hebron	T	2805	28
+Ixonia	T	2806	28
+Jefferson	T	2807	28
+Koshkonong	T	2808	28
+Lake Mills	T	2809	28
+Milford	T	2810	28
+Oakland	T	2811	28
+Palmyra	T	2812	28
+Sullivan	T	2813	28
+Sumner	T	2814	28
+Waterloo	T	2815	28
+Watertown	T	2816	28
+Johnson Creek	V	2851	28
+Palmyra	V	2852	28
+Sullivan	V	2853	28
+Waterloo	C	2854	28
+Fort Atkinson	C	2855	28
+Jefferson	C	2856	28
+Lake Mills	C	2857	28
+Watertown	C	2858	28
+Whitewater	C	2859	28
+Cambridge	V	2860	28
+Lac La Belle	V	2861	28
+Armenia	T	2901	29
+Clearfield	T	2902	29
+Cutler	T	2903	29
+Finley	T	2904	29
+Fountain	T	2905	29
+Germantown	T	2906	29
+Kildare	T	2907	29
+Kingston	T	2908	29
+Lemonweir	T	2909	29
+Lindina	T	2910	29
+Lisbon	T	2911	29
+Lyndon	T	2912	29
+Marion	T	2913	29
+Necedah	T	2914	29
+Orange	T	2915	29
+Plymouth	T	2916	29
+Seven Mile Creek	T	2917	29
+Summit	T	2918	29
+Wonewoc	T	2919	29
+Camp Douglas	V	2951	29
+Hustler	V	2952	29
+Lyndon Station	V	2953	29
+Necedah	V	2954	29
+Union Center	V	2955	29
+Wonewoc	V	2956	29
+Elroy	C	2957	29
+Mauston	C	2958	29
+New Lisbon	C	2959	29
+Wisconsin Dells	C	2960	29
+Brighton	T	3001	30
+Bristol	T	3002	30
+Paris	T	3003	30
+Pleasant Prairie	T	3004	30
+Randall	T	3005	30
+Salem	T	3006	30
+Somers	T	3007	30
+Wheatland	T	3008	30
+Silver Lake	V	3051	30
+Kenosha	C	3052	30
+Twin Lakes	V	3053	30
+Paddock Lake	V	3054	30
+Genoa City	V	3055	30
+Pleasant Prairie	V	3056	30
+Bristol	V	3057	30
+Ahnapee	T	3101	31
+Carlton	T	3102	31
+Casco	T	3103	31
+Franklin	T	3104	31
+Lincoln	T	3105	31
+Luxemburg	T	3106	31
+Montpelier	T	3107	31
+Pierce	T	3108	31
+Red River	T	3109	31
+West Kewaunee	T	3110	31
+Casco	V	3151	31
+Luxemburg	V	3152	31
+Algoma	C	3153	31
+Kewaunee	C	3154	31
+Bangor	T	3201	32
+Barre	T	3202	32
+Burns	T	3203	32
+Campbell	T	3204	32
+Farmington	T	3205	32
+Greenfield	T	3206	32
+Hamilton	T	3207	32
+Holland	T	3208	32
+Onalaska	T	3209	32
+Shelby	T	3210	32
+Washington	T	3211	32
+Medary	T	3212	32
+Bangor	V	3251	32
+Rockland	V	3252	32
+West Salem	V	3253	32
+La Crosse	C	3254	32
+Onalaska	C	3255	32
+Holmen	V	3256	32
+Argyle	T	3301	33
+Belmont	T	3302	33
+Benton	T	3303	33
+Blanchard	T	3304	33
+Darlington	T	3305	33
+Elk Grove	T	3306	33
+Fayette	T	3307	33
+Gratiot	T	3308	33
+Kendall	T	3309	33
+Lamont	T	3310	33
+Monticello	T	3311	33
+New Diggings	T	3312	33
+Seymour	T	3313	33
+Shullsburg	T	3314	33
+Wayne	T	3315	33
+White Oak Springs	T	3316	33
+Willow Springs	T	3317	33
+Wiota	T	3318	33
+Argyle	V	3351	33
+Belmont	V	3352	33
+Benton	V	3353	33
+Blanchardville	V	3354	33
+Gratiot	V	3355	33
+South Wayne	V	3356	33
+Darlington	C	3357	33
+Shullsburg	C	3358	33
+Cuba City	C	3359	33
+Hazel Green	V	3360	33
+Ackley	T	3401	34
+Ainsworth	T	3402	34
+Antigo	T	3403	34
+Elcho	T	3404	34
+Evergreen	T	3405	34
+Langlade	T	3406	34
+Neva	T	3407	34
+Norwood	T	3408	34
+Parrish	T	3409	34
+Peck	T	3410	34
+Polar	T	3411	34
+Price	T	3412	34
+Rolling	T	3413	34
+Summit	T	3414	34
+Upham	T	3415	34
+Vilas	T	3416	34
+Wolf River	T	3417	34
+White Lake	V	3451	34
+Antigo	C	3452	34
+Birch	T	3501	35
+Bradley	T	3502	35
+Corning	T	3503	35
+Harding	T	3504	35
+Harrison	T	3505	35
+King	T	3506	35
+Merrill	T	3507	35
+Pine River	T	3508	35
+Rock Falls	T	3509	35
+Russell	T	3510	35
+Schley	T	3511	35
+Scott	T	3512	35
+Skanawan	T	3513	35
+Somo	T	3514	35
+Tomahawk	T	3515	35
+Wilson	T	3516	35
+Merrill	C	3551	35
+Tomahawk	C	3552	35
+Cato	T	3601	36
+Centerville	T	3602	36
+Cooperstown	T	3603	36
+Eaton	T	3604	36
+Franklin	T	3605	36
+Gibson	T	3606	36
+Kossuth	T	3607	36
+Liberty	T	3608	36
+Manitowoc	T	3609	36
+Manitowoc Rapids	T	3610	36
+Maple Grove	T	3611	36
+Meeme	T	3612	36
+Mishicot	T	3613	36
+Newton	T	3614	36
+Rockland	T	3615	36
+Schleswig	T	3616	36
+Two Creeks	T	3617	36
+Two Rivers	T	3618	36
+Reedsville	V	3651	36
+Valders	V	3652	36
+Kiel	C	3653	36
+Manitowoc	C	3654	36
+Two Rivers	C	3655	36
+Mishicot	V	3656	36
+Saint Nazianz	V	3657	36
+Whitelaw	V	3658	36
+Cleveland	V	3659	36
+Francis Creek	V	3660	36
+Maribel	V	3661	36
+Kellnersville	V	3662	36
+Bergen	T	3701	37
+Berlin	T	3702	37
+Bern	T	3703	37
+Bevent	T	3704	37
+Brighton	T	3705	37
+Cassel	T	3706	37
+Cleveland	T	3707	37
+Day	T	3708	37
+Easton	T	3709	37
+Eau Pleine	T	3710	37
+Elderon	T	3711	37
+Emmett	T	3712	37
+Frankfort	T	3713	37
+Franzen	T	3714	37
+Green Valley	T	3715	37
+Guenther	T	3716	37
+Halsey	T	3717	37
+Hamburg	T	3718	37
+Harrison	T	3719	37
+Hewitt	T	3720	37
+Holton	T	3721	37
+Hull	T	3722	37
+Johnson	T	3723	37
+Knowlton	T	3724	37
+Kronenwetter	T	3725	37
+Mc Millan	T	3726	37
+Maine	T	3727	37
+Marathon	T	3728	37
+Mosinee	T	3729	37
+Norrie	T	3730	37
+Plover	T	3731	37
+Rib Falls	T	3732	37
+Rib Mountain	T	3733	37
+Reid	T	3734	37
+Rietbrock	T	3735	37
+Ringle	T	3736	37
+Spencer	T	3737	37
+Stettin	T	3738	37
+Texas	T	3739	37
+Wausau	T	3740	37
+Wien	T	3741	37
+Weston	T	3742	37
+Abbotsford	C	3751	37
+Athens	V	3752	37
+Brokaw	V	3753	37
+Edgar	V	3754	37
+Elderon	V	3755	37
+Fenwood	V	3756	37
+Hatley	V	3757	37
+Marathon City	V	3758	37
+Mosinee	C	3759	37
+Rothschild	V	3760	37
+Schofield	C	3761	37
+Spencer	V	3762	37
+Stratford	V	3763	37
+Unity	V	3764	37
+Colby	C	3765	37
+Wausau	C	3766	37
+Marshfield	C	3767	37
+Birnamwood	V	3768	37
+Dorchester	V	3769	37
+Weston	V	3770	37
+Kronewetter	V	3771	37
+Amberg	T	3801	38
+Athelstane	T	3802	38
+Beaver	T	3803	38
+Beecher	T	3804	38
+Dunbar	T	3805	38
+Goodman	T	3806	38
+Grover	T	3807	38
+Lake	T	3808	38
+Middle Inlet	T	3809	38
+Niagara	T	3810	38
+Pembine	T	3811	38
+Peshtigo	T	3812	38
+Porterfield	T	3813	38
+Pound	T	3814	38
+Silver Cliff	T	3815	38
+Stephenson	T	3816	38
+Wagner	T	3817	38
+Wausaukee	T	3818	38
+Coleman	V	3851	38
+Niagara	V	3852	38
+Pound	V	3853	38
+Wausaukee	V	3854	38
+Marinette	C	3855	38
+Peshtigo	C	3856	38
+Crivitz	V	3857	38
+Niagara	C	3858	38
+Buffalo	T	3901	39
+Crystal Lake	T	3902	39
+Douglas	T	3903	39
+Harris	T	3904	39
+Mecan	T	3905	39
+Montello	T	3906	39
+Moundville	T	3907	39
+Neshkoro	T	3908	39
+Newton	T	3909	39
+Oxford	T	3910	39
+Packwaukee	T	3911	39
+Shields	T	3912	39
+Springfield	T	3913	39
+Westfield	T	3914	39
+Oxford	V	3951	39
+Montello	C	3952	39
+Neshkoro	V	3953	39
+Westfield	V	3954	39
+Endeavor	V	3955	39
+Fox Point	V	4051	40
+River Hills	V	4052	40
+Shorewood	V	4053	40
+West Milwaukee	V	4054	40
+Whitefish Bay	V	4055	40
+Cudahy	C	4056	40
+Milwaukee	C	4057	40
+South Milwaukee	C	4058	40
+Wauwatosa	C	4059	40
+West Allis	C	4060	40
+Greendale	V	4061	40
+Glendale	C	4062	40
+Saint Francis	C	4063	40
+Hales Corners	V	4064	40
+Bayside	V	4065	40
+Brown Deer	V	4066	40
+Oak Creek	C	4067	40
+Franklin	C	4068	40
+Greenfield	C	4069	40
+Adrian	T	4101	41
+Angelo	T	4102	41
+Byron	T	4103	41
+Clifton	T	4104	41
+Glendale	T	4105	41
+Grant	T	4106	41
+Greenfield	T	4107	41
+Jefferson	T	4108	41
+La Fayette	T	4109	41
+La Grange	T	4110	41
+Leon	T	4111	41
+Lincoln	T	4112	41
+Little Falls	T	4113	41
+New Lyme	T	4114	41
+Oakdale	T	4115	41
+Portland	T	4116	41
+Ridgeville	T	4117	41
+Scott	T	4118	41
+Sheldon	T	4119	41
+Sparta	T	4120	41
+Tomah	T	4121	41
+Wellington	T	4122	41
+Wells	T	4123	41
+Wilton	T	4124	41
+Cashton	V	4151	41
+Kendall	V	4152	41
+Melvina	V	4153	41
+Norwalk	V	4154	41
+Oakdale	V	4155	41
+Wilton	V	4156	41
+Wyeville	V	4157	41
+Sparta	C	4158	41
+Tomah	C	4159	41
+Warrens	V	4160	41
+Ontario	V	4162	41
+Abrams	T	4201	42
+Armstrong	T	4202	42
+Bagley	T	4203	42
+Brazeau	T	4204	42
+Breed	T	4205	42
+Chase	T	4206	42
+Doty	T	4207	42
+Gillett	T	4208	42
+How	T	4209	42
+Lena	T	4210	42
+Little River	T	4211	42
+Little Suamico	T	4212	42
+Maple Valley	T	4213	42
+Morgan	T	4214	42
+Oconto	T	4215	42
+Oconto Falls	T	4216	42
+Pensaukee	T	4217	42
+Riverview	T	4218	42
+Spruce	T	4219	42
+Stiles	T	4220	42
+Townsend	T	4221	42
+Underhill	T	4222	42
+Lakewood	T	4223	42
+Mountain	T	4224	42
+Pulaski	V	4250	42
+Gillett	C	4251	42
+Lena	V	4252	42
+Suring	V	4253	42
+Oconto	C	4254	42
+Oconto Falls	C	4255	42
+Cassian	T	4301	43
+Crescent	T	4302	43
+Enterprise	T	4303	43
+Hazelhurst	T	4304	43
+Lake Tomahawk	T	4305	43
+Little Rice	T	4306	43
+Lynne	T	4307	43
+Minocqua	T	4308	43
+Monico	T	4309	43
+Newbold	T	4310	43
+Pelican	T	4311	43
+Piehl	T	4312	43
+Pine Lake	T	4313	43
+Schoepke	T	4314	43
+Stella	T	4315	43
+Sugar Camp	T	4316	43
+Three Lakes	T	4317	43
+Woodboro	T	4318	43
+Woodruff	T	4319	43
+Nokomis	T	4320	43
+Rhinelander	C	4351	43
+Black Creek	T	4401	44
+Bovina	T	4402	44
+Buchanan	T	4403	44
+Center	T	4404	44
+Cicero	T	4405	44
+Dale	T	4406	44
+Deer Creek	T	4407	44
+Ellington	T	4408	44
+Freedom	T	4409	44
+Grand Chute	T	4410	44
+Greenville	T	4411	44
+Hortonia	T	4412	44
+Kaukauna	T	4413	44
+Liberty	T	4414	44
+Maine	T	4415	44
+Maple Creek	T	4416	44
+Oneida	T	4417	44
+Osborne	T	4418	44
+Seymour	T	4419	44
+Vandenbroek	T	4420	44
+Bear Creek	V	4451	44
+Black Creek	V	4452	44
+Combined Locks	V	4453	44
+Hortonville	V	4454	44
+Kimberly	V	4455	44
+Little Chute	V	4456	44
+Shiocton	V	4457	44
+Appleton	C	4458	44
+Kaukauna	C	4459	44
+New London	C	4460	44
+Seymour	C	4461	44
+Nichols	V	4462	44
+Howard	V	4463	44
+Wrightstown	V	4464	44
+Harrison	V	4465	44
+Belgium	T	4501	45
+Cedarburg	T	4502	45
+Fredonia	T	4503	45
+Grafton	T	4504	45
+Port Washington	T	4506	45
+Saukville	T	4507	45
+Belgium	V	4551	45
+Fredonia	V	4552	45
+Grafton	V	4553	45
+Saukville	V	4554	45
+Thiensville	V	4555	45
+Cedarburg	C	4556	45
+Port Washington	C	4557	45
+Mequon	C	4558	45
+Bayside	V	4559	45
+Newburg	V	4560	45
+Albany	T	4601	46
+Durand	T	4602	46
+Frankfort	T	4603	46
+Lima	T	4604	46
+Pepin	T	4605	46
+Stockholm	T	4606	46
+Waterville	T	4607	46
+Waubeek	T	4608	46
+Pepin	V	4651	46
+Stockholm	V	4652	46
+Durand	C	4653	46
+Clifton	T	4701	47
+Diamond Bluff	T	4702	47
+Ellsworth	T	4703	47
+El Paso	T	4704	47
+Gilman	T	4705	47
+Hartland	T	4706	47
+Isabelle	T	4707	47
+Maiden Rock	T	4708	47
+Martell	T	4709	47
+Oak Grove	T	4710	47
+River Falls	T	4711	47
+Rock Elm	T	4712	47
+Salem	T	4713	47
+Spring Lake	T	4714	47
+Trenton	T	4715	47
+Trimbelle	T	4716	47
+Union	T	4717	47
+Bay City	V	4751	47
+Ellsworth	V	4752	47
+Elmwood	V	4753	47
+Maiden Rock	V	4754	47
+Plum City	V	4755	47
+Spring Valley	V	4756	47
+Prescott	C	4757	47
+River Falls	C	4758	47
+Alden	T	4801	48
+Apple River	T	4802	48
+Balsam Lake	T	4803	48
+Beaver	T	4804	48
+Black Brook	T	4805	48
+Bone Lake	T	4806	48
+Clam Falls	T	4807	48
+Clayton	T	4808	48
+Clear Lake	T	4809	48
+Eureka	T	4810	48
+Farmington	T	4811	48
+Garfield	T	4812	48
+Georgetown	T	4813	48
+Johnstown	T	4814	48
+Laketown	T	4815	48
+Lincoln	T	4816	48
+Lorain	T	4817	48
+Luck	T	4818	48
+Mc Kinley	T	4819	48
+Milltown	T	4820	48
+Osceola	T	4821	48
+Saint Croix Falls	T	4822	48
+Sterling	T	4823	48
+West Sweden	T	4824	48
+Balsam Lake	V	4851	48
+Centuria	V	4852	48
+Clayton	V	4853	48
+Clear Lake	V	4854	48
+Dresser	V	4855	48
+Frederic	V	4856	48
+Luck	V	4857	48
+Milltown	V	4858	48
+Osceola	V	4859	48
+Saint Croix Falls	C	4860	48
+Amery	C	4861	48
+Turtle Lake	V	4862	48
+Alban	T	4901	49
+Almond	T	4902	49
+Amherst	T	4903	49
+Belmont	T	4904	49
+Buena Vista	T	4905	49
+Carson	T	4906	49
+Dewey	T	4907	49
+Eau Pleine	T	4908	49
+Wisconsin Rapids	C	4909	49
+Hull	T	4910	49
+Lanark	T	4911	49
+Linwood	T	4912	49
+New Hope	T	4913	49
+Pine Grove	T	4914	49
+Plover	T	4915	49
+Sharon	T	4916	49
+Stockton	T	4917	49
+Grant	T	4918	49
+Almond	V	4951	49
+Amherst	V	4952	49
+Amherst Junction	V	4953	49
+Junction City	V	4954	49
+Nelsonville	V	4955	49
+Rosholt	V	4957	49
+Stevens Point	C	4958	49
+Park Ridge	V	4959	49
+Whiting	V	4960	49
+Plover	V	4961	49
+Milladore	V	4962	49
+Catawba	T	5001	50
+Eisenstein	T	5002	50
+Elk	T	5003	50
+Emery	T	5004	50
+Fifield	T	5005	50
+Flambeau	T	5006	50
+Georgetown	T	5007	50
+Hackett	T	5008	50
+Harmony	T	5009	50
+Hill	T	5010	50
+Kennan	T	5011	50
+Knox	T	5012	50
+Lake	T	5013	50
+Ogema	T	5014	50
+Prentice	T	5015	50
+Spirit	T	5016	50
+Worcester	T	5017	50
+Catawba	V	5051	50
+Kennan	V	5052	50
+Prentice	V	5053	50
+Park Falls	C	5054	50
+Phillips	C	5055	50
+Burlington	T	5101	51
+Caledonia	T	5102	51
+Dover	T	5103	51
+Mount Pleasant	T	5104	51
+Norway	T	5105	51
+Raymond	T	5106	51
+Rochester	T	5107	51
+Waterford	T	5108	51
+Yorkville	T	5109	51
+Rochester	V	5151	51
+Sturtevant	V	5152	51
+Union Grove	V	5153	51
+Waterford	V	5154	51
+Burlington	C	5155	51
+Racine	C	5156	51
+North Bay	V	5157	51
+Wind Point	V	5158	51
+Elmwood Park	V	5159	51
+Mount Pleasant	V	5160	51
+Caledonia	V	5161	51
+Akan	T	5201	52
+Bloom	T	5202	52
+Buena Vista	T	5203	52
+Dayton	T	5204	52
+Eagle	T	5205	52
+Forest	T	5206	52
+Henrietta	T	5207	52
+Ithaca	T	5208	52
+Marshall	T	5209	52
+Orion	T	5210	52
+Richland	T	5211	52
+Richwood	T	5212	52
+Rockbridge	T	5213	52
+Sylvan	T	5214	52
+Westford	T	5215	52
+Willow	T	5216	52
+Cazenovia	V	5251	52
+Lone Rock	V	5252	52
+Viola	V	5253	52
+Richland Center	C	5254	52
+Yuba	V	5255	52
+Boaz	V	5256	52
+Avon	T	5301	53
+Beloit	T	5302	53
+Bradford	T	5303	53
+Center	T	5304	53
+Clinton	T	5305	53
+Fulton	T	5306	53
+Harmony	T	5307	53
+Janesville	T	5308	53
+Johnstown	T	5309	53
+La Prairie	T	5310	53
+Lima	T	5311	53
+Magnolia	T	5312	53
+Milton	T	5313	53
+Newark	T	5314	53
+Plymouth	T	5315	53
+Porter	T	5316	53
+Rock	T	5317	53
+Spring Valley	T	5318	53
+Turtle	T	5319	53
+Union	T	5320	53
+Clinton	V	5351	53
+Footville	V	5352	53
+Milton	C	5353	53
+Orfordville	V	5354	53
+Beloit	C	5355	53
+Edgerton	C	5356	53
+Evansville	C	5357	53
+Janesville	C	5358	53
+Brodhead	C	5359	53
+Atlanta	T	5401	54
+Big Bend	T	5402	54
+Big Falls	T	5403	54
+Cedar Rapids	T	5404	54
+Dewey	T	5405	54
+Flambeau	T	5406	54
+Grant	T	5407	54
+Grow	T	5408	54
+Hawkins	T	5409	54
+Hubbard	T	5410	54
+Lawrence	T	5411	54
+Marshall	T	5412	54
+Murry	T	5413	54
+Richland	T	5414	54
+Rusk	T	5415	54
+South Forks	T	5416	54
+Strickland	T	5417	54
+Stubbs	T	5418	54
+Thornapple	T	5419	54
+TRUE	T	5420	54
+Washington	T	5421	54
+Wilkinson	T	5422	54
+Willard	T	5423	54
+Wilson	T	5424	54
+Bruce	V	5451	54
+Conrath	V	5452	54
+Glen Flora	V	5453	54
+Hawkins	V	5454	54
+Ingram	V	5455	54
+Sheldon	V	5456	54
+Tony	V	5457	54
+Weyerhaeuser	V	5458	54
+Ladysmith	C	5459	54
+Baldwin	T	5501	55
+Cady	T	5502	55
+Cylon	T	5503	55
+Eau Galle	T	5504	55
+Emerald	T	5505	55
+Erin Prairie	T	5506	55
+Forest	T	5507	55
+Glenwood	T	5508	55
+Hammond	T	5509	55
+Hudson	T	5510	55
+Kinnickinnic	T	5511	55
+Pleasant Valley	T	5512	55
+Richmond	T	5513	55
+Rush River	T	5514	55
+Saint Joseph	T	5515	55
+Somerset	T	5516	55
+Springfield	T	5517	55
+Stanton	T	5518	55
+Star Prairie	T	5519	55
+Troy	T	5520	55
+Warren	T	5521	55
+Baldwin	V	5551	55
+Deer Park	V	5552	55
+Hammond	V	5553	55
+North Hudson	V	5554	55
+Somerset	V	5555	55
+Star Prairie	V	5556	55
+Wilson	V	5557	55
+Woodville	V	5558	55
+Glenwood City	C	5559	55
+Hudson	C	5560	55
+New Richmond	C	5561	55
+River Falls	C	5562	55
+Roberts	V	5563	55
+Spring Valley	V	5564	55
+Baraboo	T	5601	56
+Bear Creek	T	5602	56
+Dellona	T	5603	56
+Delton	T	5604	56
+Excelsior	T	5605	56
+Fairfield	T	5606	56
+Franklin	T	5607	56
+Freedom	T	5608	56
+Greenfield	T	5609	56
+Honey Creek	T	5610	56
+Ironton	T	5611	56
+La Valle	T	5612	56
+Merrimac	T	5613	56
+Prairie Du Sac	T	5614	56
+Reedsburg	T	5615	56
+Spring Green	T	5616	56
+Sumpter	T	5617	56
+Troy	T	5618	56
+Washington	T	5619	56
+Westfield	T	5620	56
+Winfield	T	5621	56
+Woodland	T	5622	56
+Rock Springs	V	5651	56
+Ironton	V	5652	56
+La Valle	V	5653	56
+Lime Ridge	V	5654	56
+Loganville	V	5655	56
+Merrimac	V	5656	56
+North Freedom	V	5657	56
+Plain	V	5658	56
+Prairie Du Sac	V	5659	56
+Sauk City	V	5660	56
+Spring Green	V	5661	56
+Baraboo	C	5662	56
+Reedsburg	C	5663	56
+Lake Delton	V	5664	56
+West Baraboo	V	5665	56
+Wisconsin Dells	C	5666	56
+Cazenovia	V	5667	56
+Bass Lake	T	5701	57
+Couderay	T	5702	57
+Draper	T	5703	57
+Edgewater	T	5704	57
+Hayward	T	5706	57
+Hunter	T	5707	57
+Lenroot	T	5708	57
+Meadow Brook	T	5709	57
+Meteor	T	5710	57
+Ojibwa	T	5711	57
+Radisson	T	5712	57
+Round Lake	T	5713	57
+Sand Lake	T	5714	57
+Spider Lake	T	5715	57
+Weirgor	T	5716	57
+Winter	T	5717	57
+Couderay	V	5751	57
+Exeland	V	5752	57
+Hayward	C	5753	57
+Radisson	V	5754	57
+Winter	V	5755	57
+Almon	T	5801	58
+Angelica	T	5802	58
+Aniwa	T	5803	58
+Bartelme	T	5804	58
+Belle Plaine	T	5805	58
+Birnamwood	T	5806	58
+Fairbanks	T	5807	58
+Germania	T	5808	58
+Grant	T	5809	58
+Green Valley	T	5810	58
+Hartland	T	5811	58
+Herman	T	5812	58
+Hutchins	T	5813	58
+Lessor	T	5814	58
+Maple Grove	T	5815	58
+Morris	T	5816	58
+Navarino	T	5817	58
+Pella	T	5818	58
+Red Springs	T	5819	58
+Richmond	T	5820	58
+Seneca	T	5821	58
+Washington	T	5822	58
+Waukechon	T	5823	58
+Wescott	T	5824	58
+Wittenberg	T	5825	58
+Stockbridge	T	5826	58
+Aniwa	V	5851	58
+Birnamwood	V	5852	58
+Bonduel	V	5853	58
+Bowler	V	5854	58
+Cecil	V	5855	58
+Eland	V	5856	58
+Gresham	V	5857	58
+Mattoon	V	5858	58
+Tigerton	V	5859	58
+Wittenberg	V	5860	58
+Shawano	C	5861	58
+Pulaski	V	5862	58
+Marion	C	5863	58
+Greenbush	T	5901	59
+Herman	T	5902	59
+Holland	T	5903	59
+Lima	T	5904	59
+Lyndon	T	5905	59
+Mitchell	T	5906	59
+Mosel	T	5907	59
+Plymouth	T	5908	59
+Rhine	T	5909	59
+Russell	T	5910	59
+Scott	T	5911	59
+Sheboygan	T	5912	59
+Sheboygan Falls	T	5913	59
+Sherman	T	5914	59
+Wilson	T	5915	59
+Adell	V	5951	59
+Cascade	V	5952	59
+Cedar Grove	V	5953	59
+Elkhart Lake	V	5954	59
+Glenbeulah	V	5955	59
+Kohler	V	5956	59
+Oostburg	V	5957	59
+Random Lake	V	5958	59
+Waldo	V	5959	59
+Plymouth	C	5960	59
+Sheboygan	C	5961	59
+Sheboygan Falls	C	5962	59
+Howards Grove	V	5963	59
+Aurora	T	6001	60
+Browning	T	6002	60
+Chelsea	T	6003	60
+Cleveland	T	6004	60
+Deer Creek	T	6005	60
+Ford	T	6006	60
+Goodrich	T	6007	60
+Greenwood	T	6008	60
+Grover	T	6009	60
+Hammel	T	6010	60
+Holway	T	6011	60
+Jump River	T	6012	60
+Little Black	T	6013	60
+Mc Kinley	T	6014	60
+Maplehurst	T	6015	60
+Medford	T	6016	60
+Molitor	T	6017	60
+Pershing	T	6018	60
+Rib Lake	T	6019	60
+Roosevelt	T	6020	60
+Taft	T	6021	60
+Westboro	T	6022	60
+Gilman	V	6051	60
+Lublin	V	6052	60
+Rib Lake	V	6053	60
+Medford	C	6054	60
+Stetsonville	V	6055	60
+Albion	T	6101	61
+Arcadia	T	6102	61
+Burnside	T	6103	61
+Caledonia	T	6104	61
+Chimney Rock	T	6105	61
+Dodge	T	6106	61
+Ettrick	T	6107	61
+Gale	T	6108	61
+Hale	T	6109	61
+Lincoln	T	6110	61
+Pigeon	T	6111	61
+Preston	T	6112	61
+Sumner	T	6113	61
+Trempealeau	T	6114	61
+Unity	T	6115	61
+Blair	C	6151	61
+Eleva	V	6152	61
+Galesville	C	6153	61
+Independence	C	6154	61
+Osseo	C	6155	61
+Trempealeau	V	6156	61
+Whitehall	C	6157	61
+Arcadia	C	6158	61
+Ettrick	V	6159	61
+Strum	V	6160	61
+Pigeon Falls	V	6161	61
+Bergen	T	6201	62
+Christiana	T	6202	62
+Clinton	T	6203	62
+Coon	T	6204	62
+Forest	T	6205	62
+Franklin	T	6206	62
+Genoa	T	6207	62
+Greenwood	T	6208	62
+Hamburg	T	6209	62
+Harmony	T	6210	62
+Hillsboro	T	6211	62
+Jefferson	T	6212	62
+Kickapoo	T	6213	62
+Liberty	T	6214	62
+Stark	T	6215	62
+Sterling	T	6216	62
+Union	T	6217	62
+Viroqua	T	6218	62
+Webster	T	6219	62
+Wheatland	T	6220	62
+Whitestown	T	6221	62
+Chaseburg	V	6251	62
+Coon Valley	V	6252	62
+De Soto	V	6253	62
+Hillsboro	C	6254	62
+La Farge	V	6255	62
+Ontario	V	6256	62
+Readstown	V	6257	62
+Stoddard	V	6258	62
+Viola	V	6259	62
+Viroqua	C	6260	62
+Westby	C	6261	62
+Genoa	V	6262	62
+Arbor Vitae	T	6301	63
+Boulder Junction	T	6302	63
+Cloverland	T	6303	63
+Conover	T	6304	63
+Flambeau	T	6305	63
+Lincoln	T	6306	63
+Phelps	T	6307	63
+Plum Lake	T	6308	63
+Presque Isle	T	6309	63
+Saint Germain	T	6310	63
+Manitowish Waters	T	6311	63
+Land O'Lakes	T	6312	63
+Washington	T	6313	63
+Winchester	T	6314	63
+Eagle River	C	6351	63
+Bloomfield	T	6401	64
+Darien	T	6402	64
+Delavan	T	6403	64
+East Troy	T	6404	64
+Geneva	T	6405	64
+La Fayette	T	6406	64
+La Grange	T	6407	64
+Linn	T	6408	64
+Lyons	T	6409	64
+Richmond	T	6410	64
+Sharon	T	6411	64
+Spring Prairie	T	6412	64
+Sugar Creek	T	6413	64
+Troy	T	6414	64
+Walworth	T	6415	64
+Whitewater	T	6416	64
+East Troy	V	6451	64
+Fontana	V	6452	64
+Genoa City	V	6453	64
+Sharon	V	6454	64
+Walworth	V	6455	64
+Williams Bay	V	6456	64
+Delavan	C	6457	64
+Elkhorn	C	6458	64
+Lake Geneva	C	6459	64
+Whitewater	C	6460	64
+Darien	V	6461	64
+Burlington	C	6462	64
+Mukwonago	V	6463	64
+Bloomfield	V	6464	64
+Barronett	T	6501	65
+Bashaw	T	6502	65
+Bass Lake	T	6503	65
+Beaver Brook	T	6504	65
+Birchwood	T	6505	65
+Brooklyn	T	6506	65
+Casey	T	6507	65
+Chicog	T	6508	65
+Crystal	T	6509	65
+Evergreen	T	6510	65
+Frog Creek	T	6511	65
+Gull Lake	T	6512	65
+Long Lake	T	6513	65
+Madge	T	6514	65
+Minong	T	6515	65
+Sarona	T	6516	65
+Spooner	T	6517	65
+Springbrook	T	6518	65
+Stinnett	T	6519	65
+Stone Lake	T	6520	65
+Trego	T	6521	65
+Birchwood	V	6551	65
+Minong	V	6552	65
+Shell Lake	C	6553	65
+Spooner	C	6554	65
+Addison	T	6601	66
+Barton	T	6602	66
+Erin	T	6603	66
+Farmington	T	6604	66
+Germantown	T	6605	66
+Hartford	T	6606	66
+Jackson	T	6607	66
+Kewaskum	T	6608	66
+Polk	T	6609	66
+Richfield	T	6610	66
+Trenton	T	6611	66
+Wayne	T	6612	66
+West Bend	T	6613	66
+Germantown	V	6652	66
+Jackson	V	6653	66
+Kewaskum	V	6654	66
+Slinger	V	6655	66
+Hartford	C	6656	66
+West Bend	C	6657	66
+Milwaukee	C	6658	66
+Newburg	V	6659	66
+Richfield	V	6666	66
+Brookfield	T	6701	67
+Delafield	T	6702	67
+Eagle	T	6703	67
+Genesee	T	6704	67
+Lisbon	T	6705	67
+Merton	T	6707	67
+Mukwonago	T	6708	67
+Oconomowoc	T	6711	67
+Ottawa	T	6712	67
+Pewaukee	T	6713	67
+Summit	T	6714	67
+Vernon	T	6715	67
+Waukesha	T	6716	67
+Big Bend	V	6751	67
+Butler	V	6752	67
+Chenequa	V	6753	67
+Dousman	V	6754	67
+Eagle	V	6755	67
+Hartland	V	6756	67
+Lac La Belle	V	6757	67
+Lannon	V	6758	67
+Menomonee Falls	V	6759	67
+Merton	V	6760	67
+Mukwonago	V	6761	67
+North Prairie	V	6762	67
+Pewaukee	V	6763	67
+Sussex	V	6764	67
+Wales	V	6765	67
+Oconomowoc	C	6766	67
+Waukesha	C	6767	67
+Elm Grove	V	6768	67
+Brookfield	C	6769	67
+Nashotah	V	6770	67
+New Berlin	C	6771	67
+Delafield	C	6772	67
+Oconomowoc Lake	V	6773	67
+Muskego	C	6774	67
+East Troy	V	6775	67
+Pewaukee	C	6776	67
+Milwaukee	C	6777	67
+Summit	V	6778	67
+Bear Creek	T	6801	68
+Caledonia	T	6802	68
+Dayton	T	6803	68
+Dupont	T	6804	68
+Farmington	T	6805	68
+Fremont	T	6806	68
+Harrison	T	6807	68
+Helvetia	T	6808	68
+Iola	T	6809	68
+Larrabee	T	6810	68
+Lebanon	T	6811	68
+Lind	T	6812	68
+Little Wolf	T	6813	68
+Matteson	T	6814	68
+Mukwa	T	6815	68
+Royalton	T	6816	68
+Saint Lawrence	T	6817	68
+Scandinavia	T	6818	68
+Union	T	6819	68
+Waupaca	T	6820	68
+Weyauwega	T	6821	68
+Wyoming	T	6822	68
+Big Falls	V	6851	68
+Embarrass	V	6852	68
+Fremont	V	6853	68
+Iola	V	6854	68
+Manawa	C	6855	68
+Marion	C	6856	68
+Ogdensburg	V	6857	68
+Scandinavia	V	6859	68
+Weyauwega	C	6860	68
+Clintonville	C	6861	68
+New London	C	6862	68
+Waupaca	C	6863	68
+Aurora	T	6901	69
+Bloomfield	T	6902	69
+Coloma	T	6903	69
+Dakota	T	6904	69
+Deerfield	T	6905	69
+Hancock	T	6906	69
+Leon	T	6907	69
+Marion	T	6908	69
+Mount Morris	T	6909	69
+Oasis	T	6910	69
+Plainfield	T	6911	69
+Poy Sippi	T	6912	69
+Richford	T	6913	69
+Rose	T	6914	69
+Saxeville	T	6915	69
+Springwater	T	6916	69
+Warren	T	6917	69
+Wautoma	T	6918	69
+Hancock	V	6951	69
+Lohrville	V	6952	69
+Plainfield	V	6953	69
+Redgranite	V	6954	69
+Wautoma	C	6955	69
+Wild Rose	V	6956	69
+Berlin	C	6957	69
+Coloma	V	6958	69
+Algoma	T	7001	70
+Black Wolf	T	7002	70
+Clayton	T	7003	70
+Menasha	T	7004	70
+Neenah	T	7005	70
+Nekimi	T	7006	70
+Nepeuskum	T	7007	70
+Omro	T	7008	70
+Oshkosh	T	7009	70
+Poygan	T	7010	70
+Rushford	T	7011	70
+Utica	T	7012	70
+Vinland	T	7013	70
+Winchester	T	7014	70
+Winneconne	T	7015	70
+Wolf River	T	7016	70
+Omro	C	7051	70
+Winneconne	V	7052	70
+Menasha	C	7053	70
+Neenah	C	7054	70
+Oshkosh	C	7055	70
+Appleton	C	7056	70
+Arpin	T	7101	71
+Auburndale	T	7102	71
+Cameron	T	7103	71
+Cary	T	7104	71
+Cranmoor	T	7105	71
+Dexter	T	7106	71
+Grand Rapids	T	7107	71
+Hansen	T	7108	71
+Hiles	T	7109	71
+Lincoln	T	7110	71
+Marshfield	T	7111	71
+Milladore	T	7112	71
+Port Edwards	T	7113	71
+Remington	T	7114	71
+Richfield	T	7115	71
+Rock	T	7116	71
+Rudolph	T	7117	71
+Saratoga	T	7118	71
+Seneca	T	7119	71
+Sherry	T	7120	71
+Sigel	T	7121	71
+Wood	T	7122	71
+Auburndale	V	7151	71
+Biron	V	7152	71
+Port Edwards	V	7153	71
+Marshfield	C	7154	71
+Nekoosa	C	7155	71
+Pittsville	C	7156	71
+Wisconsin Rapids	C	7157	71
+Milladore	V	7158	71
+Vesper	V	7159	71
+Rudolph	V	7160	71
+Hewitt	V	7161	71
+Arpin	V	7162	71
+Menominee	T	7301	73

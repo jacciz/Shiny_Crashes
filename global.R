@@ -11,3 +11,11 @@ muni_recode <- read.csv("data/muni_recode.csv")
 # theme_traffic <- function(base_size = 11, base_family = ""){
 #   
 # }
+
+
+
+
+# For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
+# Also shiny::reactLog() for issues with reactivity
+
+# options(shiny.reactlog = TRUE) then ctrl-f3 in browser

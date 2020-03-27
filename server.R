@@ -21,13 +21,15 @@ server <- function(input, output, session) {
   observeEvent(input$cntynum, {
     muni_codes <- all_crashes %>% 
       filter(CNTYCODE == input$cntynum) %>% 
-      pull(MUNICODE)
+      pull(MUNICODE) #correct
+    
+    # muni_codes <- setNames(muni_codes, muni_recode$MUNICIPALITY)
     
     updatePickerInput(session,
                       "muni_names",
-                      choices = sort(unique(muni_codes)))
+                      choices = sort(unique(muni_codes)) )
   }) 
-  # setNames(muni_recode$MUNICODE, muni_recode$MUNICIPALITY) # set above to see names
+  # setNames(muni_recode$MuniCode, muni_recode$Municipality) # set above to see names
 #                                                                               TABLES
   output$biketable <- renderDT({
     all_crashes %>% 
@@ -98,10 +100,15 @@ server <- function(input, output, session) {
       # group_by(CRSHMTH) %>%
       filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
     
-    ggplot(mapping = aes(x=ped_crashes$CRSHMTH, y=..count..)) +
+    all_crashes <- all_crashes %>% 
+      # group_by(CRSHMTH) %>%
+      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
+    
+    ggplot(mapping = aes(x=all_crashes$CRSHMTH, y=..count..)) +
       theme_classic() +
       geom_bar(fill = "orange") +
-      geom_bar(width = .5, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "blue") +
+      geom_bar(width = .5, mapping = aes(x=ped_crashes$CRSHMTH, y=..count..), fill = "blue") +
+      geom_bar(width = .3, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "red") +
       theme(axis.line=element_blank(),
             legend.position = "none",
             axis.text.y=element_blank(),axis.ticks=element_blank(),

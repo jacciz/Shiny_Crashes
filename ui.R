@@ -17,14 +17,14 @@ sidebar <- dashboardSidebar(sidebarMenu(
   ),    pickerInput(
     "cntynum",
     "County",
-    choices = sort(unique(all_crashes$CNTYCODE)),
+    choices = NULL, #now null sort(unique(all_crashes$CNTYCODE)
     options = list("actions-box" = TRUE),
     multiple = FALSE,
     selected = "Dane"
     ),  pickerInput(
       "muni_names",
       "Municipality",
-      choices = sort(unique(all_crashes$MUNICODE)),
+      choices = NULL,  #muni_recode$MUNICIPALITY
       options = list("actions-box" = TRUE),
       multiple = FALSE
     )
@@ -35,7 +35,7 @@ body <- dashboardBody(tabItems(
           h2("Dashboard tab content"),
   #                                                     FIRST TAB First row
           fluidRow(
-            box("Vehicle Type", width = 12)
+            box("Vehicle Type Involved", width = 12)
             ,
             # Dynamic infoBoxes
             valueBoxOutput("passveh_box", width = 2),
@@ -77,7 +77,7 @@ body <- dashboardBody(tabItems(
       )
       
     )
-          #                                                             BODY second row
+
           ),
   #                                            SECOND TAB    First row
   tabItem(tabName = "tables",
@@ -91,6 +91,6 @@ body <- dashboardBody(tabItems(
 
 
 # Put them together into a dashboardPage
-dashboardPage(dashboardHeader(title = "Crash Data Dashboard"),
+dashboardPage(dashboardHeader(title = "Vision Zero Dashboard"),
               sidebar,
               body)
