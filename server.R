@@ -84,19 +84,31 @@ server <- function(input, output, session) {
     )
   })
   
-#                                                          Second row charts                       
+#                                                          SECOND row charts                       
   output$bikeflag <- renderPlot({
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()
     
-    all_crashes <- all_crashes %>% 
+    bike_crashes <- all_crashes %>% 
       # group_by(CRSHMTH) %>%
       filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
-    all_crashes %>% 
-    ggplot() +
+    ped_crashes <- all_crashes %>% 
+      # group_by(CRSHMTH) %>%
+      filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
+    
+    ggplot(mapping = aes(x=ped_crashes$CRSHMTH, y=..count..)) +
       theme_classic() +
-      geom_bar(mapping = aes(x=CRSHMTH, y=..count..))
+      geom_bar(fill = "orange") +
+      geom_bar(width = .5, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "blue") +
+      theme(axis.line=element_blank(),
+            legend.position = "none",
+            axis.text.y=element_blank(),axis.ticks=element_blank(),
+            axis.text.x = element_text(size = 12)
+      ) +
+      scale_x_discrete(limits = month.name, name = "") +
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
+
   })
   
   output$pedflag <- renderPlot({
@@ -108,9 +120,9 @@ server <- function(input, output, session) {
       filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
     all_crashes %>% 
-      ggplot() +
+      ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
       theme_classic() +
-      geom_bar(mapping = aes(x=CRSHMTH, y=..count..)) +
+      geom_bar() +
       theme(axis.line=element_blank(),
             legend.position = "none",
             axis.text.y=element_blank(),axis.ticks=element_blank(),
@@ -130,11 +142,26 @@ server <- function(input, output, session) {
       filter(ALCFLAG == "Yes", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
     all_crashes %>% 
-      ggplot() +
+      ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
       theme_classic() +
-      geom_bar(mapping = aes(x=CRSHMTH, y=..count..))
+      geom_bar()
   })
+  #                                                          THIRD row charts
   
+  output$mnrcoll <- renderPlot({
+    
+    all_crashes <- all_crashes %>%
+      # group_by(CRSHMTH) %>%
+      filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    
+    all_crashes %>%
+      count(MNRCOLL) %>% 
+      ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
+      theme_classic() +
+      stat_count(geom = "bar") +
+      coord_flip()
+  })
+  # mapping = aes(x = reorder(MNRCOLL, -count), y = count)
 }
 
 # input - from widgets, controls, never include variables likes input$var

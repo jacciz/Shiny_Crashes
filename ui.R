@@ -20,7 +20,7 @@ sidebar <- dashboardSidebar(sidebarMenu(
     choices = sort(unique(all_crashes$CNTYCODE)),
     options = list("actions-box" = TRUE),
     multiple = FALSE,
-    selected = "13"
+    selected = "Dane"
     ),  pickerInput(
       "muni_names",
       "Municipality",
@@ -33,7 +33,7 @@ sidebar <- dashboardSidebar(sidebarMenu(
 body <- dashboardBody(tabItems(
   tabItem(tabName = "dashboard",
           h2("Dashboard tab content"),
-  #                                                     First row
+  #                                                     FIRST TAB First row
           fluidRow(
             box("Vehicle Type", width = 12)
             ,
@@ -45,10 +45,10 @@ body <- dashboardBody(tabItems(
             valueBoxOutput("bike_box", width = 2),
             valueBoxOutput("ped_box", width = 2)
           ),
-  #                                                     Second row          
+  #                                                     FIRST TAB Second row          
           fluidRow(
             box(
-              title = "Bike Crashes",
+              title = "Bike and Pedestrian Crashes",
               width = 4,
               solidHeader = TRUE,
               plotOutput("bikeflag")
@@ -65,10 +65,21 @@ body <- dashboardBody(tabItems(
               solidHeader = TRUE,
               plotOutput("alcflag")
             )
-          )
+          ),
+  #                                                     FIRST TAB Third row          
+  
+    fluidRow(
+      box(
+        title = "Manner of Collision",
+        width = 4,
+        solidHeader = TRUE,
+        plotOutput("mnrcoll")
+      )
+      
+    )
           #                                                             BODY second row
           ),
-  #                                               BODY TABLES
+  #                                            SECOND TAB    First row
   tabItem(tabName = "tables",
           h2("Tables tab content"),
           
