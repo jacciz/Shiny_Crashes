@@ -3,6 +3,7 @@ library(ggplot2) # make pretty graphs
 library(DT)    # create pretty tables
 library(expss) # format freq tables
 library(forcats) # reorder freq in charts
+library(plotly)
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -141,6 +142,31 @@ server <- function(input, output, session) {
       geom_text(stat = "count", size = 6, aes(x = CRSHMTH, y = ..count.. + ..count../6, label = ..count..)) 
   })
   
+  output$timeofday_heat <- renderD3heatmap({
+   
+    day_time <- all_crashes %>%
+      filter(CNTYCODE == input$cntynum) %>%
+      # apply_labels(CNTYCODE = "County") %>%
+      tab_cells(newtime) %>%       # stuff to put in the rows
+      # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
+      tab_cols(DAYNMBR) %>%     # columns with nesting
+      tab_stat_cases() %>% # frequency count, can also do percent
+      tab_pivot() %>%
+      drop_empty_columns()
+    
+    row.names(day_time) <-
+      day_time$row_labels # - change row names to match row_labels
+    
+    # for (col in 1:ncol(day_time)) { #relabel
+    #   colnames(day_time)[col] <-
+    #     sub("DAYNMBR|", "", colnames(day_time)[col])
+    # }
+    
+    day_time[is.na(day_time)] = 0 #NA will be 0
+    
+    d3heatmap(day_time[1:24, 2:8], Rowv = FALSE, Colv = FALSE, colors = "Blues")
+  })
+  
   output$alcflag <- renderPlot({
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()
@@ -156,14 +182,13 @@ server <- function(input, output, session) {
   })
   #                                                          THIRD row charts
   
-  output$mnrcoll <- renderPlot({
+  output$mnrcoll <- renderPlotly({
     
     all_crashes <- all_crashes %>%
-      # group_by(CRSHMTH) %>%
       filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
     all_crashes$MNRCOLL <- fct_infreq(all_crashes$MNRCOLL) %>% fct_rev()
-    
+  mnrcoll_chart <- 
     all_crashes %>%
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
       theme_classic() +
@@ -175,8 +200,17 @@ server <- function(input, output, session) {
       geom_bar() +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       coord_flip()
+  mnrcoll_chart %>% ggplotly() # hoverinfo, event_data to update ui data
+    # 
+    # all_crashes <- all_crashes %>%  # can delete this
+    #   filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum) %>%
+    #   group_by(MNRCOLL, CRSHMTH) %>%
+    #   ggplotly() %>%
+    #   add_trace(x = ~MNRCOLL, y = ~ CRSHMTH)    # 
+    # sum <- all_crashes %>% count(MNRCOLL)
+    # sum %>% plot_ly() %>% add_trace(x = ~MNRCOLL, y = ~n, type = 'bar')
   })
-  # mapping = aes(x = reorder(MNRCOLL, -count), y = count)
+  # mapping = aes(x = reorder(MNRCOLL, -count), y = count) not using this
 }
 
 # input - from widgets, controls, never include variables likes input$var

@@ -1,7 +1,8 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(DT)
-#                                                   SIDEBAR
+library(plotly)
+#                                                      SIDEBAR
 sidebar <- dashboardSidebar(sidebarMenu(
   menuItem(
     "Dashboard",
@@ -49,37 +50,46 @@ body <- dashboardBody(tabItems(
           fluidRow(
             box(
               title = "Bike and Pedestrian Crashes",
-              width = 4,
+              width = 6,
               solidHeader = TRUE,
-              plotOutput("bikeflag")
+              plotOutput("bikeflag", height = "300px")
             ),
             box(
               title = "Pedestrian Crashes",
-              width = 4,
+              width = 6,
               solidHeader = TRUE,
-              plotOutput("pedflag")
-            ),
-            box(
-              title = "Alcohol Flag Crashes",
-              width = 4,
-              solidHeader = TRUE,
-              plotOutput("alcflag")
+              plotOutput("pedflag", height = "300px")
             )
           ),
+  #                                                     FIRST TAB Third row 
+  fluidRow(
+    box(
+      title = "Alcohol Flag Crashes",
+      width = 6,
+      solidHeader = TRUE,
+      plotOutput("alcflag", height = "300px")
+    )
+  ),
+    box(
+      title = "Time of Day Crashes",
+      width = 6,
+      solidHeader = TRUE,
+      d3heatmapOutput("timeofday_heat", height = "300px")
+    ),
+    
   #                                                     FIRST TAB Third row          
   
     fluidRow(
       box(
         title = "Manner of Collision",
-        width = 4,
+        width = 6,
         solidHeader = TRUE,
-        plotOutput("mnrcoll")
+        plotlyOutput("mnrcoll", height = "300px")
       )
       
     )
-
           ),
-  #                                            SECOND TAB    First row
+  #                                                   SECOND TAB    First row
   tabItem(tabName = "tables",
           h2("Tables tab content"),
           
@@ -91,6 +101,6 @@ body <- dashboardBody(tabItems(
 
 
 # Put them together into a dashboardPage
-dashboardPage(dashboardHeader(title = "Vision Zero Dashboard"),
+dashboardPage(dashboardHeader(title = "WisDOT Vision Zero Dashboard"),
               sidebar,
               body)
