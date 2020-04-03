@@ -2,6 +2,7 @@ library(shinydashboard)
 library(shinyWidgets)
 library(DT)
 library(plotly)
+library(d3heatmap)
 #                                                      SIDEBAR
 sidebar <- dashboardSidebar(sidebarMenu(
   menuItem(
@@ -32,35 +33,42 @@ sidebar <- dashboardSidebar(sidebarMenu(
     #muni_recode$MUNICIPALITY
     options = list("actions-box" = TRUE),
     multiple = FALSE
+  ),
+  pickerInput(
+    "year",
+    "Year",
+    choices = NULL,
+    options = list("actions-box" = TRUE),
+    multiple = FALSE
   )
 ))
 #                                                     BODY
 body <- dashboardBody(tabItems(
   tabItem(
     tabName = "dashboard",
-    h2("County, data type, year here"),
+    h2("Dane County, 2019, All Crashes"),
     #                                                     FIRST TAB X row
     fluidRow(
-      column(width = 4,
-        valueBoxOutput("tot_crash"), # I want these stacked
-        valueBoxOutput("tot_inj")
-        # ,
-        # valueBoxOutput("tot_fatal"),
-        # valueBoxOutput("tot_some")
+      column(width = 2,
+        valueBoxOutput("tot_crash", width = NULL), # for column, width = NULL
+        valueBoxOutput("tot_inj",  width = NULL),
+        valueBoxOutput("tot_fatal", width = NULL)
+        # valueBoxOutput("tot_some", width = NULL)
       ),
-      
+      column(width = 5,
       box(
         title = "Bike and Pedestrian Crashes",
-        width = 4,
+        width = NULL,
         solidHeader = TRUE,
         plotOutput("bike_ped_flag", height = "300px")
-      ),
+      )),
+      column(width = 5,
       box(
         title = "Time of Day Crashes",
-        width = 4,
+        width = NULL,
         solidHeader = TRUE,
         d3heatmapOutput("timeofday_heat", height = "300px")
-      )
+      ))
     ),
     # #                                                     FIRST TAB X row
     # fluidRow(
@@ -76,7 +84,7 @@ body <- dashboardBody(tabItems(
     fluidRow(
       box(
         title = "Manner of Collision",
-        width = 4,
+        width = 5,
         solidHeader = TRUE,
         plotlyOutput("mnrcoll", height = "300px")
       )
@@ -100,8 +108,14 @@ body <- dashboardBody(tabItems(
     box("Role of Persons Involved", width = 12)
     ,
     box(
-      title = "Role of Persons Chart",
-      width = 4,
+      title = "Role of Persons Bar Chart",
+      width = 5,
+      solidHeader = TRUE,
+      plotlyOutput("", height = "300px")
+    ),
+    box(
+      title = "Age/Gender Histogram",
+      width = 5,
       solidHeader = TRUE,
       plotlyOutput("", height = "300px")
     )

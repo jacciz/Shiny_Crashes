@@ -4,7 +4,7 @@ library(dplyr)
 # library(grDevices)  # for fonts
 # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R_WD_Data/Shiny_Crashes")
 # all_crashes <- read.csv("data/2020_crash.csv")    # pull either 2019 or 2020
-all_crashes <- read_csv("data/2019_crash.csv", n_max = 120000)
+all_crashes <- read_csv("data/2019_crash.csv", n_max = 20000)
 # all_vehicles <- read_csv("data/2019_vehicle.csv", n_max = 1000)
 # all_persons <- read_csv("data/2019_person.csv", n_max = 1000)
 county_recode <- read_csv("data/county_recode.csv")
@@ -81,5 +81,42 @@ all_crashes <- all_crashes %>% mutate(newtime = cut(
         ),
         include.lowest = T
 ))
+
+# all_persons <- all_persons %>% mutate(age_group = cut(
+#         AGE,
+#         c(0,
+#           5,
+#           10,
+#           15,
+#           20,
+#           25,
+#           30,
+#           35,
+#           40,
+#           45,
+#           50,
+#           55,
+#           60,
+#           65,
+#           70,
+#           120),
+#         labels = c(
+#                 "0-4",
+#                 "5-9",
+#                 "10-14",
+#                 "15-19",
+#                 "20-24",
+#                 "25-29",
+#                 "30-34",
+#                 "35-39",
+#                 "40-44",
+#                 "45-49",
+#                 "50-54",
+#                 "55-59",
+#                 "60-64",
+#                 "65-60",
+#                 "70+",
+#         ),
+#         include.lowest = T))
 
 # all_crashes %>% select(CRSHTIME, newtime) %>% View()

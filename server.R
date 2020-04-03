@@ -3,7 +3,8 @@ library(ggplot2) # make pretty graphs
 library(DT)    # create pretty tables
 library(expss) # format freq tables
 library(forcats) # reorder freq in charts
-library(plotly)
+library(plotly) # interactive charts
+library(d3heatmap)
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -43,36 +44,33 @@ server <- function(input, output, session) {
       datatable(rownames = FALSE)
   })
   
-  # output$passvehicles <- renderValueBox({   # to get vehicle type count
-  #   all_vehicles <- all_vehicles %>%
-  #     # group_by(CRSHMTH) %>%
-  #     filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-  #   
-  # 
-  # })
+  updatePickerInput(session,
+                    "year",
+                    choices = c(2019, 2018)) #Set years of data
+
   #                                                          First row charts  
   output$tot_crash <- renderInfoBox({
     valueBox(
       3400, "Total Crashes", icon = icon("car-crash"),
-      color = "purple", width = NULL
+      color = "purple"
     )
   })
   output$tot_inj <- renderInfoBox({
     valueBox(
-      340, "Total Injuries", icon = icon("user-injured"),
-      color = "purple", width = NULL
+      340, "Total Injuries", icon = icon("band-aid"),
+      color = "purple"
     )
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(
-      30, "Total Fatalities", icon = icon("skull-crossbones"),
-      color = "purple", width = NULL
+      30, "Total Fatalities", icon = icon("skull"),
+      color = "purple"
     )
   })
   output$tot_some <- renderInfoBox({
     valueBox(
-      3400, "Total Something", icon = icon("car"),
-      color = "purple", width = NULL
+      3400, "Total Vehicles", icon = icon("car"),
+      color = "purple"
     )
   })
   
