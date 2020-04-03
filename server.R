@@ -51,6 +51,32 @@ server <- function(input, output, session) {
   # 
   # })
   #                                                          First row charts  
+  output$tot_crash <- renderInfoBox({
+    valueBox(
+      3400, "Total Crashes", icon = icon("car-crash"),
+      color = "purple", width = NULL
+    )
+  })
+  output$tot_inj <- renderInfoBox({
+    valueBox(
+      340, "Total Injuries", icon = icon("user-injured"),
+      color = "purple", width = NULL
+    )
+  })
+  output$tot_fatal <- renderInfoBox({
+    valueBox(
+      30, "Total Fatalities", icon = icon("skull-crossbones"),
+      color = "purple", width = NULL
+    )
+  })
+  output$tot_some <- renderInfoBox({
+    valueBox(
+      3400, "Total Something", icon = icon("car"),
+      color = "purple", width = NULL
+    )
+  })
+  
+  #                                                          X row charts 
   output$passveh_box <- renderInfoBox({
     valueBox(
       3400, "Passenger Vehicles", icon = icon("car"),
@@ -89,7 +115,7 @@ server <- function(input, output, session) {
   })
   
 #                                                          SECOND row charts                       
-  output$bikeflag <- renderPlot({
+  output$bike_ped_flag <- renderPlot({
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()
     
@@ -120,28 +146,6 @@ server <- function(input, output, session) {
 
   })
   
-  output$pedflag <- renderPlot({
-    # all_crashes <- rbind(crash_month())  #take variable of what was inputted
-    # all_crashes$group <- c()
-    
-    all_crashes <- all_crashes %>% 
-      # group_by(CRSHMTH) %>%
-      filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-    
-    all_crashes %>% 
-      ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
-      theme_classic() +
-      geom_bar() +
-      theme(axis.line=element_blank(),
-            legend.position = "none",
-            axis.text.y=element_blank(),axis.ticks=element_blank(),
-            axis.text.x = element_text(size = 12)
-      ) +
-      scale_x_discrete(limits = month.name, name = "") +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +  # y starts at 0, adds 5% gap on top
-      geom_text(stat = "count", size = 6, aes(x = CRSHMTH, y = ..count.. + ..count../6, label = ..count..)) 
-  })
-  
   output$timeofday_heat <- renderD3heatmap({
    
     day_time <- all_crashes %>%
@@ -167,19 +171,19 @@ server <- function(input, output, session) {
     d3heatmap(day_time[1:24, 2:8], Rowv = FALSE, Colv = FALSE, colors = "Blues")
   })
   
-  output$alcflag <- renderPlot({
-    # all_crashes <- rbind(crash_month())  #take variable of what was inputted
-    # all_crashes$group <- c()
-    
-    all_crashes <- all_crashes %>% 
-      # group_by(CRSHMTH) %>%
-      filter(ALCFLAG == "Yes", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-    
-    all_crashes %>% 
-      ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
-      theme_classic() +
-      geom_bar()
-  })
+  # output$alcflag <- renderPlot({
+  #   # all_crashes <- rbind(crash_month())  #take variable of what was inputted
+  #   # all_crashes$group <- c()
+  #   
+  #   all_crashes <- all_crashes %>% 
+  #     # group_by(CRSHMTH) %>%
+  #     filter(ALCFLAG == "Yes", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+  #   
+  #   all_crashes %>% 
+  #     ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
+  #     theme_classic() +
+  #     geom_bar()
+  # })
   #                                                          THIRD row charts
   
   output$mnrcoll <- renderPlotly({

@@ -2,10 +2,11 @@ library(readr)
 library(dplyr)
 
 # library(grDevices)  # for fonts
-setwd("W:/HSSA/Keep/Jaclyn Ziebert/R_WD_Data/Shiny_Crashes")
+# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R_WD_Data/Shiny_Crashes")
 # all_crashes <- read.csv("data/2020_crash.csv")    # pull either 2019 or 2020
-all_crashes <- read_csv("data/2019_crash.csv", n_max = 20000)
-# all_vehicles <- read.csv("data/2019_vehicle.csv")
+all_crashes <- read_csv("data/2019_crash.csv", n_max = 120000)
+# all_vehicles <- read_csv("data/2019_vehicle.csv", n_max = 1000)
+# all_persons <- read_csv("data/2019_person.csv", n_max = 1000)
 county_recode <- read_csv("data/county_recode.csv")
 muni_recode <- read_csv("data/muni_recode.csv")
 
@@ -15,9 +16,6 @@ muni_recode <- read_csv("data/muni_recode.csv")
 #   
 # }
 
-
-
-
 # For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
 # Also shiny::reactLog() for issues with reactivity
 
@@ -25,9 +23,6 @@ muni_recode <- read_csv("data/muni_recode.csv")
 
 Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
 Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
-
-# list <- all_crashes$CRSHTIME
-# all_crashes$CRSHTIME = as.integer(all_crashes$CRSHTIME)
 
 all_crashes <- all_crashes %>% mutate(newtime = cut(
         CRSHTIME,
@@ -87,5 +82,4 @@ all_crashes <- all_crashes %>% mutate(newtime = cut(
         include.lowest = T
 ))
 
-all_crashes %>% select(CRSHTIME, newtime) %>% View()
-#factor
+# all_crashes %>% select(CRSHTIME, newtime) %>% View()
