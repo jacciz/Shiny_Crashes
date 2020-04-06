@@ -43,7 +43,11 @@ sidebar <- dashboardSidebar(sidebarMenu(
   )
 ))
 #                                                     BODY
-body <- dashboardBody(tabItems(
+body <- dashboardBody(
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css") # this tacks on css, custom font, etc.
+  ),
+  tabItems(
   tabItem(
     tabName = "dashboard",
     h2("Dane County, 2019, All Crashes"),
@@ -132,6 +136,8 @@ body <- dashboardBody(tabItems(
 
 
 # Put them together into a dashboardPage
-dashboardPage(dashboardHeader(title = "WisDOT Vision Zero Dashboard"),
+dashboardPage(
+  # skin = "black",   #add a theme
+  dashboardHeader(title = "WisDOT Vision Zero Dashboard"),
               sidebar,
               body)
