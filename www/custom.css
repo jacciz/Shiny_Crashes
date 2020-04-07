@@ -3,5 +3,12 @@
   font-weight: bold;
   font-size: 20px;
   color: purple;
-  background-color: #d8da3d
+  background-color: #428BCA
 }
+
+/* .skin-blue .main-header .logo {
+  background-color: #428BCA;
+}
+.skin-blue .main-header .logo:hover {
+  background-color: #428BCA;
+} */

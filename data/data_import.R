@@ -2,54 +2,13 @@ library(data.table)
 library(dplyr)
 
 import_all_crashes <- function(csv_name) {
-  # read_csv(
-  #   paste("data/",csv_name,".csv", sep = ""),
-  #   n_max = 200,
-    # col_names = c("CRSHNMBR",
-    #               "CRSHDATE",
-    #               "CRSHTIME",
-    #               "CRSHMTH"
-                  # "TOTINJ",
-                  # "TOTFATL",
-                  # "DAYNMBR",
-                  # "CNTYCODE",
-                  # "MUNICODE",
-                  # "URBRURAL",
-                  # "CRSHSVR",
-                  # "MNRCOLL",
-                  # "ALCFLAG",
-                  # "DRUGFLAG",
-                  # "BIKEFLAG",
-                  # "CYCLFLAG",
-                  # "PEDFLAG"
-    # ),
-    # col_types = cols(
-    #   CRSHNMBR = col_character(),
-    #   CRSHDATE = col_date(),
-    #   CRSHTIME = col_double(),
-    #   CRSHMTH = col_character(),
-    #   TOTINJ = col_double(),
-    #   TOTFATL = col_integer()
-            # DAYNMBR = col_character(),
-            # CNTYCODE = col_integer(),
-            # MUNICODE = col_integer(),
-            # URBRURAL  = col_character(),
-            # CRSHSVR = col_character(),
-            # MNRCOLL = col_character(),
-            # ALCFLAG = col_character(),
-            # DRUGFLAG = col_character(),
-            # BIKEFLAG = col_character(),
-            # CYCLFLAG = col_character(),
-            # PEDFLAG = col_character()
-  #   )
-  # )
   all_crashes <-
-    fread(paste("data/", csv_name, ".csv", sep = ""), nrows = 200,
+    fread(paste("data/", csv_name, ".csv", sep = ""), #nrows = 200,
           select = c("CRSHNMBR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
                      "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "CRSHSVR", "MNRCOLL",
                      "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
           )
-  all_crashes <- all_crashes %>% mutate(newtime = cut(
+  all_crashes <- all_crashes %>% mutate(newtime = cut(  # this finds crash time by hour
     CRSHTIME,
     c(
       0,
@@ -111,8 +70,8 @@ import_all_crashes <- function(csv_name) {
 
 import_all_persons <- function(csv_name) {
   all_persons <-
-    fread(paste("data/", csv_name, ".csv", sep = ""), nrows = 200,
-          select = c("ROLE", "SEX")
+    fread(paste("data/", csv_name, ".csv", sep = ""),# nrows = 200,
+          select = c("CRSHNMBR","ROLE", "SEX")
     )
   all_persons <- all_persons %>% mutate(age_group = cut(
     AGE,
@@ -155,8 +114,8 @@ import_all_persons <- function(csv_name) {
 
 import_all_vehicles <- function(csv_name) {
   all_vehicles <-
-    fread(paste("data/", csv_name, ".csv", sep = ""), nrows = 200,
-          select = c()
+    fread(paste("data/", csv_name, ".csv", sep = ""),# nrows = 200,
+          select = c("CRSHNMBR")
     )
   return (all_vehicles)
 }

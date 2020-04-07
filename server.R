@@ -14,6 +14,16 @@ server <- function(input, output, session) {
     }
   })
 #                                                       INPUTS
+  
+  # accidentData%>%filter(
+  #   Local_Authority_.District. %in% input$district &
+  #     Year %in% input$year &
+  #     Day_of_Week %in% input$day)
+
+  tot_crash_num <- reactive({
+    all_crashes %>%
+      filter(CNTYCODE == input$cntynum)
+  })
   # all_crashes %>% rename(m_names = MUNICODE)
   
   updatePickerInput(session,
@@ -21,15 +31,12 @@ server <- function(input, output, session) {
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
   
   observeEvent(input$cntynum, {
-    muni_codes <- all_crashes %>% 
-      filter(CNTYCODE == input$cntynum) %>% 
-      pull(MUNICODE) #correct
-    
-    # muni_codes <- setNames(muni_codes, muni_recode$MUNICIPALITY)
+
+    muni_cnty_list <- muni_recode %>% filter(CntyCode == input$cntynum)  #input$cntynum
     
     updatePickerInput(session,
                       "muni_names",
-                      choices = sort(unique(muni_codes)) )
+                      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   }) 
   # setNames(muni_recode$MuniCode, muni_recode$Municipality) # set above to see names
 #                                                                               TABLES
@@ -51,34 +58,36 @@ server <- function(input, output, session) {
   #                                                          First row charts  
   output$tot_crash <- renderInfoBox({
     valueBox(
-      3400, "Total Crashes", icon = icon("car-crash"),
-      color = "purple"
+      nrow(tot_crash_num()), "Total Crashes", icon = icon("car-crash"),
+      color = "red"
     )
   })
   output$tot_inj <- renderInfoBox({
     valueBox(
-      340, "Total Injuries", icon = icon("band-aid"),
-      color = "purple"
+      tot_crash_num() %>% summarise(x = sum(TOTINJ)),
+      "Total Injuries", icon = icon("band-aid"),
+      color = "red"
     )
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(
-      30, "Total Fatalities", icon = icon("skull"),
-      color = "purple"
+      tot_crash_num() %>% summarise(x = sum(TOTFATL)),
+      "Total Fatalities", icon = icon("skull"),
+      color = "red"
     )
   })
-  output$tot_some <- renderInfoBox({
-    valueBox(
-      3400, "Total Vehicles", icon = icon("car"),
-      color = "purple"
-    )
-  })
-  
+  # output$tot_some <- renderInfoBox({
+  #   valueBox(
+  #     3400, "Total Vehicles", icon = icon("car"),
+  #     color = "red"
+  #   )
+  # })
+  # 
   #                                                          X row charts 
   output$passveh_box <- renderInfoBox({
     valueBox(
-      3400, "Passenger Vehicles", icon = icon("car"),
-      color = "purple"
+      3400, "Passenger Veh.", icon = icon("car"),
+      color = "red"
     )
   })
   output$light_truck_box <- renderInfoBox({
@@ -117,32 +126,53 @@ server <- function(input, output, session) {
     # all_crashes <- rbind(crash_month())  #take variable of what was inputted
     # all_crashes$group <- c()
     
-    bike_crashes <- all_crashes %>% 
+    # bike_crashes <- all_crashes %>% 
+    #   # group_by(CRSHMTH) %>%
+    #   filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    # 
+    # ped_crashes <- all_crashes %>% 
+    #   # group_by(CRSHMTH) %>%
+    #   filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
+    # 
+    # all_crashes <- all_crashes %>% 
+    #   # group_by(CRSHMTH) %>%
+    #   filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
+    # 
+    # ggplot(mapping = aes(x=all_crashes$CRSHMTH, y=..count..)) +
+    #   theme_classic() +
+    #   geom_bar(fill = "orange") +
+    #   geom_bar(width = .5, mapping = aes(x=ped_crashes$CRSHMTH, y=..count..), fill = "blue") +
+    #   geom_bar(width = .3, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "red") +
+    #   theme(axis.line=element_blank(),
+    #         legend.position = "none",
+    #         axis.text.y=element_blank(),axis.ticks=element_blank(),
+    #         axis.text.x = element_text(size = 12)
+    #   ) +
+    #   scale_x_discrete(limits = month.name, name = "") +
+    #   scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
+
+  })
+  output$crsh_svr_mth <- renderPlot({
+    crsh_svr_mth <- all_crashes %>%
       # group_by(CRSHMTH) %>%
-      filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-    
-    ped_crashes <- all_crashes %>% 
-      # group_by(CRSHMTH) %>%
-      filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
-    
-    all_crashes <- all_crashes %>% 
-      # group_by(CRSHMTH) %>%
-      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
-    
-    ggplot(mapping = aes(x=all_crashes$CRSHMTH, y=..count..)) +
+      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+
+    ggplot(crsh_svr_mth, mapping = aes(CRSHMTH)) +
       theme_classic() +
-      geom_bar(fill = "orange") +
-      geom_bar(width = .5, mapping = aes(x=ped_crashes$CRSHMTH, y=..count..), fill = "blue") +
-      geom_bar(width = .3, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "red") +
-      theme(axis.line=element_blank(),
-            legend.position = "none",
-            axis.text.y=element_blank(),axis.ticks=element_blank(),
-            axis.text.x = element_text(size = 12)
+      geom_bar(aes(fill=CRSHSVR)) +
+      theme(
+        axis.line = element_blank(),
+        legend.position = "none",
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 12
+        )
       ) +
       scale_x_discrete(limits = month.name, name = "") +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
-
+    
   })
+  
   
   output$timeofday_heat <- renderD3heatmap({
    
@@ -151,22 +181,51 @@ server <- function(input, output, session) {
       # apply_labels(CNTYCODE = "County") %>%
       tab_cells(newtime) %>%       # stuff to put in the rows
       # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-      tab_cols(DAYNMBR) %>%     # columns with nesting
+      tab_cols(DAYNMBR) %>%     # columns
       tab_stat_cases() %>% # frequency count, can also do percent
-      tab_pivot() %>%
-      drop_empty_columns()
+      tab_pivot()
+      # drop_empty_columns()
     
     row.names(day_time) <-
       day_time$row_labels # - change row names to match row_labels
     
-    # for (col in 1:ncol(day_time)) { #relabel
-    #   colnames(day_time)[col] <-
-    #     sub("DAYNMBR|", "", colnames(day_time)[col])
-    # }
+    for (col in 1:ncol(day_time)) { #relabel
+      colnames(day_time)[col] <-
+        sub("DAYNMBR|", "", colnames(day_time)[col])
+    }
+    for (row in 1:nrow(day_time)) { #relabel
+      rownames(day_time)[row] <-
+        sub("newtime|", "", rownames(day_time)[row])
+    }
     
     day_time[is.na(day_time)] = 0 #NA will be 0
     
-    d3heatmap(day_time[1:24, 2:8], Rowv = FALSE, Colv = FALSE, colors = "Blues")
+    day_time <-
+      day_time[, c("|Sunday",
+                   "|Monday",
+                   "|Tuesday",
+                   "|Wednesday",
+                   "|Thursday",
+                   "|Friday",
+                   "|Saturday")] # reorder columns
+    
+    d3heatmap(
+      day_time[1:24, 1:7],
+      Rowv = FALSE,
+      Colv = FALSE,
+      colors = "Blues",
+      xaxis_font_size = "12px",
+      yaxis_font_size = "12px",
+      labCol = c(
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      )
+    )
   })
   
   # output$alcflag <- renderPlot({
@@ -190,19 +249,22 @@ server <- function(input, output, session) {
       filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
     all_crashes$MNRCOLL <- fct_infreq(all_crashes$MNRCOLL) %>% fct_rev()
+    
   mnrcoll_chart <- 
     all_crashes %>%
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
       theme_classic() +
+      geom_bar(fill = "#428BCA") +
+      ggtitle("Manner of Collision") +
       theme(axis.line=element_blank(),
             legend.position = "none",
             axis.ticks=element_blank(),
-            axis.text.x = element_text(size = 12)
+            axis.text.x = element_text(size = 12),
+            plot.title = element_text()
       ) +
-      geom_bar() +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       coord_flip()
-  mnrcoll_chart %>% ggplotly() # hoverinfo, event_data to update ui data
+  mnrcoll_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
     # 
     # all_crashes <- all_crashes %>%  # can delete this
     #   filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum) %>%

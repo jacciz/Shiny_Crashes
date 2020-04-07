@@ -5,9 +5,9 @@ account: jacciz
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2006519
-bundleId: 2965501
+bundleId: 2980597
 url: https://jacciz.shinyapps.io/Shiny_Crashes/
-when: 1585937118.65553
+when: 1586263087.47421
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: data/2019_vehicle.csv|data/2020_crash.csv|www/zero-logo.png
+ignoredFiles: ui_old.R|www/zero-logo.png
