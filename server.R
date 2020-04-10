@@ -4,7 +4,8 @@ library(DT)    # create pretty tables
 library(expss) # format freq tables
 library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
-library(d3heatmap)
+library(d3heatmap) # makes time of day / week heat chart
+# library(ggrepel)  # adjusts labels for ggplots, not for axis
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -32,7 +33,7 @@ server <- function(input, output, session) {
   
   observeEvent(input$cntynum, {
 
-    muni_cnty_list <- muni_recode %>% filter(CntyCode == input$cntynum)  #input$cntynum
+    muni_cnty_list <- muni_recode %>% filter(CntyCode == input$cntynum)
     
     updatePickerInput(session,
                       "muni_names",
@@ -41,7 +42,7 @@ server <- function(input, output, session) {
   # setNames(muni_recode$MuniCode, muni_recode$Municipality) # set above to see names
 #                                                                               TABLES
   output$biketable <- renderDT({
-    all_crashes %>% 
+    table_crsh <- all_crashes %>% 
       tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
       tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
       tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
@@ -152,27 +153,37 @@ server <- function(input, output, session) {
     #   scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
 
   })
-  output$crsh_svr_mth <- renderPlot({
+  output$crsh_svr_mth <- renderPlotly({
     crsh_svr_mth <- all_crashes %>%
       # group_by(CRSHMTH) %>%
       filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    
+    # labels = c("Jan.", "Feb.") #could write a list of abbreviations for chart
 
-    ggplot(crsh_svr_mth, mapping = aes(CRSHMTH)) +
+    crsh_svr_mth_chart <- ggplot(crsh_svr_mth, mapping = aes(CRSHMTH)) +
       theme_classic() +
       geom_bar(aes(fill=CRSHSVR)) +
+      scale_fill_discrete(name = "Crash Severity") +
       theme(
         axis.line = element_blank(),
-        legend.position = "none",
-        axis.text.y = element_blank(),
         axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 12
-        )
+        legend.text = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        legend.title = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        axis.text.x = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        axis.text.y = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.background =element_rect(fill = "transparent", color = NA)
       ) +
-      scale_x_discrete(limits = month.name, name = "") +
+      scale_x_discrete(limits = month.name, name = "", labels = function(labels) {
+        sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
+                         
+                         ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
     
+  crsh_svr_mth_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
   })
-  
+  # , bg="transparent"
   
   output$timeofday_heat <- renderD3heatmap({
    
@@ -214,6 +225,8 @@ server <- function(input, output, session) {
       Rowv = FALSE,
       Colv = FALSE,
       colors = "Blues",
+      theme = "dark",
+      na.rm = FALSE,
       xaxis_font_size = "12px",
       yaxis_font_size = "12px",
       labCol = c(
@@ -224,6 +237,32 @@ server <- function(input, output, session) {
         "Thursday",
         "Friday",
         "Saturday"
+      ),
+      labRow = c(
+        "12am",
+        "1am",
+        "2am",
+        "3am",
+        "4am",
+        "5am",
+        "6am",
+        "7am",
+        "8am",
+        "9am",
+        "10am",
+        "11am",
+        "12am",
+        "1pm",
+        "2pm",
+        "3pm",
+        "4pm",
+        "5pm",
+        "6pm",
+        "7pm",
+        "8pm",
+        "9pm",
+        "10pm",
+        "11pm"
       )
     )
   })
@@ -255,12 +294,15 @@ server <- function(input, output, session) {
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
       theme_classic() +
       geom_bar(fill = "#428BCA") +
-      ggtitle("Manner of Collision") +
+      # ggtitle("Manner of Collision") +
       theme(axis.line=element_blank(),
             legend.position = "none",
             axis.ticks=element_blank(),
-            axis.text.x = element_text(size = 12),
-            plot.title = element_text()
+            axis.text.x = element_text(size = 10, color = "white"),
+            axis.text.y = element_text(size = 8, color = "white"),
+            plot.title = element_text(),
+            plot.background = element_rect(fill = "transparent", colour = NA),
+            panel.background = element_rect(fill = "transparent")
       ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       coord_flip()

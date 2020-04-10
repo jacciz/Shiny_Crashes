@@ -1,0 +1,183 @@
+### Function: shinyDashboardThemeDIY ----------------------------------------
+#' Creates a custom theme object for a shinydashboard application
+#'
+#' @param appFontFamily String. Application font.
+#' @param appFontColor String. Application font colour.
+#' @param primaryFontColor String. Primary status highlight font colour.
+#' @param infoFontColor String. Info status highlight font colour.
+#' @param successFontColor String. Success status highlight font colour.
+#' @param warningFontColor String. Warning status highlight font colour.
+#' @param dangerFontColor String. Danger status highlight font colour.
+#' @param bodyBackColor String. Main page background colour.
+#' @param logoBackColor String. Logo background colour.
+#' @param headerButtonBackColor String. Sidebar toggle button background colour.
+#' @param headerButtonIconColor String. Sidebar toggle button icon colour.
+#' @param headerButtonBackColorHover String. Sidebar toggle button background colour: hovered.
+#' @param headerButtonIconColorHover String. Sidebar toggle button icon colour: hovered.
+#' @param headerBackColor String. Top header background colour.
+#' @param headerBoxShadowColor String. Top header shadow colour.
+#' @param headerBoxShadowSize String. Top header shadow size.
+#' @param sidebarBackColor String. Sidebar background colour.
+#' @param sidebarPadding Numeric. Sidebar inner padding.
+#' @param sidebarMenuBackColor String. Sidebar menu background colour.
+#' @param sidebarMenuPadding Numeric. Sidebar menu inner padding.
+#' @param sidebarMenuBorderRadius Numeric. Sidebar menu shape radius.
+#' @param sidebarShadowRadius String. Sidebar shadow radius.
+#' @param sidebarShadowColor String. Sidebar shadow colour.
+#' @param sidebarUserTextColor String. Sidebar userbox text colour.
+#' @param sidebarSearchBackColor String. Sidebar searchbox background colour.
+#' @param sidebarSearchIconColor String. Sidebar searchbox icon colour.
+#' @param sidebarSearchBorderColor String. Sidebar searchbox border line colour.
+#' @param sidebarTabTextColor String. Sidebar tab font colour.
+#' @param sidebarTabTextSize Numeric. Sidebar tab font size.
+#' @param sidebarTabBorderStyle String. Sidebar tab border line style.
+#' @param sidebarTabBorderColor String. Sidebar tab border line colour.
+#' @param sidebarTabBorderWidth Numeric. Sidebar tab border line width.
+#' @param sidebarTabBackColorSelected String. Sidebar tab background colour: selected.
+#' @param sidebarTabTextColorSelected String. Sidebar tab font colour: selected.
+#' @param sidebarTabRadiusSelected String. Sidebar tab shape radius: selected.
+#' @param sidebarTabBackColorHover String. Sidebar tab background colour: hovered.
+#' @param sidebarTabTextColorHover String. Sidebar tab font colour: hovered.
+#' @param sidebarTabBorderStyleHover String. Sidebar tab border line style: hovered.
+#' @param sidebarTabBorderColorHover String. Sidebar tab border line colour: hovered.
+#' @param sidebarTabBorderWidthHover Numeric. Sidebar tab border line width: hovered.
+#' @param sidebarTabRadiusHover String. Sidebar tab shape radius: hovered.
+#' @param boxBackColor String. Box background colour.
+#' @param boxBorderRadius Numeric. Box shape radius.
+#' @param boxShadowSize String. Box shadow size.
+#' @param boxShadowColor String. Box shadow colour.
+#' @param boxTitleSize Numeric. Box title font size.
+#' @param boxDefaultColor String. Box default highlight colour.
+#' @param boxPrimaryColor String. Box primary highlight colour.
+#' @param boxInfoColor String. Box info highlight colour.
+#' @param boxSuccessColor String. Box success highlight colour.
+#' @param boxWarningColor String. Box warning highlight colour.
+#' @param boxDangerColor String. Box danger highlight colour.
+#' @param tabBoxTabColor String. Tab box tab background colour.
+#' @param tabBoxTabTextSize Numeric. Tab box tab font size.
+#' @param tabBoxTabTextColor String. Tab box tab font colour.
+#' @param tabBoxTabTextColorSelected String. Tab box tab font colour: selected.
+#' @param tabBoxBackColor String. Tab box body background colour.
+#' @param tabBoxHighlightColor String. Tab box highlight colour.
+#' @param tabBoxBorderRadius Numeric. Tab box shape radius.
+#' @param buttonBackColor String. Button background colour.
+#' @param buttonTextColor String. Button font colour.
+#' @param buttonBorderColor String. Button border line colour.
+#' @param buttonBorderRadius Numeric. Button shape radius.
+#' @param buttonBackColorHover String. Button background colour: hovered.
+#' @param buttonTextColorHover String. Button font colour: hovered.
+#' @param buttonBorderColorHover String. Button border line colour: hovered.
+#' @param buttonHeight Numeric. Button shape height. Defaults to 34.
+#' @param buttonPadding String. Button label padding. Defaults to "6px 12px".
+#' @param textboxBackColor String. Textbox background colour.
+#' @param textboxBorderColor String. Textbox border line colour.
+#' @param textboxBorderRadius Numeric. Textbox shape radius.
+#' @param textboxBackColorSelect String. Textbox background colour: selected.
+#' @param textboxBorderColorSelect String. Textbox border line colour: selected.
+#' @param textboxHeight Numeric. Textbox shape height. Defaults to 34.
+#' @param textboxPadding String. Textbox text padding. Defaults to "6px 12px".
+#' @param tableBackColor String. Table background colour.
+#' @param tableBorderColor String. Table border line colour.
+#' @param tableBorderTopSize Numeric. Table header line size.
+#' @param tableBorderRowSize Numeric. Table row separator line size.
+
+### theme_grey_dark ---------------------------------------------------------
+# @export
+  ### general
+  appFontFamily = "Arial"
+  ,appFontColor = "rgb(205,205,205)"
+  ,primaryFontColor = "rgb(255,255,255)"
+  ,infoFontColor = "rgb(255,255,255)"
+  ,successFontColor = "rgb(255,255,255)"
+  ,warningFontColor = "rgb(255,255,255)"
+  ,dangerFontColor = "rgb(255,255,255)"
+  ,bodyBackColor = "rgb(45,55,65)"
+
+  ### header
+  ,logoBackColor = "rgb(70,80,90)"
+
+  ,headerButtonBackColor = "rgb(70,80,90)"
+  ,headerButtonIconColor = "rgb(25,35,45)"
+  ,headerButtonBackColorHover = "rgb(40,50,60)"
+  ,headerButtonIconColorHover = "rgb(0,0,0)"
+
+  ,headerBackColor = "rgb(70,80,90)"
+  ,headerBoxShadowColor = ""
+  ,headerBoxShadowSize = "0px 0px 0px"
+
+  ### sidebar
+  ,sidebarBackColor = "rgb(52,62,72)"
+  ,sidebarPadding = 0
+
+  ,sidebarMenuBackColor = "transparent"
+  ,sidebarMenuPadding = 0
+  ,sidebarMenuBorderRadius = 0
+
+  ,sidebarShadowRadius = ""
+  ,sidebarShadowColor = "0px 0px 0px"
+
+  ,sidebarUserTextColor = "rgb(205,205,205)"
+
+  ,sidebarSearchBackColor = "rgb(45,55,65)"
+  ,sidebarSearchIconColor = "rgb(153,153,153)"
+  ,sidebarSearchBorderColor = "rgb(45,55,65)"
+
+  ,sidebarTabTextColor = "rgb(205,205,205)"
+  ,sidebarTabTextSize = 14
+  ,sidebarTabBorderStyle = "none"
+  ,sidebarTabBorderColor = "none"
+  ,sidebarTabBorderWidth = 0
+
+  ,sidebarTabBackColorSelected = "rgb(70,80,90)"
+  ,sidebarTabTextColorSelected = "rgb(255,255,255)"
+  ,sidebarTabRadiusSelected = "5px"
+
+  ,sidebarTabBackColorHover = "rgb(55,65,75)"
+  ,sidebarTabTextColorHover = "rgb(255,255,255)"
+  ,sidebarTabBorderStyleHover = "none"
+  ,sidebarTabBorderColorHover = "none"
+  ,sidebarTabBorderWidthHover = 0
+  ,sidebarTabRadiusHover = "5px"
+
+  ### boxes
+  ,boxBackColor = "rgb(52,62,72)"
+  ,boxBorderRadius = 5
+  ,boxShadowSize = "0px 0px 0px"
+  ,boxShadowColor = ""
+  ,boxTitleSize = 16
+  ,boxDefaultColor = "rgb(52,62,72)"
+  ,boxPrimaryColor = "rgb(200,200,200)"
+  ,boxInfoColor = "rgb(80,95,105)"
+  ,boxSuccessColor = "rgb(155,240,80)"
+  ,boxWarningColor = "rgb(240,80,210)"
+  ,boxDangerColor = "rgb(240,80,80)"
+
+  ,tabBoxTabColor = "rgb(52,62,72)"
+  ,tabBoxTabTextSize = 14
+  ,tabBoxTabTextColor = "rgb(205,205,205)"
+  ,tabBoxTabTextColorSelected = "rgb(205,205,205)"
+  ,tabBoxBackColor = "rgb(52,62,72)"
+  ,tabBoxHighlightColor = "rgb(70,80,90)"
+  ,tabBoxBorderRadius = 5
+
+  ### inputs
+  ,buttonBackColor = "rgb(230,230,230)"
+  ,buttonTextColor = "rgb(0,0,0)"
+  ,buttonBorderColor = "rgb(50,50,50)"
+  ,buttonBorderRadius = 5
+
+  ,buttonBackColorHover = "rgb(180,180,180)"
+  ,buttonTextColorHover = "rgb(50,50,50)"
+  ,buttonBorderColorHover = "rgb(50,50,50)"
+
+  ,textboxBackColor = "rgb(68,80,90)"
+  ,textboxBorderColor = "rgb(76,90,103)"
+  ,textboxBorderRadius = 5
+  ,textboxBackColorSelect = "rgb(80,90,100)"
+  ,textboxBorderColorSelect = "rgb(255,255,255)"
+
+  ### tables
+  ,tableBackColor = "rgb(52,62,72)"
+  ,tableBorderColor = "rgb(70,80,90)"
+  ,tableBorderTopSize = 1
+  ,tableBorderRowSize = 1

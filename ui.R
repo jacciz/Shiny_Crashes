@@ -4,7 +4,8 @@ library(dashboardthemes)
 library(DT)
 library(plotly)
 library(d3heatmap)
-library(fresh)    # adds theme, colors
+# library(fresh)    # adds theme, colors
+source("www/theme_grey_dark.R")  # adds a cool theme
 
 #                                                      SIDEBAR
 sidebar <- dashboardSidebar(
@@ -48,65 +49,15 @@ sidebar <- dashboardSidebar(
 ))
 #                                                     BODY
 body <- dashboardBody(
-  shinyDashboardThemes(
-    theme = "grey_dark"
-  ),
-  # setBackgroundColor("#FFF", shinydashboard = TRUE),
-  # use_theme(
-  #   create_theme(
-  #     # theme = "default",
-  #     bs_vars_global(
-  #       body_bg = "#428BCA",
-  #       border_radius_base = "20px",
-  #       text_color = "#F9C218"
-  #     ),
-  #     bs_vars_input(
-  #       bg = "#428BCA",
-  #       border_radius = "20px"
-  #     ),
-  #     bs_vars_color(
-  #       brand_primary = "#428BCA",
-  #       brand_success = "#4DB848",
-  #       brand_info = "#428BCA",
-  #       brand_danger = "#D50032"
-  #     ),
-  #     bs_vars_font(
-  #       family_sans_serif = "Cambria",
-  #       size_base = "14px",
-  #       size_large = "14px",
-  #       size_small = "6px",
-  #       size_h1 = "14px",
-  #       size_h2 = "12px",
-  #       size_h3 = "10px",
-  #       size_h4 = NULL,
-  #       size_h5 = NULL,
-  #       size_h6 = NULL
-  #     )
-      # adminlte_global(
-      #   content_bg = "#FFF"  #background color
-      # ),
-      # adminlte_sidebar(
-      #   dark_color = "#000000",
-      #   dark_bg = "#428BCA",
-      #   dark_hover_bg = "#003087"
-      # ),
-      # adminlte_color(  #these will be "global" colors for the ui
-      #   light_blue = "#428BCA",
-      #   blue = "#003087",
-      #   green = "#4DB848",
-      #   red = "#D50032",
-      #   # purple = "#3f2d54", #
-      #   yellow = "#F9C218"
-      # )
-  #   )
-  # ),
+  mytheme_grey_dark,  # the awesome theme
+
   # tags$head(
   #   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css") # this tacks on a theme - custom font, etc.
   # ),
   tabItems(
   tabItem(
     tabName = "dashboard",
-    tags$h1("Dane County, 2019, All Crashes"),
+    tags$h2("xxxx County, 2019, All Crashes"),
     #                                                     FIRST TAB X row
     fluidRow(
       column(width = 2,
@@ -117,14 +68,14 @@ body <- dashboardBody(
       ),
       column(width = 5,
       box(
-        title = tags$h2("Crash Severity by Month"),
+        title = ("Crash Severity by Month"),
         width = NULL,
         solidHeader = TRUE,
-        plotOutput("crsh_svr_mth", height = "300px")
+        plotlyOutput("crsh_svr_mth", height = "300px")
       )),
       column(width = 5,
       box(
-        title = tags$h2("Time of Day Crashes"),
+        title = ("Time of Day Crashes"),
         width = NULL,
         solidHeader = TRUE,
         d3heatmapOutput("timeofday_heat", height = "300px")
@@ -138,11 +89,11 @@ body <- dashboardBody(
     #     solidHeader = TRUE,
     #     plotOutput("alcflag", height = "300px")
     #   )
-    # ),
+    # ),``
 
     #                                                     FIRST TAB X row
     fluidRow(
-      box(
+      box("Manner of Collision",
         width = 5,
         solidHeader = TRUE,
         plotlyOutput("mnrcoll", height = "300px")

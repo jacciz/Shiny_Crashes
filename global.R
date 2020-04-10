@@ -1,26 +1,24 @@
 # library(readr)
 library(dplyr)
-library(data.table)
+library(data.table) # fread
 # library(grDevices)  # for fonts
-source("data/data_import.R") # import functions from this script to import data
+# source("data/data_import.R") # import functions from this script to import data
 
 Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
 Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
 
 
-# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R_WD_Data/Shiny_Crashes") # don't need this when uploading to server
+setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard") # don't need this when uploading to server
 
-all_crashes <- import_all_crashes("2019_crash")
-# Note: Creates a newtime field. Should time 0 be NA?
+all_crashes <- readRDS("data/all_crashes.rds")
+# Note: Creates a newtime field. time of 0 and 999 will be NA
 
-# all_persons <- import_all_persons("2019_person")
+# all_persons <- readRDS("data/all_persons.rds")
 # Note: Creates a age_group field
 
-# all_vehicles <- import_all_vehicles("2019_vehicle")
-
-county_recode <- fread("data/county_recode.csv")
-muni_recode <- fread("data/muni_recode.csv")
-
+all_vehicles <- readRDS("data/all_vehicles.rds")
+county_recode <- readRDS("data/county_recode.rds")
+muni_recode <- readRDS("data/muni_recode.rds")
 
 # For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
 # Also shiny::reactLog() for issues with reactivity
