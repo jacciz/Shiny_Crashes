@@ -78,7 +78,7 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
 
     ### inputs
     ,buttonBackColor = "rgb(230,230,230)"
-    ,buttonTextColor = "rgb(0,0,0)"
+    ,buttonTextColor = "rgb(0,0,0)" 
     ,buttonBorderColor = "rgb(50,50,50)"
     ,buttonBorderRadius = 5
 

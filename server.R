@@ -52,7 +52,7 @@ server <- function(input, output, session) {
       datatable(rownames = FALSE)
   })
   
-  updatePickerInput(session,
+  updateSelectInput(session,
                     "year",
                     choices = c(2019, 2018)) #Set years of data
 
@@ -88,31 +88,31 @@ server <- function(input, output, session) {
   output$passveh_box <- renderInfoBox({
     valueBox(
       3400, "Passenger Veh.", icon = icon("car"),
-      color = "red"
+      color = "yellow"
     )
   })
   output$light_truck_box <- renderInfoBox({
     valueBox(
       32, "Light Trucks", icon = icon("truck"),
-      color = "red"
+      color = "yellow"
     )
   })
   output$large_truck_box <- renderInfoBox({
     valueBox(
       6, "Large Trucks", icon = icon("truck-moving"),
-      color = "green"
+      color = "yellow"
     )
   })
   output$motorcycle_box <- renderInfoBox({
     valueBox(
       12, "Motorcycles", icon = icon("motorcycle"),
-      color = "blue"
+      color = "yellow"
     )
   })
   output$bike_box <- renderInfoBox({
     valueBox(
       4, "Bicycles", icon = icon("bicycle"),
-      color = "orange"
+      color = "yellow"
     )
   })
   output$ped_box <- renderInfoBox({
@@ -160,12 +160,13 @@ server <- function(input, output, session) {
     
     # labels = c("Jan.", "Feb.") #could write a list of abbreviations for chart
 
-    crsh_svr_mth_chart <- ggplot(crsh_svr_mth, mapping = aes(CRSHMTH)) +
+    crsh_svr_mth_chart <- crsh_svr_mth %>% ggplot(mapping = aes(CRSHMTH)) +
       theme_classic() +
       geom_bar(aes(fill=CRSHSVR)) +
-      scale_fill_discrete(name = "Crash Severity") +
       theme(
         axis.line = element_blank(),
+        legend.position = "top",   # not working
+        legend.box = "horizontal",
         axis.ticks = element_blank(),
         legend.text = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
         legend.title = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
@@ -175,11 +176,13 @@ server <- function(input, output, session) {
         plot.background = element_rect(fill = "transparent", color = NA),
         panel.background =element_rect(fill = "transparent", color = NA)
       ) +
-      scale_x_discrete(limits = month.name, name = "", labels = function(labels) {
+      scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
         sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
-                         
                          ) +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+    scale_fill_manual(
+      name = "Crash Severity",
+      values = c("#D50032", "#428BCA", "#4DB848"))
     
   crsh_svr_mth_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
   })
@@ -300,6 +303,7 @@ server <- function(input, output, session) {
             axis.ticks=element_blank(),
             axis.text.x = element_text(size = 10, color = "white"),
             axis.text.y = element_text(size = 8, color = "white"),
+            axis.title.y = element_blank(),
             plot.title = element_text(),
             plot.background = element_rect(fill = "transparent", colour = NA),
             panel.background = element_rect(fill = "transparent")
@@ -316,7 +320,81 @@ server <- function(input, output, session) {
     # sum <- all_crashes %>% count(MNRCOLL)
     # sum %>% plot_ly() %>% add_trace(x = ~MNRCOLL, y = ~n, type = 'bar')
   })
-  # mapping = aes(x = reorder(MNRCOLL, -count), y = count) not using this
+
+  output$person_role <- renderPlotly({
+    all_persons <- all_persons %>%
+      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    
+    all_persons$ROLE <- fct_infreq(all_persons$ROLE) %>% fct_rev() # sorts data
+    
+    p_role_chart <- 
+      all_persons %>%
+      ggplot(mapping = aes(x = ROLE, y = ..count..)) +
+      theme_classic() +
+      geom_bar(fill = "#428BCA") +
+      theme(axis.line=element_blank(),
+            legend.position = "none",
+            axis.ticks=element_blank(),
+            axis.text.x = element_text(size = 10, color = "white"),
+            axis.text.y = element_text(size = 8, color = "white"),
+            axis.title.y = element_blank(),
+            plot.title = element_text(),
+            plot.background = element_rect(fill = "transparent", colour = NA),
+            panel.background = element_rect(fill = "transparent")
+      ) +
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+      scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
+        sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
+      coord_flip()
+    
+    p_role_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
+    
+  })
+  
+  output$person_age_gender <- renderPlotly({
+    all_persons <- all_persons %>%
+      filter(CNTYCODE == input$cntynum) %>% select(age_group, SEX) %>% na.omit()  #CNTYCODE is what changes chart
+    
+    p_age_gender_chart <-
+      all_persons %>%
+      ggplot(mapping = aes(x = age_group, fill = SEX)) +
+      theme_classic() +
+      geom_bar() +
+      theme(
+        axis.line = element_blank(),
+        legend.justification=c(1,0),
+        legend.position = "top",
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 10, color = "white"),
+        axis.text.y = element_text(size = 8, color = "white"),
+        legend.text = element_text(size = 8, color = "white"),
+        legend.title = element_text(size = 8, color = "white"),
+        axis.title.y = element_blank(),
+        plot.title = element_text(),
+        plot.background = element_rect(fill = "transparent", colour = NA),
+        panel.background = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent")
+        
+      ) +
+      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+      scale_x_discrete(
+        name = "",
+        labels = function(labels) {
+          # scatter labels
+          sapply(seq_along(labels), function(i)
+            paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))
+        }
+      ) +
+      scale_fill_manual(
+        name = "Gender",
+        values = c("#D50032", "#428BCA", "#F9C218"),
+        labels = c("Female", "Male", "Unknown") # do not work
+      )
+    # coord_flip()
+    
+    p_age_gender_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
+    
+  })
 }
 
 # input - from widgets, controls, never include variables likes input$var

@@ -39,13 +39,14 @@ sidebar <- dashboardSidebar(
     options = list("actions-box" = TRUE),
     multiple = FALSE
   ),
-  pickerInput(
+  selectInput(
     "year",
     "Year",
     choices = NULL,
-    options = list("actions-box" = TRUE),
+    # options = list("actions-box" = TRUE),
     multiple = FALSE
   )
+  
 ))
 #                                                     BODY
 body <- dashboardBody(
@@ -119,16 +120,16 @@ body <- dashboardBody(
     box("Role of Persons Involved", width = 12)
     ,
     box(
-      title = "Role of Persons Bar Chart",
+      title = "Role of Persons",
       width = 5,
       solidHeader = TRUE,
-      plotlyOutput("", height = "300px")
+      plotlyOutput("person_role", height = "300px")
     ),
     box(
-      title = "Age/Gender Histogram",
+      title = "Age and Gender of Persons Involved",
       width = 5,
       solidHeader = TRUE,
-      plotlyOutput("", height = "300px")
+      plotlyOutput("person_age_gender", height = "300px")
     )
   )
   ),
