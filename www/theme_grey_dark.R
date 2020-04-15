@@ -32,24 +32,24 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,sidebarShadowRadius = ""
     ,sidebarShadowColor = "0px 0px 0px"
 
-    ,sidebarUserTextColor = "rgb(205,205,205)"
+    ,sidebarUserTextColor = "rgb(205,205,205)" # grey
 
     ,sidebarSearchBackColor = "rgb(45,55,65)"
     ,sidebarSearchIconColor = "rgb(153,153,153)"
     ,sidebarSearchBorderColor = "rgb(45,55,65)"
 
-    ,sidebarTabTextColor = "rgb(205,205,205)"
+    ,sidebarTabTextColor = "rgb(205,205,205)" # "rgb(0,0,0)" menu is better
     ,sidebarTabTextSize = 14
     ,sidebarTabBorderStyle = "none"
     ,sidebarTabBorderColor = "none"
     ,sidebarTabBorderWidth = 0
 
     ,sidebarTabBackColorSelected = "rgb(70,80,90)"
-    ,sidebarTabTextColorSelected = "rgb(255,255,255)"
+    ,sidebarTabTextColorSelected = "rgb(255,255,255)" #white
     ,sidebarTabRadiusSelected = "5px"
 
     ,sidebarTabBackColorHover = "rgb(55,65,75)"
-    ,sidebarTabTextColorHover = "rgb(255,255,255)"
+    ,sidebarTabTextColorHover = "rgb(255,255,255)" 
     ,sidebarTabBorderStyleHover = "none"
     ,sidebarTabBorderColorHover = "none"
     ,sidebarTabBorderWidthHover = 0

@@ -22,30 +22,70 @@ sidebar <- dashboardSidebar(
     tabName = "tables",
     badgeColor = "green"
   ),
-  pickerInput(
+  selectInput(
     "cntynum",
     "County",
     choices = NULL,
-    #now null sort(unique(all_crashes$CNTYCODE)
-    options = list("actions-box" = TRUE),
-    multiple = FALSE,
-    selected = "Dane"
+    # options = list("actions-box" = TRUE),
+    multiple = FALSE, selectize = FALSE
   ),
-  pickerInput(
+  selectInput(
     "muni_names",
     "Municipality",
     choices = NULL,
     #muni_recode$MUNICIPALITY
-    options = list("actions-box" = TRUE),
-    multiple = FALSE
+    # options = list("actions-box" = TRUE),
+    multiple = FALSE, selectize = FALSE
   ),
   selectInput(
     "year",
     "Year",
     choices = NULL,
     # options = list("actions-box" = TRUE),
-    multiple = FALSE
-  )
+    multiple = FALSE, selectize = FALSE
+  ),
+  checkboxGroupButtons(
+    inputId = "crsh_svr",
+    label = "Crash Severity:",
+    choices = c(
+      "Fatal Injury",
+      "Suspected Serious Injury",
+      "Suspected Minor Injury",
+      "Possible Injury",
+      "No Apparent Injury"
+    ),
+    size = 'sm',
+    direction = 'vertical',
+    justified = TRUE,
+    status = "success",
+    individual = TRUE,
+    checkIcon = list(
+      yes = icon("ok", lib = "glyphicon"),
+      no = icon("remove", lib = "glyphicon"),
+    verbatimTextOutput("crsh_svr_out")
+    ),
+    selected = c(
+      "Fatal Injury",
+      "Suspected Serious Injury",
+      "Suspected Minor Injury",
+      "Possible Injury",
+      "No Apparent Injury"
+    )
+  ), 
+  checkboxGroupButtons(
+    inputId = "crsh_flags",
+    label = "Flag:",
+    choices = c("Alcohol-related", "Bicyclist", " Pedestrian", "Motorcycle"),
+    justified = TRUE,
+    status = "primary",
+    individual = TRUE,
+    direction = 'vertical',
+    checkIcon = list(
+      yes = icon("ok", lib = "glyphicon"),
+      no = icon("remove", lib = "glyphicon")
+    )
+  ), 
+  materialSwitch(inputId = "id", label = "Test switch", status = "danger")
   
 ))
 #                                                     BODY
@@ -82,16 +122,6 @@ body <- dashboardBody(
         d3heatmapOutput("timeofday_heat", height = "300px")
       ))
     ),
-    # #                                                     FIRST TAB X row
-    # fluidRow(
-    #   box(
-    #     title = "Alcohol Flag Crashes",
-    #     width = 4,
-    #     solidHeader = TRUE,
-    #     plotOutput("alcflag", height = "300px")
-    #   )
-    # ),``
-
     #                                                     FIRST TAB X row
     fluidRow(
       box("Manner of Collision",

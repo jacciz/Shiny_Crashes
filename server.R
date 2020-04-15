@@ -5,6 +5,7 @@ library(expss) # format freq tables
 library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(d3heatmap) # makes time of day / week heat chart
+library(lubridate) # for dates
 # library(ggrepel)  # adjusts labels for ggplots, not for axis
 
 server <- function(input, output, session) {
@@ -14,49 +15,56 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-#                                                       INPUTS
-  
-  # accidentData%>%filter(
-  #   Local_Authority_.District. %in% input$district &
-  #     Year %in% input$year &
-  #     Day_of_Week %in% input$day)
+# INPUTS
 
   tot_crash_num <- reactive({
-    all_crashes %>%
-      filter(CNTYCODE == input$cntynum)
+    filtered_crashes()
   })
-  # all_crashes %>% rename(m_names = MUNICODE)
-  
-  updatePickerInput(session,
-                    "cntynum",
+ 
+  updateSelectInput(session,
+                    "cntynum", selected = 13,
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
   
   observeEvent(input$cntynum, {
 
     muni_cnty_list <- muni_recode %>% filter(CntyCode == input$cntynum)
     
-    updatePickerInput(session,
+    updateSelectInput(session,
                       "muni_names",
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   }) 
-  # setNames(muni_recode$MuniCode, muni_recode$Municipality) # set above to see names
+  
+  output$crsh_svr_out <- renderPrint(input$crsh_svr)
+  
 #                                                                               TABLES
-  output$biketable <- renderDT({
-    table_crsh <- all_crashes %>% 
-      tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
-      tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-      tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
-      tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
-      tab_pivot() %>%
-      drop_empty_columns() %>% 
-      datatable(rownames = FALSE)
-  })
+  table_crsh <- all_crashes %>% 
+    tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
+    tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
+    tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
+    tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
+    tab_pivot() %>%
+    drop_empty_columns() %>% 
+    datatable(rownames = FALSE)
+  output$biketable <- renderDT({table_crsh})
   
   updateSelectInput(session,
-                    "year",
-                    choices = c(2019, 2018)) #Set years of data
+                    "year", selected = 2019,
+                    choices = c(2020, 2019, 2018, 2017)) #Set years of data
+  
+  # Selected and filtered data
+  filtered_crashes <- reactive({
+    all_crashes %>%
+      filter(CNTYCODE == input$cntynum, year(CRSHDATE) %in% input$year)
+    # crsh_svr_out
+  })
+  
+  filtered_persons <- reactive({
+    all_persons %>%
+      filter(CNTYCODE == input$cntynum, year(CRSHDATE) %in% input$year, WISINJ %in% input$crsh_svr)
+  })
+  
 
-  #                                                          First row charts  
+  # First row charts  
   output$tot_crash <- renderInfoBox({
     valueBox(
       nrow(tot_crash_num()), "Total Crashes", icon = icon("car-crash"),
@@ -84,7 +92,7 @@ server <- function(input, output, session) {
   #   )
   # })
   # 
-  #                                                          X row charts 
+  # X row charts 
   output$passveh_box <- renderInfoBox({
     valueBox(
       3400, "Passenger Veh.", icon = icon("car"),
@@ -122,45 +130,13 @@ server <- function(input, output, session) {
     )
   })
   
-#                                                          SECOND row charts                       
-  output$bike_ped_flag <- renderPlot({
-    # all_crashes <- rbind(crash_month())  #take variable of what was inputted
-    # all_crashes$group <- c()
-    
-    # bike_crashes <- all_crashes %>% 
-    #   # group_by(CRSHMTH) %>%
-    #   filter(BIKEFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-    # 
-    # ped_crashes <- all_crashes %>% 
-    #   # group_by(CRSHMTH) %>%
-    #   filter(PEDFLAG == "Y", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
-    # 
-    # all_crashes <- all_crashes %>% 
-    #   # group_by(CRSHMTH) %>%
-    #   filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart 
-    # 
-    # ggplot(mapping = aes(x=all_crashes$CRSHMTH, y=..count..)) +
-    #   theme_classic() +
-    #   geom_bar(fill = "orange") +
-    #   geom_bar(width = .5, mapping = aes(x=ped_crashes$CRSHMTH, y=..count..), fill = "blue") +
-    #   geom_bar(width = .3, mapping = aes(x=bike_crashes$CRSHMTH, y=..count..), fill = "red") +
-    #   theme(axis.line=element_blank(),
-    #         legend.position = "none",
-    #         axis.text.y=element_blank(),axis.ticks=element_blank(),
-    #         axis.text.x = element_text(size = 12)
-    #   ) +
-    #   scale_x_discrete(limits = month.name, name = "") +
-    #   scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "")
-
-  })
+# SECOND row charts                       
+  
   output$crsh_svr_mth <- renderPlotly({
-    crsh_svr_mth <- all_crashes %>%
-      # group_by(CRSHMTH) %>%
-      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
     
     # labels = c("Jan.", "Feb.") #could write a list of abbreviations for chart
 
-    crsh_svr_mth_chart <- crsh_svr_mth %>% ggplot(mapping = aes(CRSHMTH)) +
+    crsh_svr_mth_chart <- filtered_crashes() %>% ggplot(mapping = aes(CRSHMTH)) +
       theme_classic() +
       geom_bar(aes(fill=CRSHSVR)) +
       theme(
@@ -190,8 +166,7 @@ server <- function(input, output, session) {
   
   output$timeofday_heat <- renderD3heatmap({
    
-    day_time <- all_crashes %>%
-      filter(CNTYCODE == input$cntynum) %>%
+    day_time <- filtered_crashes() %>%
       # apply_labels(CNTYCODE = "County") %>%
       tab_cells(newtime) %>%       # stuff to put in the rows
       # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
@@ -269,67 +244,47 @@ server <- function(input, output, session) {
       )
     )
   })
-  
-  # output$alcflag <- renderPlot({
-  #   # all_crashes <- rbind(crash_month())  #take variable of what was inputted
-  #   # all_crashes$group <- c()
-  #   
-  #   all_crashes <- all_crashes %>% 
-  #     # group_by(CRSHMTH) %>%
-  #     filter(ALCFLAG == "Yes", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
-  #   
-  #   all_crashes %>% 
-  #     ggplot(mapping = aes(x=CRSHMTH, y=..count..)) +
-  #     theme_classic() +
-  #     geom_bar()
-  # })
-  #                                                          THIRD row charts
+
+  # THIRD row charts
   
   output$mnrcoll <- renderPlotly({
     
-    all_crashes <- all_crashes %>%
-      filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    mnr_crashes <- filtered_crashes() %>%
+      filter(MNRCOLL != "Unknown")
     
-    all_crashes$MNRCOLL <- fct_infreq(all_crashes$MNRCOLL) %>% fct_rev()
+    mnr_crashes$MNRCOLL <-
+      fct_infreq(mnr_crashes$MNRCOLL) %>% fct_rev()
     
-  mnrcoll_chart <- 
-    all_crashes %>%
+    mnrcoll_chart <-
+      mnr_crashes %>%
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
       theme_classic() +
       geom_bar(fill = "#428BCA") +
       # ggtitle("Manner of Collision") +
-      theme(axis.line=element_blank(),
-            legend.position = "none",
-            axis.ticks=element_blank(),
-            axis.text.x = element_text(size = 10, color = "white"),
-            axis.text.y = element_text(size = 8, color = "white"),
-            axis.title.y = element_blank(),
-            plot.title = element_text(),
-            plot.background = element_rect(fill = "transparent", colour = NA),
-            panel.background = element_rect(fill = "transparent")
+      theme(
+        axis.line = element_blank(),
+        legend.position = "none",
+        axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 10, color = "white"),
+        axis.text.y = element_text(size = 8, color = "white"),
+        axis.title.y = element_blank(),
+        plot.title = element_text(),
+        plot.background = element_rect(fill = "transparent", colour = NA),
+        panel.background = element_rect(fill = "transparent")
       ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       coord_flip()
-  mnrcoll_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
-    # 
-    # all_crashes <- all_crashes %>%  # can delete this
-    #   filter(MNRCOLL != "Unknown", CNTYCODE == input$cntynum) %>%
-    #   group_by(MNRCOLL, CRSHMTH) %>%
-    #   ggplotly() %>%
-    #   add_trace(x = ~MNRCOLL, y = ~ CRSHMTH)    # 
-    # sum <- all_crashes %>% count(MNRCOLL)
-    # sum %>% plot_ly() %>% add_trace(x = ~MNRCOLL, y = ~n, type = 'bar')
+    mnrcoll_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
   })
-
+  
   output$person_role <- renderPlotly({
-    all_persons <- all_persons %>%
-      filter(CNTYCODE == input$cntynum)  #CNTYCODE is what changes chart
+    person <- filtered_persons()
     
-    all_persons$ROLE <- fct_infreq(all_persons$ROLE) %>% fct_rev() # sorts data
+    person$ROLE <- fct_infreq(person$ROLE) %>% fct_rev() # sorts data
     
     p_role_chart <- 
-      all_persons %>%
-      ggplot(mapping = aes(x = ROLE, y = ..count..)) +
+      person %>%
+      ggplot(mapping = aes(x = ROLE, y = ..count.., fill = WISINJ)) +
       theme_classic() +
       geom_bar(fill = "#428BCA") +
       theme(axis.line=element_blank(),
@@ -352,11 +307,11 @@ server <- function(input, output, session) {
   })
   
   output$person_age_gender <- renderPlotly({
-    all_persons <- all_persons %>%
-      filter(CNTYCODE == input$cntynum) %>% select(age_group, SEX) %>% na.omit()  #CNTYCODE is what changes chart
+    person <-
+      filtered_persons() %>% select(age_group, SEX) %>% na.omit()
     
     p_age_gender_chart <-
-      all_persons %>%
+      person %>%
       ggplot(mapping = aes(x = age_group, fill = SEX)) +
       theme_classic() +
       geom_bar() +
@@ -396,8 +351,3 @@ server <- function(input, output, session) {
     
   })
 }
-
-# input - from widgets, controls, never include variables likes input$var
-# output - stuff to send to ui, always quite variables, plotOutput("plot")
-# plot charts uses renderPlot and plotOutput
-# text is renderText and textOutput

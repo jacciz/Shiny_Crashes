@@ -9,7 +9,7 @@ file = "W:/HSSA/Keep/Jaclyn Ziebert/R/CSV/"
 # then exports to an RDS file. global.R will read this RDS file. Raw data must be put in 'data/' file
 import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
-    fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE, nrows = 200,
+    fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
           select = c("CRSHNMBR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
                      "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "CRSHSVR", "MNRCOLL",
                      "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
@@ -139,9 +139,10 @@ all_persons <- import_all_persons("person")
 all_vehicles <- import_all_vehicles("vehicle")
 
 
+
+# To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
 # muni_recode <- fread("Data Prep for R Shiny/muni_recode.csv")
-
-saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
-saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
-test <- readRDS("W:/HSSA/Keep/Jaclyn Ziebert/R/CSV/person.rds")
+# 
+# saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
+# saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
