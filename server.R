@@ -15,14 +15,14 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-# INPUTS
+# Sidebar Choices. What the user inputs.
 
   tot_crash_num <- reactive({
     filtered_crashes()
   })
  
   updateSelectInput(session,
-                    "cntynum", selected = 13,
+                    "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
   
   observeEvent(input$cntynum, {
@@ -36,52 +36,61 @@ server <- function(input, output, session) {
   
   output$crsh_svr_out <- renderPrint(input$crsh_svr)
   
-#                                                                               TABLES
-  table_crsh <- all_crashes %>% 
-    tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
-    tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-    tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
-    tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
-    tab_pivot() %>%
-    drop_empty_columns() %>% 
-    datatable(rownames = FALSE)
-  output$biketable <- renderDT({table_crsh})
   
   updateSelectInput(session,
                     "year", selected = 2019,
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
   
-  # Selected and filtered data
+  # Filters data that was inputted by the user.
   filtered_crashes <- reactive({
     all_crashes %>%
-      filter(CNTYCODE == input$cntynum, year(CRSHDATE) %in% input$year)
+      filter(
+        CNTYCODE == input$cntynum,
+        year(CRSHDATE) %in% input$year
+      )
     # crsh_svr_out
   })
   
   filtered_persons <- reactive({
     all_persons %>%
-      filter(CNTYCODE == input$cntynum, year(CRSHDATE) %in% input$year, WISINJ %in% input$crsh_svr)
+      filter(
+        CNTYCODE == input$cntynum,
+        year(CRSHDATE) %in% input$year,
+        WISINJ %in% input$crsh_svr
+      )
   })
   
+  filtered_vehicless <- reactive({
+    all_vehicles %>%
+      filter(
+        CNTYCODE == input$cntynum,
+        year(CRSHDATE) %in% input$year
+     )
+  })
 
-  # First row charts  
+  # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
   output$tot_crash <- renderInfoBox({
     valueBox(
-      nrow(tot_crash_num()), "Total Crashes", icon = icon("car-crash"),
+      # tags$h6("11,888", style = "font-size: 100%; vertical-align: middle;"),
+      format(nrow(tot_crash_num()), big.mark = ","),
+      "Total Crashes",
+      icon = icon("car-crash"),
       color = "red"
     )
   })
   output$tot_inj <- renderInfoBox({
     valueBox(
-      tot_crash_num() %>% summarise(x = sum(TOTINJ)),
-      "Total Injuries", icon = icon("band-aid"),
+      tot_crash_num() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
+      "Total Injuries",
+      icon = icon("band-aid"),
       color = "red"
     )
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(
-      tot_crash_num() %>% summarise(x = sum(TOTFATL)),
-      "Total Fatalities", icon = icon("skull"),
+      tot_crash_num() %>% summarise(x = format(sum(TOTFATL), big.mark = ",")),
+      "Total Fatalities",
+      icon = icon("skull"),
       color = "red"
     )
   })
@@ -139,15 +148,16 @@ server <- function(input, output, session) {
     crsh_svr_mth_chart <- filtered_crashes() %>% ggplot(mapping = aes(CRSHMTH)) +
       theme_classic() +
       geom_bar(aes(fill=CRSHSVR)) +
+      ggtitle("Crash Severity by Month") +
       theme(
         axis.line = element_blank(),
-        legend.position = "top",   # not working
-        legend.box = "horizontal",
         axis.ticks = element_blank(),
-        legend.text = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
-        legend.title = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
-        axis.text.x = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
-        axis.text.y = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        plot.title = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        plot.title.position = "panel",
+        legend.text = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
+        legend.title = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
+        axis.text.x = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
+        axis.text.y = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
         legend.background = element_rect(fill = "transparent", color = NA),
         plot.background = element_rect(fill = "transparent", color = NA),
         panel.background =element_rect(fill = "transparent", color = NA)
@@ -157,10 +167,10 @@ server <- function(input, output, session) {
                          ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
     scale_fill_manual(
-      name = "Crash Severity",
+      name = "", #Crash Severity no legend title
       values = c("#D50032", "#428BCA", "#4DB848"))
     
-  crsh_svr_mth_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
+  crsh_svr_mth_chart %>% ggplotly() %>% layout(legend = list(x = 0.5, y = 100, orientation = 'h')) # hoverinfo, can use event_data to update ui data
   })
   # , bg="transparent"
   
@@ -173,10 +183,9 @@ server <- function(input, output, session) {
       tab_cols(DAYNMBR) %>%     # columns
       tab_stat_cases() %>% # frequency count, can also do percent
       tab_pivot()
-      # drop_empty_columns()
     
     row.names(day_time) <-
-      day_time$row_labels # - change row names to match row_labels
+      day_time$row_labels # change row names to match row_labels
     
     for (col in 1:ncol(day_time)) { #relabel
       colnames(day_time)[col] <-
@@ -205,11 +214,11 @@ server <- function(input, output, session) {
       colors = "Blues",
       theme = "dark",
       na.rm = FALSE,
-      xaxis_font_size = "12px",
-      yaxis_font_size = "12px",
+      xaxis_font_size = "8px",
+      yaxis_font_size = "8px",
       labCol = c(
-        "Sunday",
-        "Monday",
+        "Sun.",
+        "Mon.",
         "Tuesday",
         "Wednesday",
         "Thursday",
@@ -255,6 +264,8 @@ server <- function(input, output, session) {
     mnr_crashes$MNRCOLL <-
       fct_infreq(mnr_crashes$MNRCOLL) %>% fct_rev()
     
+    max_count = max(table(mnr_crashes$MNRCOLL))
+    
     mnrcoll_chart <-
       mnr_crashes %>%
       ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
@@ -265,7 +276,7 @@ server <- function(input, output, session) {
         axis.line = element_blank(),
         legend.position = "none",
         axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 10, color = "white"),
+        axis.text.x = element_blank(),
         axis.text.y = element_text(size = 8, color = "white"),
         axis.title.y = element_blank(),
         plot.title = element_text(),
@@ -273,11 +284,19 @@ server <- function(input, output, session) {
         panel.background = element_rect(fill = "transparent")
       ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+      geom_text(
+        stat = 'count',
+        color = "#428BCA",
+        aes(label = format(..count.., big.mark=",")),
+        fontface = "bold",
+        hjust = 0,
+        nudge_y = max_count / 20
+      ) +
       coord_flip()
     mnrcoll_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
   })
   
-  output$person_role <- renderPlotly({
+  output$person_role <- renderPlotly({  # have a symbol for each role
     person <- filtered_persons()
     
     person$ROLE <- fct_infreq(person$ROLE) %>% fct_rev() # sorts data
@@ -302,13 +321,17 @@ server <- function(input, output, session) {
         sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
       coord_flip()
     
-    p_role_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
+    p_role_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data text
     
   })
   
   output$person_age_gender <- renderPlotly({
     person <-
       filtered_persons() %>% select(age_group, SEX) %>% na.omit()
+    
+    label_age <- c( "0-4","5-9","10-14","15-19","20-24","25-29","30-34", # this labels x-axis
+      "35-39", "40-44","45-49","50-54","55-59","60-64","65-69","70+")
+    cols <- c("F" = "#D50032", "M" = "#428BCA", "U" = "#F9C218") # colors for gender
     
     p_age_gender_chart <-
       person %>%
@@ -320,7 +343,7 @@ server <- function(input, output, session) {
         legend.justification=c(1,0),
         legend.position = "top",
         axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 10, color = "white"),
+        axis.text.x = element_text(size = 8, color = "white"),
         axis.text.y = element_text(size = 8, color = "white"),
         legend.text = element_text(size = 8, color = "white"),
         legend.title = element_text(size = 8, color = "white"),
@@ -329,11 +352,10 @@ server <- function(input, output, session) {
         plot.background = element_rect(fill = "transparent", colour = NA),
         panel.background = element_rect(fill = "transparent"),
         legend.background = element_rect(fill = "transparent")
-        
       ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       scale_x_discrete(
-        name = "",
+        name = "", limits = label_age,
         labels = function(labels) {
           # scatter labels
           sapply(seq_along(labels), function(i)
@@ -341,13 +363,26 @@ server <- function(input, output, session) {
         }
       ) +
       scale_fill_manual(
-        name = "Gender",
-        values = c("#D50032", "#428BCA", "#F9C218"),
-        labels = c("Female", "Male", "Unknown") # do not work
+        # name = "Gender",
+        # values = c("#D50032", "#428BCA", "#F9C218"),
+        values = c("F" = "#D50032", "M" = "#428BCA", "U" = "#F9C218")
+        # aesthetics = c("colour", "fill")
+        # na.translate = FALSE,
+        # limits = c("Female", "Male", "Unknown") # do not work
       )
     # coord_flip()
     
-    p_age_gender_chart %>% ggplotly() # hoverinfo, can use event_data to update ui data
+    p_age_gender_chart %>% ggplotly() %>% layout(legend = list(x = 0, y = 100, orientation = 'h')) # hoverinfo, can use event_data to update ui data
     
   })
+  #                                                                               TABLES
+  table_crsh <- all_crashes %>% 
+    tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
+    tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
+    tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
+    tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
+    tab_pivot() %>%
+    drop_empty_columns() %>% 
+    datatable(rownames = FALSE)
+  output$biketable <- renderDT({table_crsh})
 }

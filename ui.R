@@ -5,6 +5,7 @@ library(DT)
 library(plotly)
 library(d3heatmap)
 # library(fresh)    # adds theme, colors
+# layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme
 
 #                                                      SIDEBAR
@@ -15,7 +16,6 @@ sidebar <- dashboardSidebar(
     tabName = "dashboard",
     icon = icon("dashboard")
   ),
-  
   menuItem(
     "Tables",
     icon = icon("th"),
@@ -54,7 +54,7 @@ sidebar <- dashboardSidebar(
       "Possible Injury",
       "No Apparent Injury"
     ),
-    size = 'sm',
+    # size = 'sm',
     direction = 'vertical',
     justified = TRUE,
     status = "success",
@@ -75,7 +75,19 @@ sidebar <- dashboardSidebar(
   checkboxGroupButtons(
     inputId = "crsh_flags",
     label = "Flag:",
-    choices = c("Alcohol-related", "Bicyclist", " Pedestrian", "Motorcycle"),
+    choices = c(
+      "Alcohol-related",
+      "Drug-related",
+      "Distracted driving",
+      "Speeding",
+      "Teen driver",
+      "Older driver",
+      "Bicyclist",
+      " Pedestrian",
+      "Motorcycle",
+      "Seat belt",
+      "Intersection & lane dep?"
+    ),
     justified = TRUE,
     status = "primary",
     individual = TRUE,
@@ -89,52 +101,19 @@ sidebar <- dashboardSidebar(
   
 ))
 #                                                     BODY
-body <- dashboardBody(
-  mytheme_grey_dark,  # the awesome theme
-
-  # tags$head(
-  #   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css") # this tacks on a theme - custom font, etc.
-  # ),
+body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
   tabItems(
   tabItem(
     tabName = "dashboard",
-    tags$h2("xxxx County, 2019, All Crashes"),
+    tags$h5("xxxx County, 2019, All Crashes"),
     #                                                     FIRST TAB X row
     fluidRow(
-      column(width = 2,
-        valueBoxOutput("tot_crash", width = NULL), # for column, width = NULL
-        valueBoxOutput("tot_inj",  width = NULL),
-        valueBoxOutput("tot_fatal", width = NULL)
+       # tags$head(tags$style(HTML(".small-box {height: 80px;} .fa {font-size: 10px; vertical-align: middle;} "))), # change height, icon size of all value boxes
+        valueBoxOutput("tot_crash", width = 2), # for column, width = NULL
+        valueBoxOutput("tot_inj",  width = 2),
+        valueBoxOutput("tot_fatal", width = 2),
         # valueBoxOutput("tot_some", width = NULL)
-      ),
-      column(width = 5,
-      box(
-        title = ("Crash Severity by Month"),
-        width = NULL,
-        solidHeader = TRUE,
-        plotlyOutput("crsh_svr_mth", height = "300px")
-      )),
-      column(width = 5,
-      box(
-        title = ("Time of Day Crashes"),
-        width = NULL,
-        solidHeader = TRUE,
-        d3heatmapOutput("timeofday_heat", height = "300px")
-      ))
     ),
-    #                                                     FIRST TAB X row
-    fluidRow(
-      box("Manner of Collision",
-        width = 5,
-        solidHeader = TRUE,
-        plotlyOutput("mnrcoll", height = "300px")
-      )
-    ),
-    
-    #                                                     FIRST TAB X row
-    fluidRow(
-      box("Vehicle Type Involved", width = 12)
-      ),
     fluidRow(
       # Dynamic infoBoxes
       valueBoxOutput("passveh_box", width = 2),
@@ -144,26 +123,47 @@ body <- dashboardBody(
       valueBoxOutput("bike_box", width = 2),
       valueBoxOutput("ped_box", width = 2)
     ),
-  
-  #                                                     FIRST TAB X row
+      fluidRow(
+      box(
+        # title = ("Crash Severity by Month"),
+        width = 4,
+        solidHeader = TRUE,
+        # HTML("<div style='height: 300px;'>"),
+        # plotlyOutput("crsh_svr_mth", height = "250px"),
+        # HTML("</div>")
+        plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
+      ),
+      box(
+        title = ("Time of Day Crashes"),
+        width = 4,
+        solidHeader = TRUE,
+        HTML("<div style='height: 200px;'>"),
+        d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
+        HTML("</div>")
+        # d3heatmapOutput("timeofday_heat", height = "200px", width = "110%")
+      ),
+      box("Manner of Collision",
+        width = 4,
+        solidHeader = TRUE,
+        plotlyOutput("mnrcoll", height = "200px", inline = T)
+    )),
+    # div(style = " padding: 0px 0px; margin-top:-2em"),
   fluidRow(
-    box("Role of Persons Involved", width = 12)
-    ,
     box(
       title = "Role of Persons",
-      width = 5,
+      width = 4,
       solidHeader = TRUE,
-      plotlyOutput("person_role", height = "300px")
+      plotlyOutput("person_role", height = "200px", inline = T)
     ),
     box(
       title = "Age and Gender of Persons Involved",
-      width = 5,
+      width = 4,
       solidHeader = TRUE,
-      plotlyOutput("person_age_gender", height = "300px")
+      plotlyOutput("person_age_gender", height = "200px", inline = T)
     )
   )
   ),
-  #                                                   SECOND TAB    First row
+# Table Tab
   tabItem(tabName = "tables",
           h2("Tables tab content"),
           
@@ -175,6 +175,6 @@ body <- dashboardBody(
 # Put them together into a dashboardPage
 dashboardPage(
   # skin = "blue_gradient",   #add a theme
-  dashboardHeader(title = "WisDOT Vision Zero Dashboard"),
+  dashboardHeader(title = logo_mytheme),
               sidebar,
               body)

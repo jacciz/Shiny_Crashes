@@ -99,6 +99,16 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,tableBorderRowSize = 1
   )
 
+logo_mytheme <- shinyDashboardLogoDIY(
+  boldText = "test"
+  ,mainText = "WisDOT Vision Zero Dashboard"
+  ,textSize = 14
+  ,badgeText = "BETA"
+  ,badgeTextColor = "white"
+  ,badgeTextSize = 2
+  ,badgeBackColor = "#40E0D0"
+  ,badgeBorderRadius = 3
+)
 
   # WisDOT Colors
 #   light_blue = "#428BCA",
