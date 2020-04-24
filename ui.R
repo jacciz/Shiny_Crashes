@@ -10,6 +10,7 @@ source("www/theme_grey_dark.R")  # adds a cool theme
 
 #                                                      SIDEBAR
 sidebar <- dashboardSidebar(
+  width = "250px", # sidebar width
   sidebarMenu(
   menuItem(
     "Dashboard",
@@ -54,15 +55,15 @@ sidebar <- dashboardSidebar(
       "Possible Injury",
       "No Apparent Injury"
     ),
-    # size = 'sm',
+    size = 'sm',
     direction = 'vertical',
     justified = TRUE,
     status = "success",
     individual = TRUE,
     checkIcon = list(
       yes = icon("ok", lib = "glyphicon"),
-      no = icon("remove", lib = "glyphicon"),
-    verbatimTextOutput("crsh_svr_out")
+      no = icon("remove", lib = "glyphicon")
+    # verbatimTextOutput("crsh_svr_out")
     ),
     selected = c(
       "Fatal Injury",
@@ -83,11 +84,12 @@ sidebar <- dashboardSidebar(
       "Teen driver",
       "Older driver",
       "Bicyclist",
-      " Pedestrian",
+      "Pedestrian",
       "Motorcycle",
       "Seat belt",
       "Intersection & lane dep?"
     ),
+    size = 'sm',
     justified = TRUE,
     status = "primary",
     individual = TRUE,
@@ -95,10 +97,10 @@ sidebar <- dashboardSidebar(
     checkIcon = list(
       yes = icon("ok", lib = "glyphicon"),
       no = icon("remove", lib = "glyphicon")
+      # verbatimTextOutput("crsh_flags_out")
     )
   ), 
   materialSwitch(inputId = "id", label = "Test switch", status = "danger")
-  
 ))
 #                                                     BODY
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
@@ -112,26 +114,29 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         valueBoxOutput("tot_crash", width = 2), # for column, width = NULL
         valueBoxOutput("tot_inj",  width = 2),
         valueBoxOutput("tot_fatal", width = 2),
+        valueBoxOutput("passveh_box", width = 2),
+        valueBoxOutput("light_truck_box", width = 2),
+        valueBoxOutput("large_truck_box", width = 2),
         # valueBoxOutput("tot_some", width = NULL)
     ),
     fluidRow(
       # Dynamic infoBoxes
-      valueBoxOutput("passveh_box", width = 2),
-      valueBoxOutput("light_truck_box", width = 2),
-      valueBoxOutput("large_truck_box", width = 2),
+      valueBoxOutput("", width = 2),
+      valueBoxOutput("", width = 2),
+      valueBoxOutput("", width = 2),
       valueBoxOutput("motorcycle_box", width = 2),
       valueBoxOutput("bike_box", width = 2),
       valueBoxOutput("ped_box", width = 2)
     ),
       fluidRow(
       box(
-        # title = ("Crash Severity by Month"),
+        title = ("Crash Severity by Month"),
         width = 4,
         solidHeader = TRUE,
-        # HTML("<div style='height: 300px;'>"),
-        # plotlyOutput("crsh_svr_mth", height = "250px"),
-        # HTML("</div>")
-        plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
+        HTML("<div style='height: 200px;'>"),
+        plotlyOutput("crsh_svr_mth", height = "220px"),
+        HTML("</div>")
+        # plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
       ),
       box(
         title = ("Time of Day Crashes"),
@@ -145,7 +150,10 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
       box("Manner of Collision",
         width = 4,
         solidHeader = TRUE,
-        plotlyOutput("mnrcoll", height = "200px", inline = T)
+        HTML("<div style='height: 220px;'>"),
+        plotlyOutput("mnrcoll", height = "240px", inline = T),
+        HTML("</div>")
+        # plotlyOutput("mnrcoll", height = "200px", inline = T)
     )),
     # div(style = " padding: 0px 0px; margin-top:-2em"),
   fluidRow(

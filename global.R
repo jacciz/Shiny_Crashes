@@ -25,3 +25,6 @@ muni_recode <- readRDS("data/muni_recode.rds")
 # options(shiny.reactlog = TRUE) then ctrl-f3 in browser
 
 # all_crashes %>% select(CRSHNMBR, CRSHTIME, newtime) %>% View() # to compare time
+crsh_flags <- c("ALCFLAG", "DRUGFLAG")
+crsh_flag_text <- c("Alcohol-related", "Drug-related")
+crsh_flag_recode <- data.frame(crsh_flags, crsh_flag_text)

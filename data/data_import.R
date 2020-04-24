@@ -1,10 +1,11 @@
 library(data.table)
 library(dplyr)
 library(lubridate)
+library(memisc)
 
-setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/CSV") # don't need this when uploading to server
+setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")
 # file_loc = "Data Prep for R Shiny/"
-file = "W:/HSSA/Keep/Jaclyn Ziebert/R/CSV/"
+file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
 # This script imports data from a CSV, selects certain columns, add columns (such as newtime and age group),
 # then exports to an RDS file. global.R will read this RDS file. Raw data must be put in 'data/' file
 import_all_crashes <- function(csv_name, file_loc = file) {
@@ -77,11 +78,11 @@ import_all_crashes <- function(csv_name, file_loc = file) {
 
 import_all_persons <- function(csv_name, file_loc = file) {
   all_persons <-
-    fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
+    fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE, #nrows = 1000,
           select = c("CRSHNMBR", "CRSHDATE", "CNTYCODE", "MUNICODE", "WISINJ", "SFTYEQP", "ROLE", "SEX", "AGE", "HLMTUSE")
     )
   all_persons$CRSHDATE <- ymd(all_persons$CRSHDATE)      # convert to date type
-  all_persons <- all_persons %>% mutate(age_group = cut(
+  all_persons <- all_persons %>% mutate(age_group = cut( # add age_group column
     AGE,
     c(0,
       4,
@@ -117,6 +118,26 @@ import_all_persons <- function(csv_name, file_loc = file) {
       "70+"
     ),
     include.lowest = T))
+
+  all_persons <- all_persons %>% mutate(  # relabel ROLE
+    ROLE = case_when(
+      ROLE == "Driver" ~ "Driver",
+      ROLE == "Passenger" ~ "Passenger",
+      ROLE == "Pedestrian" ~ "Pedestrian",
+      ROLE == "Other Pedestrian" ~ "Pedestrian",
+      ROLE == "Bicyclist" ~ "Bicyclist",
+      ROLE == "Other Cyclist" ~ "Bicyclist",
+      ROLE == "Occupant Of Motor Vehicle Not In Transport" ~ "Other",
+      ROLE == "Occupant Of Non-Motor Vehicle Transportation Device" ~ "Other",
+      ROLE == "Unknown Type Of Non-Motorist" ~ "Other",
+      ROLE == "Pedestrian (Non-Occupant)" ~ "Other",
+      ROLE == "Unknown" ~ "Other"
+    )
+  )
+  all_persons <- all_persons %>% mutate(SEX = case_when(SEX == "F" ~ "Female", # relabel SEX
+                                                        SEX == "M" ~ "Male",
+                                                        SEX == "U" ~ "Unknown"))
+
   saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
 }
 
@@ -134,11 +155,9 @@ all_crashes <- import_all_crashes("crash")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 # 
 all_persons <- import_all_persons("person")
-# Note: Creates a age_group field
+# Note: Creates a age_group field, relabels ROLE, SEX
 
 all_vehicles <- import_all_vehicles("vehicle")
-
-
 
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
