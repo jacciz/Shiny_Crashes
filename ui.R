@@ -46,8 +46,8 @@ sidebar <- dashboardSidebar(
     multiple = FALSE, selectize = FALSE
   ),
   checkboxGroupButtons(
-    inputId = "crsh_svr",
-    label = "Crash Severity:",
+    inputId = "inj_svr",
+    label = "Injury Severity:",
     choices = c(
       "Fatal Injury",
       "Suspected Serious Injury",
@@ -63,7 +63,7 @@ sidebar <- dashboardSidebar(
     checkIcon = list(
       yes = icon("ok", lib = "glyphicon"),
       no = icon("remove", lib = "glyphicon")
-    # verbatimTextOutput("crsh_svr_out")
+    # verbatimTextOutput("inj_svr_out")
     ),
     selected = c(
       "Fatal Injury",

@@ -30,10 +30,10 @@ server <- function(input, output, session) {
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   }) 
   
-  output$crsh_svr_out <- renderPrint(input$crsh_svr)
+  output$crsh_svr_out <- renderPrint(input$crsh_svr) # delete?
   
   updateSelectInput(session,
-                    "year", selected = 2019,
+                    "year", selected = 2019, # default selection
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
 
   # Filtered data based on input by the user
@@ -56,10 +56,10 @@ server <- function(input, output, session) {
       filter(
         CNTYCODE %in% input$cntynum,
         year(CRSHDATE) %in% input$year
-        # CRSHSVR %in% crsh_svr_out
+        # CRSHSVR %in% crsh_svr_out - wrong
         # crash_flags_selected()
       )
-    # crsh_svr_out
+    # INJSVR %in% input$inj_svr_out
   })
   
   filtered_persons <- reactive({
@@ -67,27 +67,20 @@ server <- function(input, output, session) {
       filter(
         CNTYCODE %in% input$cntynum,
         year(CRSHDATE) %in% input$year,
-        WISINJ %in% input$crsh_svr
+        WISINJ %in% input$inj_svr
       )
   })
   
   filtered_vehicles <- reactive({
-    all_vehicles %>%
-      filter(
-        CNTYCODE %in% input$cntynum,
-        year(CRSHDATE) %in% input$year
-     )
+    all_vehicles <-
+      inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
   })
-  
-  tot_crash_num <- reactive({ # for value boxes
-    filtered_crashes()
-  })
-  
+
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
   output$tot_crash <- renderInfoBox({
     valueBox(
       # tags$h6("11,888", style = "font-size: 100%; vertical-align: middle;"),
-      format(nrow(tot_crash_num()), big.mark = ","),
+      format(nrow(filtered_crashes()), big.mark = ","),
       "Total Crashes",
       icon = icon("car-crash"),
       color = "red"
@@ -95,7 +88,7 @@ server <- function(input, output, session) {
   })
   output$tot_inj <- renderInfoBox({
     valueBox(
-      tot_crash_num() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
+      filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
       "Total Injuries",
       icon = icon("band-aid"),
       color = "red"
@@ -103,7 +96,7 @@ server <- function(input, output, session) {
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(
-      tot_crash_num() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
+      filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
       "Total Fatalities",
       icon = icon("skull"),
       color = "red"
