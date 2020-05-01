@@ -83,7 +83,7 @@ import_all_persons <- function(csv_name, file_loc = file) {
       paste0(file_loc, csv_name, ".csv", sep = ""),
       sep = ",",
       header = TRUE,
-      nrows = 10000,
+      # nrows = 10000,
       select = c(
         "CRSHNMBR",
         "CRSHSVR",
@@ -91,8 +91,6 @@ import_all_persons <- function(csv_name, file_loc = file) {
         "CRSHDATE",
         "CNTYCODE",
         "MUNICODE",
-        paste0( "DRVRPC", c("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24")),
-        paste0( "STATNM", c("01","02","03","04","05","06","07","08","09","10")),
         "WISINJ",
         "SFTYEQP",
         "ROLE",
@@ -171,6 +169,7 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
 }
 
 
+# input is name of csv
 all_crashes <- import_all_crashes("crash")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 # 
@@ -179,6 +178,7 @@ all_persons <- import_all_persons("person")
 
 all_vehicles <- import_all_vehicles("vehicle")
 
+
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
 # muni_recode <- fread("Data Prep for R Shiny/muni_recode.csv")
@@ -186,32 +186,4 @@ all_vehicles <- import_all_vehicles("vehicle")
 # saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
 # saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
 
-# rbind() to combine df vertically
-
-
-find_speed_statnm <- function(row) {  # input a row for iteration
-  statnm_list <- # all the STATNM columns
-    paste0("STATNM",
-           c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"))
-  statnm = list()
-  for (stat in statnm_list) { # loop through columns finding if statutes in row
-    statoutput <- grepl("346.56|346.57|346.58|346.59 ", row[, stat])
-    statnm <- c(statnm, statoutput)
-  }
-  if (TRUE %in% statnm) { # return true if at least 1 statutes matches
-    return (TRUE)
-  } else {
-    return (FALSE)
-  }
-}
-
-get_list_speedflags <- function(persons_df){
-  for (i in 1:nrow(persons_df)) {
-    row <- persons_df[i, ] #1274
-    persons_df[i , "speedflag"] = find_speed_statnm(row)
-  }
-  speedflag_crshes <-
-    persons_df %>% dplyr::select(c(speedflag, ROLE, CRSHNMBR)) %>% filter(speedflag == TRUE, ROLE == "Driver")
-  return (speedflag_crshes)
-}
-speedflag_crshes <- get_list_speedflags(all_persons)
+# rbind() to combine df vertically    

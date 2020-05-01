@@ -7,6 +7,7 @@ library(plotly) # interactive charts
 library(d3heatmap) # makes time of day / week heat chart
 library(lubridate) # for dates
 # library(ggrepel)  # adjusts labels for ggplots, not for axis
+library(leaflet)
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -33,33 +34,39 @@ server <- function(input, output, session) {
   output$crsh_svr_out <- renderPrint(input$crsh_svr) # delete?
   
   updateSelectInput(session,
-                    "year", selected = 2019, # default selection
+                    "year",
+                    selected = 2019,
+                    # default selection
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
-
-  # Filtered data based on input by the user
-  crash_flags_selected <- reactive({# what flags are selected
-    flags_selected <- input$crsh_flags # get list of flag
-    # flags_selected <- c("Alcohol-related",
-    #                     "Drug-related")
-    flags_selected <- as.factor(flags_selected)
-    flags_selected <-
-      relabel(
-        flags_selected,
-        "Alcohol-related" = "ALCFLAG",
-        "Drug-related" = "DRUGFLAG"
-        # "Distracted driving" = "DISTFLAG"
-      )
-  })
+  
+    # Filtered data based on input by the user
+  crash_flags_selected <-
+    reactive({
+      # what flags are selected - this is set to OR (not AND)
+        rename_crsh_flags <- # rename inputs so we can select flag columns
+          c(
+            'Speeding' = 'speedflag',
+            'Teen driver' = 'teenflag',
+            'Older driver' = 'olderflag'
+          )
+        new_crsh_flags <-
+          rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
+        # seleced_crash_flag_crshes = c('Speeding','Teen driver', 'Older driver')
+        seleced_crash_flag_crshes <-
+          crsh_flags[apply(crsh_flags [new_crsh_flags], 1, function(x)
+            any(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # any, so OR flags are selected
+        return (seleced_crash_flag_crshes$CRSHNMBR) # output is df of CRSHNMBRS
+    })
 
   filtered_crashes <- reactive({
     all_crashes %>%
       filter(
         CNTYCODE %in% input$cntynum,
-        year(CRSHDATE) %in% input$year
-        # CRSHSVR %in% crsh_svr_out - wrong
-        # crash_flags_selected()
+        year(CRSHDATE) %in% input$year,
+        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR
+        # CRSHSVR %in% crsh_svr_out - wrong)
+        # INJSVR %in% input$inj_svr_out
       )
-    # INJSVR %in% input$inj_svr_out
   })
   
   filtered_persons <- reactive({
@@ -67,6 +74,7 @@ server <- function(input, output, session) {
       filter(
         CNTYCODE %in% input$cntynum,
         year(CRSHDATE) %in% input$year,
+        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR,
         WISINJ %in% input$inj_svr
       )
   })
@@ -74,6 +82,11 @@ server <- function(input, output, session) {
   filtered_vehicles <- reactive({
     all_vehicles <-
       inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
+  })
+  
+  filtered_crash_lat_long <- reactive({
+    crash_lat_long <-
+    inner_join(crash_lat_long, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
   })
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
@@ -350,9 +363,9 @@ server <- function(input, output, session) {
     
     p_role_chart <- 
       person %>%
-      ggplot(mapping = aes(x = ROLE, y = ..count..)) +
+      ggplot(mapping = aes(x = ROLE)) +
       theme_classic() +
-      geom_bar(fill = "#428BCA") +
+      geom_bar(fill = "#428BCA", position = 'dodge', stat = 'count') +
       theme(axis.line=element_blank(),
             legend.position = "none",
             axis.ticks=element_blank(),
@@ -363,8 +376,8 @@ server <- function(input, output, session) {
             plot.background = element_rect(fill = "transparent", colour = NA),
             panel.background = element_rect(fill = "transparent")
       ) +
-      scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
-        sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
+      # scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
+      #   sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
       geom_text(
         stat = 'count',
@@ -372,8 +385,8 @@ server <- function(input, output, session) {
         size = 3,
         aes(label = format(..count.., big.mark=",")),
         fontface = "bold",
-        hjust = 0,
-        nudge_y = max_count / 14
+        hjust = 0 #-0.6
+        # nudge_y = max_count / 14
       ) +
       coord_flip()
     
@@ -438,8 +451,19 @@ server <- function(input, output, session) {
         b = 0
       )
     ) 
-    
   })
+  
+  output$map_crash <- renderLeaflet({
+    leaflet(filtered_crash_lat_long()) %>% addTiles() %>% 
+      # addProviderTiles(providers$Stamen.TonerLite,
+                       # options = providerTileOptions(noWrap = TRUE)) %>% 
+    addCircles(lat = ~LATDECDG, lng = ~LONDECDG) #clusterOptions = markerClusterOptions()
+      # addMarkers(data = c(lat = [LATDECDG], lng = [LONDECDG]))
+    # 
+    # for (i in 1:nrow(crash_lat_long)) {
+    #   map$marker(c(.[i, "LATDECDG"], .[i, "LONDECDG"]), bindPopup = df[i, "CRSHNMBR"])}
+  })
+  
   #                                                                               TABLES
   table_crsh <- all_crashes %>% 
     tab_cells(CNTYCODE) %>%                           # stuff to put in the rows

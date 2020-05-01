@@ -4,6 +4,7 @@ library(dashboardthemes)
 library(DT)
 library(plotly)
 library(d3heatmap)
+library(leaflet)
 # library(fresh)    # adds theme, colors
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme
@@ -75,7 +76,7 @@ sidebar <- dashboardSidebar(
   ), 
   checkboxGroupButtons(
     inputId = "crsh_flags",
-    label = "Flag:",
+    label = "Flag: (Selection = Or)",
     choices = c(
       "Alcohol-related",
       "Drug-related",
@@ -168,6 +169,12 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
       width = 4,
       solidHeader = TRUE,
       plotlyOutput("person_age_gender", height = "200px", inline = T)
+    ),
+    box(
+      title = "Map Test",
+      width = 4,
+      solidHeader = TRUE,
+      leafletOutput("map_crash", height = "200px")
     )
   )
   ),
