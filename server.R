@@ -320,13 +320,13 @@ server <- function(input, output, session) {
     mnr_crashes$MNRCOLL <-
       fct_infreq(mnr_crashes$MNRCOLL) %>% fct_rev()
     
-    max_count = max(table(mnr_crashes$MNRCOLL))
+    # max_count = max(table(mnr_crashes$MNRCOLL))
     
     mnrcoll_chart <-
       mnr_crashes %>%
-      ggplot(mapping = aes(x = MNRCOLL, y = ..count..)) +
+      ggplot(mapping = aes(x = MNRCOLL)) +
       theme_classic() +
-      geom_bar(fill = "#428BCA") +
+      geom_bar(fill = "#428BCA", position = 'dodge', stat = 'count') +
       # ggtitle("Manner of Collision") +
       theme(
         axis.line = element_blank(),
@@ -346,8 +346,8 @@ server <- function(input, output, session) {
         size = 3,
         aes(label = format(..count.., big.mark=",")),
         fontface = "bold",
-        hjust = 0,
-        nudge_y = max_count / 20
+        hjust = 0
+        # nudge_y = max_count / 20
       ) +
       coord_flip()
     mnrcoll_chart %>% ggplotly()%>%
@@ -359,7 +359,7 @@ server <- function(input, output, session) {
     
     person$ROLE <- fct_infreq(person$ROLE) %>% fct_rev() # sorts data
     
-    max_count = max(table(person$ROLE))
+    # max_count = max(table(person$ROLE))
     
     p_role_chart <- 
       person %>%

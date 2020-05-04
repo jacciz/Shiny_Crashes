@@ -106,86 +106,99 @@ sidebar <- dashboardSidebar(
 #                                                     BODY
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
   tabItems(
-  tabItem(
-    tabName = "dashboard",
-    tags$h5("xxxx County, 2019, All Crashes"),
-    #                                                     FIRST TAB X row
-    fluidRow(
-       # tags$head(tags$style(HTML(".small-box {height: 80px;} .fa {font-size: 10px; vertical-align: middle;} "))), # change height, icon size of all value boxes
-        valueBoxOutput("tot_crash", width = 2), # for column, width = NULL
-        valueBoxOutput("tot_inj",  width = 2),
+    tabItem(
+      tabName = "dashboard",
+      tags$h5("xxxx County, 2019, All Crashes"),
+      #                                                     FIRST TAB X row
+      fluidRow(
+        # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
+        valueBoxOutput("tot_crash", width = 2),
+        # # for column, width = NULL
+        valueBoxOutput("tot_inj", width = 2),
         valueBoxOutput("tot_fatal", width = 2),
         valueBoxOutput("passveh_box", width = 2),
         valueBoxOutput("light_truck_box", width = 2),
         valueBoxOutput("large_truck_box", width = 2),
-        # valueBoxOutput("tot_some", width = NULL)
-    ),
-    fluidRow(
-      # Dynamic infoBoxes
-      valueBoxOutput("", width = 2),
-      valueBoxOutput("", width = 2),
-      valueBoxOutput("", width = 2),
-      valueBoxOutput("motorcycle_box", width = 2),
-      valueBoxOutput("bike_box", width = 2),
-      valueBoxOutput("ped_box", width = 2)
-    ),
+        # valueBoxOutput("tot_some", width = NULL) total cars?
+        
+        # column(
+        #   width = 2,
+        #   # Dynamic infoBoxes
+        
+        #   valueBoxOutput("motorcycle_box", width = NULL),
+        #   valueBoxOutput("ped_box", width = NULL),
+        #   valueBoxOutput("bike_box", width = NULL)
+        # )
+      ),
       fluidRow(
-      box(
-        title = ("Crash Severity by Month"),
-        width = 4,
-        solidHeader = TRUE,
-        HTML("<div style='height: 200px;'>"),
-        plotlyOutput("crsh_svr_mth", height = "220px"),
-        HTML("</div>")
-        # plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
+        column(
+          width = 3,
+          box(
+            title = ("Crash Severity by Month"),
+            width = NULL,
+            solidHeader = TRUE,
+            HTML("<div style='height: 200px;'>"),
+            plotlyOutput("crsh_svr_mth", height = "220px"),
+            HTML("</div>")
+            # plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
+          ),
+          box(
+            title = ("Time of Day Crashes"),
+            width = NULL,
+            solidHeader = TRUE,
+            HTML("<div style='height: 200px;'>"),
+            d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
+            HTML("</div>")
+            # d3heatmapOutput("timeofday_heat", height = "200px", width = "110%")
+          ),
+        ),
+        column(
+          width = 6,
+          box(
+            title = "Map Test",
+            width = NULL,
+            solidHeader = TRUE,
+            leafletOutput("map_crash", height = "600px")
+          )
+        ),
+        column(
+          width = 3,
+          box(
+            "Manner of Collision",
+            width = NULL,
+            solidHeader = TRUE,
+            HTML("<div style='height: 220px;'>"),
+            plotlyOutput("mnrcoll", height = "240px", inline = T)
+            # HTML("</div>")
+            # plotlyOutput("mnrcoll", height = "200px", inline = T)
+          ),
+          box(
+            title = "Role of Persons",
+            width = NULL,
+            solidHeader = TRUE,
+            plotlyOutput("person_role", height = "200px", inline = T)
+          ),
+          box(
+            title = "Age and Gender of Persons Involved",
+            width = NULL,
+            solidHeader = TRUE,
+            plotlyOutput("person_age_gender", height = "200px", inline = T)
+          )
+        )
       ),
-      box(
-        title = ("Time of Day Crashes"),
-        width = 4,
-        solidHeader = TRUE,
-        HTML("<div style='height: 200px;'>"),
-        d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
-        HTML("</div>")
-        # d3heatmapOutput("timeofday_heat", height = "200px", width = "110%")
-      ),
-      box("Manner of Collision",
-        width = 4,
-        solidHeader = TRUE,
-        HTML("<div style='height: 220px;'>"),
-        plotlyOutput("mnrcoll", height = "240px", inline = T),
-        HTML("</div>")
-        # plotlyOutput("mnrcoll", height = "200px", inline = T)
-    )),
-    # div(style = " padding: 0px 0px; margin-top:-2em"),
-  fluidRow(
-    box(
-      title = "Role of Persons",
-      width = 4,
-      solidHeader = TRUE,
-      plotlyOutput("person_role", height = "200px", inline = T)
-    ),
-    box(
-      title = "Age and Gender of Persons Involved",
-      width = 4,
-      solidHeader = TRUE,
-      plotlyOutput("person_age_gender", height = "200px", inline = T)
-    ),
-    box(
-      title = "Map Test",
-      width = 4,
-      solidHeader = TRUE,
-      leafletOutput("map_crash", height = "200px")
+      # fluid row end
+      
+      # div(style = " padding: 0px 0px; margin-top:-2em"),
     )
-  )
-  ),
+  ), 
 # Table Tab
-  tabItem(tabName = "tables",
-          h2("Tables tab content"),
-          
-          fluidRow(box(
-            width = 6, DTOutput("biketable", height = 600)
-          )))
-))
+tabItem(tabName = "tables",
+        h2("Tables tab content"),
+        
+        fluidRow(box(
+          width = 6, DTOutput("biketable", height = 600)
+        )))
+)
 
 # Put them together into a dashboardPage
 dashboardPage(
