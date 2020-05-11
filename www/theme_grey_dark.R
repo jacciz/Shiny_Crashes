@@ -100,7 +100,7 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
   )
 
 logo_mytheme <- shinyDashboardLogoDIY(
-  boldText = "test"
+  boldText = ""
   ,mainText = "WisDOT Vision Zero Dashboard"
   ,textSize = 14
   ,badgeText = "BETA"

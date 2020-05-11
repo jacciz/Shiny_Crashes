@@ -108,7 +108,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
   tabItems(
     tabItem(
       tabName = "dashboard",
-      tags$h5("xxxx County, 2019, All Crashes"),
+      # tags$h5("xxxx County, 2019, All Crashes"),
       #                                                     FIRST TAB X row
       fluidRow(
         # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
@@ -155,9 +155,8 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         column(
           width = 6,
           box(
-            title = "Map Test",
             width = NULL,
-            solidHeader = TRUE,
+            # solidHeader = TRUE,
             leafletOutput("map_crash", height = "600px")
           )
         ),

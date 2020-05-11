@@ -44,10 +44,15 @@ server <- function(input, output, session) {
     reactive({
       # what flags are selected - this is set to OR (not AND)
         rename_crsh_flags <- # rename inputs so we can select flag columns
-          c(
+          c("Alcohol-related" = "ALCFLAG",
+            "Drug-related" = "DRUGFLAG",
+            # "Distracted driving",  # don't have this one
             'Speeding' = 'speedflag',
             'Teen driver' = 'teenflag',
-            'Older driver' = 'olderflag'
+            'Older driver' = 'olderflag',
+            "Bicyclist" = "BIKEFLAG",
+            "Pedestrian" = "PEDFLAG",
+            "Motorcycle" = "CYCLFLAG"
           )
         new_crsh_flags <-
           rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
@@ -207,12 +212,12 @@ server <- function(input, output, session) {
       theme(
         axis.line = element_blank(),
         axis.ticks = element_blank(),
-        plot.title = element_text(size = 10, family = "Cambria", face = "plain", color = "white"),
+        # plot.title = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
         plot.title.position = "panel",
-        legend.text = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
-        legend.title = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
-        axis.text.x = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
-        axis.text.y = element_text(size = 8, family = "Cambria", face = "plain", color = "white"),
+        legend.text = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
+        legend.title = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
+        axis.text.x = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
+        axis.text.y = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
         legend.background = element_rect(fill = "transparent", color = NA),
         plot.background = element_rect(fill = "transparent", color = NA),
         panel.background =element_rect(fill = "transparent", color = NA)
@@ -333,16 +338,18 @@ server <- function(input, output, session) {
         legend.position = "none",
         axis.ticks = element_blank(),
         axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 8, color = "white"),
+        axis.text.y = element_text(size = 6, color = "white"),
         axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
         plot.title = element_text(),
         plot.background = element_rect(fill = "transparent", colour = NA),
         panel.background = element_rect(fill = "transparent")
       ) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+      ylim(c(0, max(table(mnr_crashes$MNRCOLL))*1.05)) +  # finds max count so labels don't get cut off
       geom_text(
         stat = 'count',
-        color = "#428BCA",
+        color = "white", #428BCA
         size = 3,
         aes(label = format(..count.., big.mark=",")),
         fontface = "bold",
@@ -370,22 +377,24 @@ server <- function(input, output, session) {
             legend.position = "none",
             axis.ticks=element_blank(),
             axis.text.x = element_blank(),
-            axis.text.y = element_text(size = 8, color = "white"),
+            axis.text.y = element_text(size = 6, color = "white"),
             axis.title.y = element_blank(),
+            axis.title.x = element_blank(),
             plot.title = element_text(),
             plot.background = element_rect(fill = "transparent", colour = NA),
             panel.background = element_rect(fill = "transparent")
       ) +
       # scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
-      #   sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
+        # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
       scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+      ylim(c(0, max(table(person$ROLE))*1.05)) +  # finds max count so labels don't get cut off
       geom_text(
         stat = 'count',
-        color = "#428BCA",
+        color = "white", ##428BCA
         size = 3,
         aes(label = format(..count.., big.mark=",")),
         fontface = "bold",
-        hjust = 0 #-0.6
+        hjust = -.5 #-0.6
         # nudge_y = max_count / 14
       ) +
       coord_flip()
@@ -413,10 +422,10 @@ server <- function(input, output, session) {
         legend.justification=c(1,0),
         legend.position = "top",
         axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 8, color = "white"),
-        axis.text.y = element_text(size = 8, color = "white"),
-        legend.text = element_text(size = 8, color = "white"),
-        legend.title = element_text(size = 8, color = "white"),
+        axis.text.x = element_text(size = 6, color = "white"),
+        axis.text.y = element_text(size = 6, color = "white"),
+        legend.text = element_text(size = 6, color = "white"),
+        legend.title = element_text(size = 6, color = "white"),
         axis.title.y = element_blank(),
         plot.title = element_text(),
         plot.background = element_rect(fill = "transparent", colour = NA),
@@ -453,7 +462,7 @@ server <- function(input, output, session) {
     ) 
   })
   
-  output$map_crash <- renderLeaflet({
+  output$map_crash <- renderLeaflet({  # this is the map - using Leaflet
     leaflet(filtered_crash_lat_long()) %>% addTiles() %>% 
       # addProviderTiles(providers$Stamen.TonerLite,
                        # options = providerTileOptions(noWrap = TRUE)) %>% 
