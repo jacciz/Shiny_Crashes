@@ -157,7 +157,9 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
           box(
             width = NULL,
             # solidHeader = TRUE,
+            # rbokehOutput("map_crash_rbokah", height = "600px")
             leafletOutput("map_crash", height = "600px")
+            # checkboxInput("hex", "Show Hex", TRUE)
           )
         ),
         column(

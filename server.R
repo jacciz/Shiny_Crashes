@@ -6,8 +6,21 @@ library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(d3heatmap) # makes time of day / week heat chart
 library(lubridate) # for dates
+library(htmltools)
+library(htmlwidgets)
 # library(ggrepel)  # adjusts labels for ggplots, not for axis
 library(leaflet)
+library(leaflethex)
+# library(r2d3)
+# library(rbokeh)
+# library(tmap)
+# library(geogrid)
+# library(hexbin)
+# library(shinyjs)
+# 
+# library(htmltools)
+# library(htmlwidgets)
+
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -16,6 +29,14 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
+  # 
+  # observe({ # user inputs for map
+  #   proxy <- leafletProxy("map_crash", data = filtered_crash_lat_long())
+  #   if (input$hex) {
+  #     # pal <- colorpal()
+  #     proxy %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25)
+  #   }
+  # })
 # Sidebar Choices. What the user inputs.
 
   updateSelectInput(session, # choose county
@@ -446,8 +467,7 @@ server <- function(input, output, session) {
         # values = c("#D50032", "#428BCA", "#F9C218"),
         values = c("Female" = "#D50032", "Male" = "#428BCA", "Unknown" = "#F9C218")
         # aesthetics = c("colour", "fill")
-        # na.translate = FALSE,
-        # limits = c("Female", "Male", "Unknown") # do not work
+        # na.translate = FALSE
       )
     # coord_flip()
     
@@ -461,17 +481,37 @@ server <- function(input, output, session) {
       )
     ) 
   })
-  
-  output$map_crash <- renderLeaflet({  # this is the map - using Leaflet
-    leaflet(filtered_crash_lat_long()) %>% addTiles() %>% 
+
+  output$map_crash <-
+    renderLeaflet({
+      # this is the map - using Leaflet
+      crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
+      
+      setnames(crashes_to_map, "LONDECDG", "lng")
+      setnames(crashes_to_map, "LATDECDG", "lat") 
+
+      leaflet(crashes_to_map) %>% addTiles() %>% # hex doesnt work in Shiny?
+        addCircles() %>% addHexbin()# %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25) # can also do clusterOptions = markerClusterOptions()
+
       # addProviderTiles(providers$Stamen.TonerLite,
-                       # options = providerTileOptions(noWrap = TRUE)) %>% 
-    addCircles(lat = ~LATDECDG, lng = ~LONDECDG) #clusterOptions = markerClusterOptions()
-      # addMarkers(data = c(lat = [LATDECDG], lng = [LONDECDG]))
-    # 
-    # for (i in 1:nrow(crash_lat_long)) {
-    #   map$marker(c(.[i, "LATDECDG"], .[i, "LONDECDG"]), bindPopup = df[i, "CRSHNMBR"])}
-  })
+      # options = providerTileOptions(noWrap = TRUE)) %>%
+      # addMarkers(data = c(lat = [LATDECDG], lng = [LONDECDG]))    #
+      # for (i in 1:nrow(crash_lat_long)) {
+      #   map$marker(c(.[i, "LATDECDG"], .[i, "LONDECDG"]), bindPopup = df[i, "CRSHNMBR"])}
+    })
+
+  # output$map_crash_rbokah <- renderRbokeh({
+  #   # test map alternative
+  #   crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LATDECDG,LONDECDG) # need on ly lat/long
+  #   
+  #   gmap(
+  #     lat = 	44.53258,
+  #     lng = -88.10613,
+  #     zoom = 10,
+  #     api_key = "AIzaSyCAWltpI2o9MrN5sRAyvgx9NJYikHCkeag",
+  #     map_style = gmap_style("blue_water")
+  #   ) %>% ly_hexbin(x = crashes_to_map$LONDECDG, y = crashes_to_map$LATDECDG) 
+  # })
   
   #                                                                               TABLES
   table_crsh <- all_crashes %>% 
