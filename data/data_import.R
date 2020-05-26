@@ -2,7 +2,7 @@ library(data.table)
 library(dplyr)
 library(lubridate)
 library(memisc)
-# library(sjmisc)
+# library(sjmisc)  ### MAY have to change data to mdy
 
 setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")
 # file_loc = "Data Prep for R Shiny/"
@@ -13,7 +13,7 @@ import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
           select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
-                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "CRSHSVR", "MNRCOLL",
+                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL",
                      "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
           )
   all_crashes$CRSHDATE <- ymd(all_crashes$CRSHDATE)       # convert to date type

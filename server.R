@@ -17,27 +17,53 @@ library(leaflethex)
 # library(geogrid)
 # library(hexbin)
 # library(shinyjs)
+# library(RColorBrewer)
+
+# download.file('https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js', 'C:/CSV/hex.js', mode="wb")
+# helloLocalFile <- htmlDependency("hex", "1.0",
+                                 # src = c(file = normalizePath('C:/CSV')),  script = "hex.js")
+# jsfile <- "https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js" # Hex map file
 # 
-# library(htmltools)
-# library(htmlwidgets)
-
-
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
     # session$user is non-NULL only in authenticated sessions
     if (!is.null(session$user)) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
+    attachDependencies( # import file for hex
+      tags$script("
+        alert('goodbye')
+      "),
+       helloLocalFile
+    ) 
+    
   })
-  # 
-  # observe({ # user inputs for map
-  #   proxy <- leafletProxy("map_crash", data = filtered_crash_lat_long())
-  #   if (input$hex) {
-  #     # pal <- colorpal()
-  #     proxy %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25)
-  #   }
-  # })
+
+  # copied from https://gist.github.com/helgasoft/799fac40f6fa2561c61cd1404521573a
+  # hexBin <- htmltools::htmlDependency(
+  #   name = 'hexBin',
+  #   version = "1.0",
+  #   # (1) works in R but not in Shiny due to async loading, see https://github.com/rstudio/shiny/issues/1389
+  #   # src = c(href = 'https://cdn.statically.io/gh/dayjournal/Leaflet.Control.Opacity/master/dist/'),
+  #   # (2) works in R and Shiny - download js/css files, then use this:
+  #   src = 'C:/W_shortcut/Shiny_Crashes_Dashboard/js',
+  #   script = c("hexbin.js", "deps.js"),
+  #   stylesheet = "hexbin.css"
+  # )
+  # registerPlugin <- function(map, plugin) {
+  #   map$dependencies <- c(map$dependencies, list(plugin))
+  #   map
+  # }
+
 # Sidebar Choices. What the user inputs.
+# 
+# hex_plugin <-  # add hex from leafthehex
+#   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
+#     "Hex", # name
+#     "./js", # path #W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/
+#     "hexbin.js",
+#     "deps.js",
+#     "hexbin.css")
 
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
@@ -88,8 +114,11 @@ server <- function(input, output, session) {
     all_crashes %>%
       filter(
         CNTYCODE %in% input$cntynum,
+        # CNTYCODE %in% 13,
+        # year(CRSHDATE) %in% 2018
         year(CRSHDATE) %in% input$year,
         if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR
+        
         # CRSHSVR %in% crsh_svr_out - wrong)
         # INJSVR %in% input$inj_svr_out
       )
@@ -110,9 +139,12 @@ server <- function(input, output, session) {
       inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
   })
   
-  filtered_crash_lat_long <- reactive({
-    crash_lat_long <-
-    inner_join(crash_lat_long, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
+  filtered_crash_lat_long <- reactive({ # get lat longs for map
+   
+    crash_lat_long_j = filtered_crashes() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
+    # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
+    setnames(crash_lat_long_j, "LONDECDG", "lng")
+    setnames(crash_lat_long_j, "LATDECDG", "lat")
   })
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
@@ -481,26 +513,44 @@ server <- function(input, output, session) {
       )
     ) 
   })
-
-  output$map_crash <-
-    renderLeaflet({
-      # this is the map - using Leaflet
-      crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
-      
-      setnames(crashes_to_map, "LONDECDG", "lng")
-      setnames(crashes_to_map, "LATDECDG", "lat") 
-
-      leaflet(crashes_to_map) %>% addTiles() %>% # hex doesnt work in Shiny?
-        addCircles() %>% addHexbin()# %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25) # can also do clusterOptions = markerClusterOptions()
-
-      # addProviderTiles(providers$Stamen.TonerLite,
-      # options = providerTileOptions(noWrap = TRUE)) %>%
-      # addMarkers(data = c(lat = [LATDECDG], lng = [LONDECDG]))    #
-      # for (i in 1:nrow(crash_lat_long)) {
-      #   map$marker(c(.[i, "LATDECDG"], .[i, "LONDECDG"]), bindPopup = df[i, "CRSHNMBR"])}
+  
+  # output$map_crash <-  # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
+  #   renderLeaflet({
+  #     
+  #   filtered_crash_lat_long() %>% 
+  #    leaflet() %>% addTiles() %>% addCircles() %>% addHexbin(lowEndColor='green', highEndColor='red',  uniformSize = TRUE, radius = 25)
+  #     # registerPlugin(hexBin) %>%
+  #     # onRender("function(el, x) { L.HexbinLayer({}).addTo(this);}")
+  #       #newHex()
+  #   })
+  
+  
+  # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
+  # -> https://github.com/rstudio/leaflet/issues/418
+  
+  observeEvent(input$map_btn, {
+    id <- paste0("map_", input$map_btn)
+    output[[id]] <- renderLeaflet({
+      l <- filtered_crash_lat_long() %>%
+           leaflet() %>% addTiles() %>% addCircles() %>% addHexbin()
+      l
     })
+    output$map <- renderUI({
+      leafletOutput(id)
+    })
+  })
+  
+  # output$map <- renderUI({ # works but data doesnt get reset
+  #   id = "map_TRUE"
+  #   output[[id]] = renderLeaflet ({
+  #     l <- filtered_crash_lat_long() %>%
+  #       leaflet() %>% addTiles() %>% addCircles() %>% addHexbin(uniformSize = TRUE)
+  #     l
+  #   })
+  #   leafletOutput(id)
+  # })
 
-  # output$map_crash_rbokah <- renderRbokeh({
+  # output$map_crash_rbokah <- renderRbokeh({ # works, but rbokeh is not updated
   #   # test map alternative
   #   crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LATDECDG,LONDECDG) # need on ly lat/long
   #   

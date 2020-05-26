@@ -5,6 +5,11 @@ library(DT)
 library(plotly)
 library(d3heatmap)
 library(leaflet)
+library(htmltools)
+library(htmlwidgets)
+library(dplyr)
+# jsfile <- "https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js" # Hex map file
+
 # library(fresh)    # adds theme, colors
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme
@@ -105,6 +110,7 @@ sidebar <- dashboardSidebar(
 ))
 #                                                     BODY
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
+                      # tags$head(tags$script(src = jsfile)), # for hex js file for map
   tabItems(
     tabItem(
       tabName = "dashboard",
@@ -153,13 +159,17 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
           ),
         ),
         column(
+          # p(
+          #   actionButton("map_btn", "Show Hex")
+          # ),
           width = 6,
           box(
             width = NULL,
             # solidHeader = TRUE,
             # rbokehOutput("map_crash_rbokah", height = "600px")
-            leafletOutput("map_crash", height = "600px")
-            # checkboxInput("hex", "Show Hex", TRUE)
+            # leafletOutput("map_crash", height = "600px")
+            uiOutput("map")
+            # checkboxInput("hex", "Show Hex", FALSE) # not functional yet
           )
         ),
         column(
