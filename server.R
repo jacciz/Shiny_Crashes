@@ -10,7 +10,8 @@ library(htmltools)
 library(htmlwidgets)
 # library(ggrepel)  # adjusts labels for ggplots, not for axis
 library(leaflet)
-library(leaflethex)
+# library(leaflethex)
+library(leaflet.extras2) # hexbin, newer than leafthehe
 # library(r2d3)
 # library(rbokeh)
 # library(tmap)
@@ -151,7 +152,7 @@ server <- function(input, output, session) {
 
     crash_lat_long_j = filtered_crashes() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
     # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
-    setnames(crash_lat_long_j, "LONDECDG", "lng")
+    setnames(crash_lat_long_j, "LONDECDG", "lng") # could move this to data import part
     setnames(crash_lat_long_j, "LATDECDG", "lat")
   })
 
@@ -536,40 +537,76 @@ server <- function(input, output, session) {
   # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/418
 
-  observeEvent(input$map_btn, {
-    id <- paste0("map_", input$map_btn)
-    output[[id]] <- renderLeaflet({
-      l <- filtered_crash_lat_long() %>%
-           leaflet() %>% addTiles() %>% addCircles() %>% addHexbin()
-      l
-    })
-    output$map <- renderUI({
-      leafletOutput(id)
-    })
-  })
-
-  # output$map <- renderUI({ # works but data doesnt get reset
-  #   id = "map_TRUE"
-  #   output[[id]] = renderLeaflet ({
+  # observeEvent(input$map_btn, {
+  #   id <- paste0("map_", input$map_btn)
+  #   output[[id]] <- renderLeaflet({
   #     l <- filtered_crash_lat_long() %>%
-  #       leaflet() %>% addTiles() %>% addCircles() %>% addHexbin(uniformSize = TRUE)
+  #          leaflet() %>% addTiles() %>% addCircles() %>% addHexbin()
   #     l
   #   })
-  #   leafletOutput(id)
+  #   output$map <- renderUI({
+  #     leafletOutput(id)
+  #   })
   # })
 
-  # output$map_crash_rbokah <- renderRbokeh({ # works, but rbokeh is not updated
-  #   # test map alternative
-  #   crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LATDECDG,LONDECDG) # need on ly lat/long
-  #
-  #   gmap(
-  #     lat = 	44.53258,
-  #     lng = -88.10613,
-  #     zoom = 10,
-  #     api_key = "AIzaSyCAWltpI2o9MrN5sRAyvgx9NJYikHCkeag",
-  #     map_style = gmap_style("blue_water")
-  #   ) %>% ly_hexbin(x = crashes_to_map$LONDECDG, y = crashes_to_map$LATDECDG)
-  # })
+  output$map <- renderUI({
+    # works!!
+    tomap <- filtered_crash_lat_long()
+    id = "map_TRUE" # not sure what this means but it should be set to TRUE
+    output[[id]] = renderLeaflet ({
+      input$print
+      mymap <- tomap %>%
+        leaflet() %>% addTiles() %>% addCircleMarkers(
+          group = "Crashes",
+          fillColor = "red",
+          radius = 1,
+          fillOpacity = 0.2,
+          stroke = FALSE
+        ) %>%
+        # addHexbin(
+        #   lng = tomap$lng,
+        #   lat = tomap$lat,
+        #   radius = 5,
+        #   group = "Hex analysis",
+        #   layerId = "Hex",
+        #   opacity = 0.8,
+        #   options = hexbinOptions(
+        #     colorRange = c("#b0d0f2", "#05366b"),
+        #     resizetoCount = TRUE,
+        #     radiusRange = c(5, 5) # same size, must match radius
+        #   )
+        # ) %>% 
+      addLayersControl(
+        overlayGroups = c(
+          # "Hex analysis",
+          "Crashes"
+        ),
+        options = layersControlOptions(collapsed = FALSE)
+      ) 
+      mymap
+    })
+    
+    observe({ # observe if hex has been checked
+      proxy <- leafletProxy("map_TRUE", data = tomap)
+      proxy %>% clearControls()
+      if (input$hex) {
+        proxy %>% addHexbin(
+                lng = tomap$lng,
+                lat = tomap$lat,
+                radius = 5,
+                opacity = 0.8,
+                options = hexbinOptions(
+                  colorRange = c("#b0d0f2", "#05366b"),
+                  resizetoCount = TRUE,
+                  radiusRange = c(5, 5) # same size, must match radius
+                )
+              )
+      } else {
+        proxy %>% hideHexbin()
+      }
+    })
+    leafletOutput(id)
+  })
 
   #                                                                               TABLES
   table_crsh <- all_crashes %>%
