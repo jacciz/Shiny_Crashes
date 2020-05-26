@@ -13,8 +13,9 @@ import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
           select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
-                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "CRSHSVR", "MNRCOLL",
-                     "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
+                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL",
+                     "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG", "LATDECDG",
+                     "LONDECDG")
           )
   all_crashes$CRSHDATE <- ymd(all_crashes$CRSHDATE)       # convert to date type
   all_crashes <- all_crashes %>% mutate(newtime = cut(  # this finds crash time by hour
@@ -156,7 +157,7 @@ import_all_persons <- function(csv_name, file_loc = file) {
                                                         SEX == "M" ~ "Male",
                                                         SEX == "U" ~ "Unknown"))
 
-  # saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
+  saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
 }
 
 import_all_vehicles <- function(csv_name, file_loc = file) {

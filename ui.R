@@ -5,6 +5,8 @@ library(DT)
 library(plotly)
 library(d3heatmap)
 library(leaflet)
+library(htmltools)
+library(htmlwidgets)
 # library(fresh)    # adds theme, colors
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme

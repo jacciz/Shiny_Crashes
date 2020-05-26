@@ -17,9 +17,6 @@ library(leaflethex)
 # library(geogrid)
 # library(hexbin)
 # library(shinyjs)
-# 
-# library(htmltools)
-# library(htmlwidgets)
 
 
 server <- function(input, output, session) {
@@ -39,6 +36,14 @@ server <- function(input, output, session) {
   # })
 # Sidebar Choices. What the user inputs.
 
+  # hex_plugin <-  # add hex from leafthehex
+  #   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
+  #     "Hex", # name
+  #     "C:/Users/dotjaz/Documents/R/win-library/4.0/leaflethex/js", # path #W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/
+  #     "hexbin.js",
+  #     "deps.js",
+  #     "hexbin.css")
+  
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
@@ -486,13 +491,31 @@ server <- function(input, output, session) {
     renderLeaflet({
       # this is the map - using Leaflet
       crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
-      
+      # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
       setnames(crashes_to_map, "LONDECDG", "lng")
       setnames(crashes_to_map, "LATDECDG", "lat") 
+    
+      # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/")
+      # addResourcePath(prefix = 'js', directoryPath = '~/js')
+      # hex_plugin <-  # add hex from leafthehex
+      #   pluginFactory(
+      #     "Hex", # name
+      #     "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/js", # path
+      #     "hexbin.js",
+      #     "deps.js")
+      #     # "hexbin.css")
+      # 
+      # addJS <- # points to library
+      #   pluginFactory(
+      #     "Some JS Plugin",
+      #     system.file("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/js/", "", package = "leaflethex"), "hexbin.js", "deps.js", stylesheet="hexbin.css")
 
-      leaflet(crashes_to_map) %>% addTiles() %>% # hex doesnt work in Shiny?
-        addCircles() %>% addHexbin()# %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25) # can also do clusterOptions = markerClusterOptions()
-
+      # leaflet(crashes_to_map) %>% addTiles() %>% # hex doesnt work in Shiny?
+      #   addCircles() %>% addHexbin() # %>% addHexbin(lowEndColor='green', highEndColor='red', uniformSize = TRUE, radius = 25) # can also do clusterOptions = markerClusterOptions()
+     ou
+      leaflet::leaflet(crashes_to_map) %>% # from CMV_flag
+        addTiles() %>% addHexbin(lowEndColor='green', highEndColor='red',  uniformSize = TRUE, radius = 25)
+    
       # addProviderTiles(providers$Stamen.TonerLite,
       # options = providerTileOptions(noWrap = TRUE)) %>%
       # addMarkers(data = c(lat = [LATDECDG], lng = [LONDECDG]))    #
@@ -500,7 +523,7 @@ server <- function(input, output, session) {
       #   map$marker(c(.[i, "LATDECDG"], .[i, "LONDECDG"]), bindPopup = df[i, "CRSHNMBR"])}
     })
 
-  # output$map_crash_rbokah <- renderRbokeh({
+  # output$map_crash_rbokah <- renderRbokeh({ # works, but rbokeh is not updated
   #   # test map alternative
   #   crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LATDECDG,LONDECDG) # need on ly lat/long
   #   
