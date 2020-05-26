@@ -156,7 +156,7 @@ import_all_persons <- function(csv_name, file_loc = file) {
                                                         SEX == "M" ~ "Male",
                                                         SEX == "U" ~ "Unknown"))
 
-  # saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
+  saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
 }
 
 import_all_vehicles <- function(csv_name, file_loc = file) {
@@ -172,7 +172,7 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
 # input is name of csv
 all_crashes <- import_all_crashes("crash")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
-# 
+#
 all_persons <- import_all_persons("person")
 # Note: Creates a age_group field, relabels ROLE, SEX
 
@@ -182,8 +182,8 @@ all_vehicles <- import_all_vehicles("vehicle")
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
 # muni_recode <- fread("Data Prep for R Shiny/muni_recode.csv")
-# 
+#
 # saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
 # saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
 
-# rbind() to combine df vertically    
+# rbind() to combine df vertically

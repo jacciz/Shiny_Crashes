@@ -23,7 +23,7 @@ library(leaflethex)
 # helloLocalFile <- htmlDependency("hex", "1.0",
                                  # src = c(file = normalizePath('C:/CSV')),  script = "hex.js")
 # jsfile <- "https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js" # Hex map file
-# 
+#
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
     # session$user is non-NULL only in authenticated sessions
@@ -35,8 +35,8 @@ server <- function(input, output, session) {
         alert('goodbye')
       "),
        helloLocalFile
-    ) 
-    
+    )
+
   })
 
   # copied from https://gist.github.com/helgasoft/799fac40f6fa2561c61cd1404521573a
@@ -56,7 +56,7 @@ server <- function(input, output, session) {
   # }
 
 # Sidebar Choices. What the user inputs.
-# 
+#
 # hex_plugin <-  # add hex from leafthehex
 #   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
 #     "Hex", # name
@@ -65,27 +65,35 @@ server <- function(input, output, session) {
 #     "deps.js",
 #     "hexbin.css")
 
+  # hex_plugin <-  # add hex from leafthehex
+  #   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
+  #     "Hex", # name
+  #     "C:/Users/dotjaz/Documents/R/win-library/4.0/leaflethex/js", # path #W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/
+  #     "hexbin.js",
+  #     "deps.js",
+  #     "hexbin.css")
+
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
-  
+
   observeEvent(input$cntynum, { # choose municipality
 
     muni_cnty_list <- muni_recode %>% filter(CntyCode %in% input$cntynum)
-    
+
     updateSelectInput(session,
                       "muni_names",
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
-  }) 
-  
+  })
+
   output$crsh_svr_out <- renderPrint(input$crsh_svr) # delete?
-  
+
   updateSelectInput(session,
                     "year",
                     selected = 2019,
                     # default selection
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
-  
+
     # Filtered data based on input by the user
   crash_flags_selected <-
     reactive({
@@ -118,12 +126,12 @@ server <- function(input, output, session) {
         # year(CRSHDATE) %in% 2018
         year(CRSHDATE) %in% input$year,
         if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR
-        
+
         # CRSHSVR %in% crsh_svr_out - wrong)
         # INJSVR %in% input$inj_svr_out
       )
   })
-  
+
   filtered_persons <- reactive({
     all_persons %>%
       filter(
@@ -133,14 +141,14 @@ server <- function(input, output, session) {
         WISINJ %in% input$inj_svr
       )
   })
-  
+
   filtered_vehicles <- reactive({
     all_vehicles <-
       inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
   })
-  
+
   filtered_crash_lat_long <- reactive({ # get lat longs for map
-   
+
     crash_lat_long_j = filtered_crashes() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
     # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
     setnames(crash_lat_long_j, "LONDECDG", "lng")
@@ -179,8 +187,8 @@ server <- function(input, output, session) {
   #     color = "red"
   #   )
   # })
-  # 
-  # X row charts 
+  #
+  # X row charts
   output$passveh_box <- renderInfoBox({
     valueBox(
       filtered_vehicles() %>% filter(
@@ -251,11 +259,11 @@ server <- function(input, output, session) {
       color = "yellow"
     )
   })
-  
-# SECOND row charts                       
-  
+
+# SECOND row charts
+
   output$crsh_svr_mth <- renderPlotly({
-    
+
     # labels = c("Jan.", "Feb.") #could write a list of abbreviations for chart
 
     crsh_svr_mth_chart <- filtered_crashes() %>% ggplot(mapping = aes(CRSHMTH)) +
@@ -282,14 +290,14 @@ server <- function(input, output, session) {
     scale_fill_manual(
       name = "", #Crash Severity no legend title
       values = c("#D50032", "#428BCA", "#4DB848"))
-    
+
   crsh_svr_mth_chart %>% ggplotly() %>% layout(legend = list(x = 0.5, y = 100, orientation = 'h'))%>%
     layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data
   })
   # , bg="transparent"
-  
+
   output$timeofday_heat <- renderD3heatmap({
-   
+
     day_time <- filtered_crashes() %>%
       # apply_labels(CNTYCODE = "County") %>%
       tab_cells(newtime) %>%       # stuff to put in the rows
@@ -297,10 +305,10 @@ server <- function(input, output, session) {
       tab_cols(DAYNMBR) %>%     # columns
       tab_stat_cases() %>% # frequency count, can also do percent
       tab_pivot()
-    
+
     row.names(day_time) <-
       day_time$row_labels # change row names to match row_labels
-    
+
     for (col in 1:ncol(day_time)) { #relabel
       colnames(day_time)[col] <-
         sub("DAYNMBR|", "", colnames(day_time)[col])
@@ -309,9 +317,9 @@ server <- function(input, output, session) {
       rownames(day_time)[row] <-
         sub("newtime|", "", rownames(day_time)[row])
     }
-    
+
     day_time[is.na(day_time)] = 0 #NA will be 0
-    
+
     day_time <-
       day_time[, c("|Sunday",  # reorder columns
                    "|Monday",
@@ -320,7 +328,7 @@ server <- function(input, output, session) {
                    "|Thursday",
                    "|Friday",
                    "|Saturday")]
-    
+
     d3heatmap( # output map
       day_time[1:24, 1:7],
       Rowv = FALSE,
@@ -369,17 +377,17 @@ server <- function(input, output, session) {
   })
 
   # THIRD row charts
-  
+
   output$mnrcoll <- renderPlotly({
-    
+
     mnr_crashes <- filtered_crashes() %>%
       filter(MNRCOLL != "Unknown")
-    
+
     mnr_crashes$MNRCOLL <-
       fct_infreq(mnr_crashes$MNRCOLL) %>% fct_rev()
-    
+
     # max_count = max(table(mnr_crashes$MNRCOLL))
-    
+
     mnrcoll_chart <-
       mnr_crashes %>%
       ggplot(mapping = aes(x = MNRCOLL)) +
@@ -413,15 +421,15 @@ server <- function(input, output, session) {
     mnrcoll_chart %>% ggplotly()%>%
       layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data
   })
-  
+
   output$person_role <- renderPlotly({  # have a symbol for each role
     person <- filtered_persons()
-    
+
     person$ROLE <- fct_infreq(person$ROLE) %>% fct_rev() # sorts data
-    
+
     # max_count = max(table(person$ROLE))
-    
-    p_role_chart <- 
+
+    p_role_chart <-
       person %>%
       ggplot(mapping = aes(x = ROLE)) +
       theme_classic() +
@@ -451,20 +459,20 @@ server <- function(input, output, session) {
         # nudge_y = max_count / 14
       ) +
       coord_flip()
-    
+
     p_role_chart %>% ggplotly() %>%
       layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data text
-    
+
   })
-  
+
   output$person_age_gender <- renderPlotly({
     person <-
       filtered_persons() %>% select(age_group, SEX) %>% na.omit()
-    
+
     label_age <- c( "0-4","5-9","10-14","15-19","20-24","25-29","30-34", # this labels x-axis
       "35-39", "40-44","45-49","50-54","55-59","60-64","65-69","70+")
     cols <- c("F" = "#D50032", "M" = "#428BCA", "U" = "#F9C218") # colors for gender
-    
+
     p_age_gender_chart <-
       person %>%
       ggplot(mapping = aes(x = age_group, fill = SEX)) +
@@ -502,7 +510,7 @@ server <- function(input, output, session) {
         # na.translate = FALSE
       )
     # coord_flip()
-    
+
     p_age_gender_chart %>% ggplotly() %>% layout(
       legend = list(x = 0, y = 100, orientation = 'h'), # horizontal legend, on top of chart
       margin = list( # no margins
@@ -511,23 +519,23 @@ server <- function(input, output, session) {
         t = 0,
         b = 0
       )
-    ) 
+    )
   })
-  
+
   # output$map_crash <-  # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
   #   renderLeaflet({
-  #     
-  #   filtered_crash_lat_long() %>% 
+  #
+  #   filtered_crash_lat_long() %>%
   #    leaflet() %>% addTiles() %>% addCircles() %>% addHexbin(lowEndColor='green', highEndColor='red',  uniformSize = TRUE, radius = 25)
   #     # registerPlugin(hexBin) %>%
   #     # onRender("function(el, x) { L.HexbinLayer({}).addTo(this);}")
   #       #newHex()
   #   })
-  
-  
+
+
   # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/418
-  
+
   observeEvent(input$map_btn, {
     id <- paste0("map_", input$map_btn)
     output[[id]] <- renderLeaflet({
@@ -539,7 +547,7 @@ server <- function(input, output, session) {
       leafletOutput(id)
     })
   })
-  
+
   # output$map <- renderUI({ # works but data doesnt get reset
   #   id = "map_TRUE"
   #   output[[id]] = renderLeaflet ({
@@ -553,24 +561,24 @@ server <- function(input, output, session) {
   # output$map_crash_rbokah <- renderRbokeh({ # works, but rbokeh is not updated
   #   # test map alternative
   #   crashes_to_map = filtered_crash_lat_long() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LATDECDG,LONDECDG) # need on ly lat/long
-  #   
+  #
   #   gmap(
   #     lat = 	44.53258,
   #     lng = -88.10613,
   #     zoom = 10,
   #     api_key = "AIzaSyCAWltpI2o9MrN5sRAyvgx9NJYikHCkeag",
   #     map_style = gmap_style("blue_water")
-  #   ) %>% ly_hexbin(x = crashes_to_map$LONDECDG, y = crashes_to_map$LATDECDG) 
+  #   ) %>% ly_hexbin(x = crashes_to_map$LONDECDG, y = crashes_to_map$LATDECDG)
   # })
-  
+
   #                                                                               TABLES
-  table_crsh <- all_crashes %>% 
+  table_crsh <- all_crashes %>%
     tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
     tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
     tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
     tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
     tab_pivot() %>%
-    drop_empty_columns() %>% 
+    drop_empty_columns() %>%
     datatable(rownames = FALSE)
   output$biketable <- renderDT({table_crsh})
 }

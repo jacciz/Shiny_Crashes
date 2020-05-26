@@ -7,9 +7,6 @@ library(d3heatmap)
 library(leaflet)
 library(htmltools)
 library(htmlwidgets)
-library(dplyr)
-# jsfile <- "https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js" # Hex map file
-
 # library(fresh)    # adds theme, colors
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme
@@ -78,7 +75,7 @@ sidebar <- dashboardSidebar(
       "Possible Injury",
       "No Apparent Injury"
     )
-  ), 
+  ),
   checkboxGroupButtons(
     inputId = "crsh_flags",
     label = "Flag: (Selection = Or)",
@@ -105,7 +102,7 @@ sidebar <- dashboardSidebar(
       no = icon("remove", lib = "glyphicon")
       # verbatimTextOutput("crsh_flags_out")
     )
-  ), 
+  ),
   materialSwitch(inputId = "id", label = "Test switch", status = "danger")
 ))
 #                                                     BODY
@@ -126,11 +123,11 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         valueBoxOutput("light_truck_box", width = 2),
         valueBoxOutput("large_truck_box", width = 2),
         # valueBoxOutput("tot_some", width = NULL) total cars?
-        
+
         # column(
         #   width = 2,
         #   # Dynamic infoBoxes
-        
+
         #   valueBoxOutput("motorcycle_box", width = NULL),
         #   valueBoxOutput("ped_box", width = NULL),
         #   valueBoxOutput("bike_box", width = NULL)
@@ -198,14 +195,14 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         )
       ),
       # fluid row end
-      
+
       # div(style = " padding: 0px 0px; margin-top:-2em"),
     )
-  ), 
+  ),
 # Table Tab
 tabItem(tabName = "tables",
         h2("Tables tab content"),
-        
+
         fluidRow(box(
           width = 6, DTOutput("biketable", height = 600)
         )))
