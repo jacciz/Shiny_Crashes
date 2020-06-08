@@ -1,12 +1,14 @@
 library(data.table)
 library(dplyr)
-library(lubridate)
+library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
-# library(sjmisc)  ### MAY have to change data to mdy
+# library(sjmisc)
 
-setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")
+setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
 # file_loc = "Data Prep for R Shiny/"
-file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
+# file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
+file = "C:/CSV/csv_from_sas/" # this is where the raw CSVs are
+
 # This script imports data from a CSV, selects certain columns, add columns (such as newtime and age group),
 # then exports to an RDS file. global.R will read this RDS file. Raw data must be put in 'data/' file
 import_all_crashes <- function(csv_name, file_loc = file) {
@@ -16,7 +18,8 @@ import_all_crashes <- function(csv_name, file_loc = file) {
                      "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL",
                      "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
           )
-  all_crashes$CRSHDATE <- ymd(all_crashes$CRSHDATE)       # convert to date type
+  all_crashes <-
+    all_crashes %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
   all_crashes <- all_crashes %>% mutate(newtime = cut(  # this finds crash time by hour
     CRSHTIME,
     c(
@@ -99,7 +102,8 @@ import_all_persons <- function(csv_name, file_loc = file) {
         "HLMTUSE"
       )
     )
-  all_persons$CRSHDATE <- ymd(all_persons$CRSHDATE)      # convert to date type
+  all_persons <-
+    all_persons %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
   all_persons <- all_persons %>% mutate(age_group = cut( # add age_group column, 5 year intervals
     AGE,
     c(0,
@@ -164,7 +168,8 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE, # nrows = 200,
           select = c("CRSHNMBR", "INJSVR", "CRSHSVR", "CRSHDATE", "CNTYCODE", "MUNICODE", "VEHTYPE")
     )
-  all_vehicles$CRSHDATE <- ymd(all_vehicles$CRSHDATE)      # convert to date type
+  all_vehicles <-
+    all_vehicles %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
   saveRDS(all_vehicles, file = paste0(file_loc, csv_name, ".rds"))
 }
 

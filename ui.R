@@ -149,10 +149,10 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             title = ("Time of Day Crashes"),
             width = NULL,
             solidHeader = TRUE,
-            HTML("<div style='height: 200px;'>"),
-            d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
-            HTML("</div>")
-            # d3heatmapOutput("timeofday_heat", height = "200px", width = "110%")
+            # HTML("<div style='height: 200px;'>"),
+            # d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
+            # HTML("</div>")
+            plotlyOutput("timeofday_heat", height = "240px", inline = T)
           ),
         ),
         column(
@@ -164,7 +164,14 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             width = NULL,
             # solidHeader = TRUE,
             uiOutput("map"),
-            checkboxInput("hex", "Show Hex", FALSE)
+            checkboxInput("hex", "Show Hex", FALSE),
+            sliderInput(
+              "hexsize",
+              "Change Hex Size:",
+              min = 1,
+              max = 30,
+              value = 10
+            )
           )
         ),
         column(
@@ -173,7 +180,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             "Manner of Collision",
             width = NULL,
             solidHeader = TRUE,
-            HTML("<div style='height: 220px;'>"),
+            # HTML("<div style='height: 220px;'>"),
             plotlyOutput("mnrcoll", height = "240px", inline = T)
             # HTML("</div>")
             # plotlyOutput("mnrcoll", height = "200px", inline = T)

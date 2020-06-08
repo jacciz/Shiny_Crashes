@@ -59,7 +59,7 @@ all_persons <- import_all_persons("person")
 all_persons <- readRDS(file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") #alternatively, load this
 
 
-# Functions to get a list when flag == Y
+# Functions to get a list when flag == Y #### grepl("^346.55|^346.56|^346.57|^346.58|^346.59(1)|^346.59(2)", thisrow)
 get_list_speedflags <- function(persons_df) {
   speedflags <-
     persons_df %>% filter(ROLE == 'Driver', apply(., 1, function(thisrow)
@@ -67,7 +67,7 @@ get_list_speedflags <- function(persons_df) {
       any(   # the criteria (any of these)
         thisrow %in% c("Exceed Speed Limit",
                        "Speed Too Fast/Cond") |
-          grepl("^346.56|^346.57|^346.58|^346.59", thisrow) & !grepl("^346.595", thisrow) #^ means that beginning must match
+          grepl("^346.55|^346.56|^346.57|^346.58|^346.59(1)|^346.59(2)", thisrow) #^ means that beginning must match
       )) == TRUE) %>% mutate(speedflag = "Y")
   speedflags <-
     speedflags %>% dplyr::select(CRSHNMBR, speedflag) # %>% group_by(CRSHNMBR)

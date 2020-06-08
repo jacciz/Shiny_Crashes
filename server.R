@@ -12,6 +12,7 @@ library(htmlwidgets)
 library(leaflet)
 # library(leaflethex)
 library(leaflet.extras2) # hexbin, newer than leafthehe
+library(tidyverse)
 # library(r2d3)
 # library(rbokeh)
 # library(tmap)
@@ -297,86 +298,123 @@ server <- function(input, output, session) {
   })
   # , bg="transparent"
 
-  output$timeofday_heat <- renderD3heatmap({
-
+  output$timeofday_heat <- renderPlotly({
     day_time <- filtered_crashes() %>%
-      # apply_labels(CNTYCODE = "County") %>%
-      tab_cells(newtime) %>%       # stuff to put in the rows
-      # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-      tab_cols(DAYNMBR) %>%     # columns
-      tab_stat_cases() %>% # frequency count, can also do percent
-      tab_pivot()
-
-    row.names(day_time) <-
-      day_time$row_labels # change row names to match row_labels
-
-    for (col in 1:ncol(day_time)) { #relabel
-      colnames(day_time)[col] <-
-        sub("DAYNMBR|", "", colnames(day_time)[col])
-    }
-    for (row in 1:nrow(day_time)) { #relabel
-      rownames(day_time)[row] <-
-        sub("newtime|", "", rownames(day_time)[row])
-    }
-
-    day_time[is.na(day_time)] = 0 #NA will be 0
-
+      group_by(newtime, DAYNMBR) %>%
+      summarise(n = n()) %>%
+      filter(newtime != '') %>%
+      tidyr::spread(DAYNMBR, n, fill = 0)
+    
     day_time <-
-      day_time[, c("|Sunday",  # reorder columns
-                   "|Monday",
-                   "|Tuesday",
-                   "|Wednesday",
-                   "|Thursday",
-                   "|Friday",
-                   "|Saturday")]
-
-    d3heatmap( # output map
-      day_time[1:24, 1:7],
-      Rowv = FALSE,
-      Colv = FALSE,
-      colors = "Reds",  # colors
-      theme = "dark",
-      na.rm = FALSE,
-      xaxis_font_size = "10px",
-      yaxis_font_size = "10px",
-      labCol = c(
-        "Sun.",
-        "Mon.",
+      day_time[, c(
+        "newtime",
+        "Sunday",
+        # reorder columns
+        "Monday",
         "Tuesday",
         "Wednesday",
         "Thursday",
         "Friday",
         "Saturday"
-      ),
-      labRow = c(
-        "12am",
-        "1am",
-        "2am",
-        "3am",
-        "4am",
-        "5am",
-        "6am",
-        "7am",
-        "8am",
-        "9am",
-        "10am",
-        "11am",
-        "12am",
-        "1pm",
-        "2pm",
-        "3pm",
-        "4pm",
-        "5pm",
-        "6pm",
-        "7pm",
-        "8pm",
-        "9pm",
-        "10pm",
-        "11pm"
-      )
+      )]
+    names(day_time) <-
+      c("newtime", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat") # rename columns
+    m <- day_time[, 2:8] %>% as.matrix()
+    
+    
+    # get blue colors
+    vals <- unique(scales::rescale(m))
+    o <- order(vals, decreasing = FALSE)
+    cols <- scales::col_numeric("Blues", domain = NULL)(vals)
+    colz <- setNames(data.frame(vals[o], cols[o]), NULL)
+    
+    
+    plot_ly(
+      x = colnames(day_time[2:8]),
+      y = day_time$newtime,
+      z = m,
+      type = "heatmap",
+      colorscale = colz
     )
-  })
 
+    # day_time <- filtered_crashes() %>%
+    #   # apply_labels(CNTYCODE = "County") %>%
+    #   tab_cells(newtime) %>%       # stuff to put in the rows
+    #   # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
+    #   tab_cols(DAYNMBR) %>%     # columns
+    #   tab_stat_cases() %>% # frequency count, can also do percent
+    #   tab_pivot()
+    # 
+    # row.names(day_time) <-
+    #   day_time$row_labels # change row names to match row_labels
+    # 
+    # for (col in 1:ncol(day_time)) { #relabel
+    #   colnames(day_time)[col] <-
+    #     sub("DAYNMBR|", "", colnames(day_time)[col])
+    # }
+    # for (row in 1:nrow(day_time)) { #relabel
+    #   rownames(day_time)[row] <-
+    #     sub("newtime|", "", rownames(day_time)[row])
+    # }
+    # 
+    # day_time[is.na(day_time)] = 0 #NA will be 0
+    # 
+    # day_time <-
+    #   day_time[, c("|Sunday",  # reorder columns
+    #                "|Monday",
+    #                "|Tuesday",
+    #                "|Wednesday",
+    #                "|Thursday",
+    #                "|Friday",
+    #                "|Saturday")]
+    # 
+    # d3heatmap( # output map
+    #   day_time[1:24, 1:7],
+    #   Rowv = FALSE,
+    #   Colv = FALSE,
+    #   colors = "Reds",  # colors
+    #   theme = "dark",
+    #   na.rm = FALSE,
+    #   xaxis_font_size = "10px",
+    #   yaxis_font_size = "10px",
+    #   labCol = c(
+    #     "Sun.",
+    #     "Mon.",
+    #     "Tuesday",
+    #     "Wednesday",
+    #     "Thursday",
+    #     "Friday",
+    #     "Saturday"
+    #   ),
+    #   labRow = c(
+    #     "12am",
+    #     "1am",
+    #     "2am",
+    #     "3am",
+    #     "4am",
+    #     "5am",
+    #     "6am",
+    #     "7am",
+    #     "8am",
+    #     "9am",
+    #     "10am",
+    #     "11am",
+    #     "12am",
+    #     "1pm",
+    #     "2pm",
+    #     "3pm",
+    #     "4pm",
+    #     "5pm",
+    #     "6pm",
+    #     "7pm",
+    #     "8pm",
+    #     "9pm",
+    #     "10pm",
+    #     "11pm"
+    #   )
+    # )
+  })
+  
   # THIRD row charts
 
   output$mnrcoll <- renderPlotly({
@@ -426,43 +464,82 @@ server <- function(input, output, session) {
   output$person_role <- renderPlotly({  # have a symbol for each role
     person <- filtered_persons()
 
-    person$ROLE <- fct_infreq(person$ROLE) %>% fct_rev() # sorts data
-
+    
+    role_table <- table(role = person$ROLE) %>% as_tibble()
+    # role_table$role <- fct_infreq(role_table$role) %>% fct_rev() # sorts data
     # max_count = max(table(person$ROLE))
+    
+    
+    plot_ly(
+      role_table,
+      type = 'bar',
+      orientation = 'h',
+      x = ~ n,
+      y = ~ reorder(role, n), # reorder from big to small values
+      name = "",
+      marker = list(color = "#428BCA"), # blue!
+      # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
+      text = ~ format(n, big.mark=","),
+      textfont = list(
+        family = 'Cambria',
+        size = 10,
+        color = 'white'
+      ),
+      textposition = 'outside',
+      cliponaxis = FALSE
+    ) %>%
+      # add_annotations(text = ~n, textposition = "outside", font = list(family = 'Cambria', size = 12, color = 'red')) %>%
+      layout(
+        margin = list(
+          r = 30, # set to 30 so labels don't get cut off
+          l = 0,
+          t = 0,
+          b = 0
+        ),
+        xaxis = list(
+          title = "",
+          showgrid = FALSE,
+          showticklabels = FALSE # remove axis labels
+        ),
+        yaxis = list(title = "", tickfont = list(size = 10, color = "white") ),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
 
-    p_role_chart <-
-      person %>%
-      ggplot(mapping = aes(x = ROLE)) +
-      theme_classic() +
-      geom_bar(fill = "#428BCA", position = 'dodge', stat = 'count') +
-      theme(axis.line=element_blank(),
-            legend.position = "none",
-            axis.ticks=element_blank(),
-            axis.text.x = element_blank(),
-            axis.text.y = element_text(size = 6, color = "white"),
-            axis.title.y = element_blank(),
-            axis.title.x = element_blank(),
-            plot.title = element_text(),
-            plot.background = element_rect(fill = "transparent", colour = NA),
-            panel.background = element_rect(fill = "transparent")
-      ) +
-      # scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
-        # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
-      ylim(c(0, max(table(person$ROLE))*1.05)) +  # finds max count so labels don't get cut off
-      geom_text(
-        stat = 'count',
-        color = "white", ##428BCA
-        size = 3,
-        aes(label = format(..count.., big.mark=",")),
-        fontface = "bold",
-        hjust = -.5 #-0.6
-        # nudge_y = max_count / 14
-      ) +
-      coord_flip()
-
-    p_role_chart %>% ggplotly() %>%
-      layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data text
+    # p_role_chart <-
+    #   role_table %>%
+    #   ggplot(mapping = aes(reorder(role, desc(-n)), n)) + # values to display, reorder so highest value is on top
+    #   theme_classic() +
+    #   geom_bar(aes(fill = "#428BCA"), stat = 'identity') +
+    #   theme(axis.line=element_blank(),
+    #         legend.position = "none",
+    #         axis.ticks=element_blank(),
+    #         axis.text.x = element_blank(),
+    #         axis.text.y = element_text(size = 6, color = "white"),
+    #         axis.title.y = element_blank(),
+    #         axis.title.x = element_blank(),
+    #         plot.title = element_text(),
+    #         plot.background = element_rect(fill = "transparent", colour = NA),
+    #         panel.background = element_rect(fill = "transparent")
+    #   ) +
+    #   # scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
+    #     # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
+    #   scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
+    #   # ylim(c(0, max(table(person$ROLE))*1.05)) +  # finds max count so labels don't get cut off
+    #   # geom_text(
+    #     # stat = 'count',
+    #     # color = "white", ##428BCA
+    #     # size = 3,
+    #     # aes(label = format(..count.., big.mark=",")),
+    #     # fontface = "bold",
+    #     # hjust = -.5 #-0.6
+    #     # nudge_y = max_count / 14
+    #   # ) +
+    #   coord_flip()
+    # 
+    # p_role_chart %>% ggplotly() %>%
+    #   layout(margin=list(r=0, l=0, t=0, b=0)) %>% # hoverinfo, can use event_data to update ui data text
+    #     style(text =  n, textposition = "outside", textfont = list(size= 10, color = "white")) # bar percents style
 
   })
 
@@ -578,36 +655,75 @@ server <- function(input, output, session) {
         # ) %>% 
       addLayersControl(
         overlayGroups = c(
-          # "Hex analysis",
           "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
       ) 
       mymap
     })
-    
-    observe({ # observe if hex has been checked
+    observeEvent(input$hexize, { # observe if hexsize has been changed
       proxy <- leafletProxy("map_TRUE", data = tomap)
-      proxy %>% clearControls()
-      if (input$hex) {
+      # proxy %>% clearControls()
+      if (input$hexsize) { # both addHexbin functions must match
+        proxy %>%
+          clearHexbin() %>%
+          addHexbin(
+            lng = tomap$lng,
+            lat = tomap$lat,
+            radius = input$hexsize,
+            opacity = 0.8,
+            options = hexbinOptions(
+              colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
+              resizetoCount = TRUE,
+              radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+            )
+          )
+      }
+    })
+    
+    observeEvent(input$hex, { # observe if hex has been checked
+      proxy <- leafletProxy("map_TRUE", data = tomap)
+      proxy %>% clearControls() # what does this do?
+      if (input$hex) {  # both addHexbin functions must match
         proxy %>% addHexbin(
                 lng = tomap$lng,
                 lat = tomap$lat,
-                radius = 5,
+                radius = input$hexsize,
                 opacity = 0.8,
                 options = hexbinOptions(
                   colorRange = c("#b0d0f2", "#05366b"),
                   resizetoCount = TRUE,
-                  radiusRange = c(5, 5) # same size, must match radius
+                  radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
                 )
               )
       } else {
         proxy %>% hideHexbin()
       }
     })
+
     leafletOutput(id)
   })
-
+  # observeEvent(input$addhex, { # reactive to when hex check box changes by user
+  #   cmv_latlong <- cmv_latlong_data()
+  #   if (input$addhex) {
+  #     leafletProxy("map") %>% 
+  #       # clearHexbin() %>%
+  #       addHexbin(
+  #         lng = cmv_latlong$LONDECDG,
+  #         lat = cmv_latlong$LATDECDG,
+  #         radius = input$hexsize,
+  #         opacity = 0.8,
+  #         options = hexbinOptions(
+  #           colorRange = c("#99d899", "#005100"),
+  #           # blue c("#b0d0f2", "#05366b"),
+  #           resizetoCount = TRUE,
+  #           radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+  #         )) }
+  #   else {
+  #     leafletProxy("map") %>%
+  #       hideHexbin()
+  #   }
+  # })
   #                                                                               TABLES
   table_crsh <- all_crashes %>%
     tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
