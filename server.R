@@ -1,10 +1,10 @@
 library(dplyr) # select, filter functions
 library(ggplot2) # create pretty graphs
 library(DT)    # create pretty tables
-library(expss) # format freq tables
-library(forcats) # reorder freq in charts
+# library(expss) # format freq tables
+# library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
-library(d3heatmap) # makes time of day / week heat chart
+# library(d3heatmap) # makes time of day / week heat chart
 library(lubridate) # for dates
 library(htmltools)
 library(htmlwidgets)
@@ -41,40 +41,6 @@ server <- function(input, output, session) {
 
   })
 
-  # copied from https://gist.github.com/helgasoft/799fac40f6fa2561c61cd1404521573a
-  # hexBin <- htmltools::htmlDependency(
-  #   name = 'hexBin',
-  #   version = "1.0",
-  #   # (1) works in R but not in Shiny due to async loading, see https://github.com/rstudio/shiny/issues/1389
-  #   # src = c(href = 'https://cdn.statically.io/gh/dayjournal/Leaflet.Control.Opacity/master/dist/'),
-  #   # (2) works in R and Shiny - download js/css files, then use this:
-  #   src = 'C:/W_shortcut/Shiny_Crashes_Dashboard/js',
-  #   script = c("hexbin.js", "deps.js"),
-  #   stylesheet = "hexbin.css"
-  # )
-  # registerPlugin <- function(map, plugin) {
-  #   map$dependencies <- c(map$dependencies, list(plugin))
-  #   map
-  # }
-
-# Sidebar Choices. What the user inputs.
-#
-# hex_plugin <-  # add hex from leafthehex
-#   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
-#     "Hex", # name
-#     "./js", # path #W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/
-#     "hexbin.js",
-#     "deps.js",
-#     "hexbin.css")
-
-  # hex_plugin <-  # add hex from leafthehex
-  #   pluginFactory( #in Chrome, disable JS source maps, enable CSS maps
-  #     "Hex", # name
-  #     "C:/Users/dotjaz/Documents/R/win-library/4.0/leaflethex/js", # path #W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/
-  #     "hexbin.js",
-  #     "deps.js",
-  #     "hexbin.css")
-
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
@@ -103,7 +69,7 @@ server <- function(input, output, session) {
         rename_crsh_flags <- # rename inputs so we can select flag columns
           c("Alcohol-related" = "ALCFLAG",
             "Drug-related" = "DRUGFLAG",
-            # "Distracted driving",  # don't have this one
+            # "Distracted driving",  # don't have this one, also CMV
             'Speeding' = 'speedflag',
             'Teen driver' = 'teenflag',
             'Older driver' = 'olderflag',
@@ -265,221 +231,138 @@ server <- function(input, output, session) {
 # SECOND row charts
 
   output$crsh_svr_mth <- renderPlotly({
+    
+    crshsvr_table <- table(month = filtered_crashes()$CRSHMTH, svr = filtered_crashes()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
+    
+    crshsvr_table$month <- factor(crshsvr_table$month, levels = month.name) # this orders months
+    
+    # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
 
-    # labels = c("Jan.", "Feb.") #could write a list of abbreviations for chart
-
-    crsh_svr_mth_chart <- filtered_crashes() %>% ggplot(mapping = aes(CRSHMTH)) +
-      theme_classic() +
-      geom_bar(aes(fill=CRSHSVR)) +
-      # ggtitle("Crash Severity by Month") +
-      theme(
-        axis.line = element_blank(),
-        axis.ticks = element_blank(),
-        # plot.title = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
-        plot.title.position = "panel",
-        legend.text = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
-        legend.title = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
-        axis.text.x = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
-        axis.text.y = element_text(size = 6, family = "Cambria", face = "plain", color = "white"),
-        legend.background = element_rect(fill = "transparent", color = NA),
-        plot.background = element_rect(fill = "transparent", color = NA),
-        panel.background =element_rect(fill = "transparent", color = NA)
-      ) +
-      scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
-        sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
-                         ) +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
-    scale_fill_manual(
-      name = "", #Crash Severity no legend title
-      values = c("#D50032", "#428BCA", "#4DB848"))
-
-  crsh_svr_mth_chart %>% ggplotly() %>% layout(legend = list(x = 0.5, y = 100, orientation = 'h'))%>%
-    layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data
+    plot_ly(
+      crshsvr_table,
+      type = 'bar',
+      x = ~ month,
+      y = ~ n,
+      color = ~ svr,
+      colors = c("#D50032", "#428BCA", "#4DB848"), #colors for female, male, unknown in this order
+      hovertemplate = paste('<br>%{x}<br>',
+                            '<b>%{y: .0f} Crashes<b>')
+    ) %>%
+      layout(
+        legend = list(
+          x = 0,
+          y = 100,
+          orientation = 'h',
+          font = list(size = 10, color = "white")
+        ),
+        margin = list(
+          r = 0,
+          l = 0,
+          t = 0,
+          b = 0
+        ),
+        xaxis = list(
+          title = "",
+          tickfont = list(size = 10, color = "white"),
+          tickangle = 0,
+          # automargin = TRUE
+          dtick = 5 # every 5 months are labeled
+        ),
+        yaxis = list(
+          title = "",
+          showgrid = FALSE,
+          tickfont = list(size = 10, color = "white")
+        ),
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)',
+        barmode = 'stack'
+      )
+      # scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
+        # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
+  
   })
-  # , bg="transparent"
 
   output$timeofday_heat <- renderPlotly({
-    day_time <- filtered_crashes() %>%
+    day_time_data <- filtered_crashes() %>% # make a df for chart
+      na.omit(newtime) %>%
+      mutate(newtime = forcats::fct_explicit_na(newtime)) %>% # keep NA value, do this
       group_by(newtime, DAYNMBR) %>%
       summarise(n = n()) %>%
       filter(newtime != '') %>%
-      tidyr::spread(DAYNMBR, n, fill = 0)
+      tidyr::spread(DAYNMBR, n, fill = 0) 
+    
+    # Used to create the empty tibble
+    x <- c("Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday") #newtime
+    y = c("12am","1am","2am","3am", "4am","5am", "6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm",
+          "5pm","6pm","7pm","8pm","9pm","10pm","11pm")
+    
+    # create an empty tibble so we get a full matrix for heat map
+    empty_tibble <- tibble(newtime = y)
+
+    # Combine empty tibble with data, use mutate to ensure levels match
+    time_tibble <- left_join(mutate(empty_tibble, newtime=factor(newtime, levels=y)), day_time_data, by = c("newtime" = "newtime"))
+    
+    # function to find if column exists, if not, adds column with NA values
+    fncols <- function(data, cname) {
+      add <-cname[!cname%in%names(data)]
+      if(length(add)!=0) data[add] <- NA
+      data
+    }
+    
+    day_time <- fncols(time_tibble, x) # apply function to get all columns
+    day_time[is.na(day_time)] = 0 # NA will be 0
     
     day_time <-
-      day_time[, c(
-        "newtime",
-        "Sunday",
-        # reorder columns
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
+      day_time[, c( # reorder columns
+        "newtime","Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"
       )]
     names(day_time) <-
       c("newtime", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat") # rename columns
+    
     m <- day_time[, 2:8] %>% as.matrix()
     
-    
-    # get blue colors
+    # get blue color gradient
     vals <- unique(scales::rescale(m))
     o <- order(vals, decreasing = FALSE)
     cols <- scales::col_numeric("Blues", domain = NULL)(vals)
     colz <- setNames(data.frame(vals[o], cols[o]), NULL)
     
-    
     plot_ly(
       x = colnames(day_time[2:8]),
       y = day_time$newtime,
-      z = m,
+      z = m, # crash count
       type = "heatmap",
-      colorscale = colz
-    )
-
-    # day_time <- filtered_crashes() %>%
-    #   # apply_labels(CNTYCODE = "County") %>%
-    #   tab_cells(newtime) %>%       # stuff to put in the rows
-    #   # tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-    #   tab_cols(DAYNMBR) %>%     # columns
-    #   tab_stat_cases() %>% # frequency count, can also do percent
-    #   tab_pivot()
-    # 
-    # row.names(day_time) <-
-    #   day_time$row_labels # change row names to match row_labels
-    # 
-    # for (col in 1:ncol(day_time)) { #relabel
-    #   colnames(day_time)[col] <-
-    #     sub("DAYNMBR|", "", colnames(day_time)[col])
-    # }
-    # for (row in 1:nrow(day_time)) { #relabel
-    #   rownames(day_time)[row] <-
-    #     sub("newtime|", "", rownames(day_time)[row])
-    # }
-    # 
-    # day_time[is.na(day_time)] = 0 #NA will be 0
-    # 
-    # day_time <-
-    #   day_time[, c("|Sunday",  # reorder columns
-    #                "|Monday",
-    #                "|Tuesday",
-    #                "|Wednesday",
-    #                "|Thursday",
-    #                "|Friday",
-    #                "|Saturday")]
-    # 
-    # d3heatmap( # output map
-    #   day_time[1:24, 1:7],
-    #   Rowv = FALSE,
-    #   Colv = FALSE,
-    #   colors = "Reds",  # colors
-    #   theme = "dark",
-    #   na.rm = FALSE,
-    #   xaxis_font_size = "10px",
-    #   yaxis_font_size = "10px",
-    #   labCol = c(
-    #     "Sun.",
-    #     "Mon.",
-    #     "Tuesday",
-    #     "Wednesday",
-    #     "Thursday",
-    #     "Friday",
-    #     "Saturday"
-    #   ),
-    #   labRow = c(
-    #     "12am",
-    #     "1am",
-    #     "2am",
-    #     "3am",
-    #     "4am",
-    #     "5am",
-    #     "6am",
-    #     "7am",
-    #     "8am",
-    #     "9am",
-    #     "10am",
-    #     "11am",
-    #     "12am",
-    #     "1pm",
-    #     "2pm",
-    #     "3pm",
-    #     "4pm",
-    #     "5pm",
-    #     "6pm",
-    #     "7pm",
-    #     "8pm",
-    #     "9pm",
-    #     "10pm",
-    #     "11pm"
-    #   )
-    # )
+      colorscale = colz,
+      showscale = FALSE, # No legend
+      hovertemplate = paste('<br>%{x} %{y}<br>',
+                            '<b>%{z:.0f} Crashes<b>')
+      ) %>% 
+      layout(
+        margin = list(r = 0,l = 0,t = 0,b = 0
+        ),
+        xaxis = list(tickfont = list(size = 10, color = "white"), tickangle = 0),
+        yaxis = list(tickfont = list(size = 10, color = "white")),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
   })
-  
-  # THIRD row charts
 
-  output$mnrcoll <- renderPlotly({
-
+    output$mnrcoll <- renderPlotly({
+    
     mnr_crashes <- filtered_crashes() %>%
       filter(MNRCOLL != "Unknown")
-
-    mnr_crashes$MNRCOLL <-
-      fct_infreq(mnr_crashes$MNRCOLL) %>% fct_rev()
-
-    # max_count = max(table(mnr_crashes$MNRCOLL))
-
-    mnrcoll_chart <-
-      mnr_crashes %>%
-      ggplot(mapping = aes(x = MNRCOLL)) +
-      theme_classic() +
-      geom_bar(fill = "#428BCA", position = 'dodge', stat = 'count') +
-      # ggtitle("Manner of Collision") +
-      theme(
-        axis.line = element_blank(),
-        legend.position = "none",
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 6, color = "white"),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        plot.title = element_text(),
-        plot.background = element_rect(fill = "transparent", colour = NA),
-        panel.background = element_rect(fill = "transparent")
-      ) +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
-      ylim(c(0, max(table(mnr_crashes$MNRCOLL))*1.05)) +  # finds max count so labels don't get cut off
-      geom_text(
-        stat = 'count',
-        color = "white", #428BCA
-        size = 3,
-        aes(label = format(..count.., big.mark=",")),
-        fontface = "bold",
-        hjust = 0
-        # nudge_y = max_count / 20
-      ) +
-      coord_flip()
-    mnrcoll_chart %>% ggplotly()%>%
-      layout(margin=list(r=0, l=0, t=0, b=0)) # hoverinfo, can use event_data to update ui data
-  })
-
-  output$person_role <- renderPlotly({  # have a symbol for each role
-    person <- filtered_persons()
-
-    
-    role_table <- table(role = person$ROLE) %>% as_tibble()
-    # role_table$role <- fct_infreq(role_table$role) %>% fct_rev() # sorts data
-    # max_count = max(table(person$ROLE))
-    
+    mnr_crashes_table <- table(mnrcoll = mnr_crashes$MNRCOLL) %>% as_tibble()
     
     plot_ly(
-      role_table,
+      mnr_crashes_table,
       type = 'bar',
       orientation = 'h',
       x = ~ n,
-      y = ~ reorder(role, n), # reorder from big to small values
-      name = "",
+      y = ~ reorder(mnrcoll, n), # reorder from big to small values
       marker = list(color = "#428BCA"), # blue!
-      # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
-      text = ~ format(n, big.mark=","),
+      hovertemplate = paste('%{text}', '<br>%{x: .0f} Crashes<br>'),
+      text = ~ format(n, big.mark=","), # bar end number
       textfont = list(
         family = 'Cambria',
         size = 10,
@@ -488,7 +371,6 @@ server <- function(input, output, session) {
       textposition = 'outside',
       cliponaxis = FALSE
     ) %>%
-      # add_annotations(text = ~n, textposition = "outside", font = list(family = 'Cambria', size = 12, color = 'red')) %>%
       layout(
         margin = list(
           r = 30, # set to 30 so labels don't get cut off
@@ -501,130 +383,92 @@ server <- function(input, output, session) {
           showgrid = FALSE,
           showticklabels = FALSE # remove axis labels
         ),
-        yaxis = list(title = "", tickfont = list(size = 10, color = "white") ),
+        yaxis = list(title = "", tickfont = list(size = 10, color = "white")),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
+  })
 
-    # p_role_chart <-
-    #   role_table %>%
-    #   ggplot(mapping = aes(reorder(role, desc(-n)), n)) + # values to display, reorder so highest value is on top
-    #   theme_classic() +
-    #   geom_bar(aes(fill = "#428BCA"), stat = 'identity') +
-    #   theme(axis.line=element_blank(),
-    #         legend.position = "none",
-    #         axis.ticks=element_blank(),
-    #         axis.text.x = element_blank(),
-    #         axis.text.y = element_text(size = 6, color = "white"),
-    #         axis.title.y = element_blank(),
-    #         axis.title.x = element_blank(),
-    #         plot.title = element_text(),
-    #         plot.background = element_rect(fill = "transparent", colour = NA),
-    #         panel.background = element_rect(fill = "transparent")
-    #   ) +
-    #   # scale_x_discrete( name = "", labels = function(labels) {  # scatter labels
-    #     # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}) +
-    #   scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
-    #   # ylim(c(0, max(table(person$ROLE))*1.05)) +  # finds max count so labels don't get cut off
-    #   # geom_text(
-    #     # stat = 'count',
-    #     # color = "white", ##428BCA
-    #     # size = 3,
-    #     # aes(label = format(..count.., big.mark=",")),
-    #     # fontface = "bold",
-    #     # hjust = -.5 #-0.6
-    #     # nudge_y = max_count / 14
-    #   # ) +
-    #   coord_flip()
-    # 
-    # p_role_chart %>% ggplotly() %>%
-    #   layout(margin=list(r=0, l=0, t=0, b=0)) %>% # hoverinfo, can use event_data to update ui data text
-    #     style(text =  n, textposition = "outside", textfont = list(size= 10, color = "white")) # bar percents style
+  output$person_role <- renderPlotly({  # have a symbol for each role
+    
+    role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() # get counts of ROLE, put in a tibble
 
+    plot_ly(
+      role_table,
+      type = 'bar',
+      orientation = 'h',
+      x = ~ n,
+      y = ~ reorder(role, n), # reorder from big to small values
+      marker = list(color = "#428BCA"), # blue!
+      # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
+      text = ~ format(n, big.mark=","),
+      textfont = list(
+        family = 'Cambria',
+        size = 10,
+        color = 'white'
+      ),
+      textposition = 'outside',
+      cliponaxis = FALSE
+    ) %>%
+      layout(
+        margin = list(
+          r = 30, # set to 30 so labels don't get cut off
+          l = 0,
+          t = 0,
+          b = 0
+        ),
+        xaxis = list(
+          title = "",
+          showgrid = FALSE,
+          showticklabels = FALSE # remove axis labels
+        ),
+        yaxis = list(title = "", tickfont = list(size = 10, color = "white")),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
   })
 
   output$person_age_gender <- renderPlotly({
+    
     person <-
-      filtered_persons() %>% select(age_group, SEX) %>% na.omit()
+      filtered_persons() %>% select(age_group, SEX)
+    
+    age_sex_table <- table(age = person$age_group, sex = person$SEX) %>% as_tibble() # get counts, put in a tibble
 
-    label_age <- c( "0-4","5-9","10-14","15-19","20-24","25-29","30-34", # this labels x-axis
-      "35-39", "40-44","45-49","50-54","55-59","60-64","65-69","70+")
-    cols <- c("F" = "#D50032", "M" = "#428BCA", "U" = "#F9C218") # colors for gender
-
-    p_age_gender_chart <-
-      person %>%
-      ggplot(mapping = aes(x = age_group, fill = SEX)) +
-      theme_classic() +
-      geom_bar() +
-      theme(
-        axis.line = element_blank(),
-        legend.justification=c(1,0),
-        legend.position = "top",
-        axis.ticks = element_blank(),
-        axis.text.x = element_text(size = 6, color = "white"),
-        axis.text.y = element_text(size = 6, color = "white"),
-        legend.text = element_text(size = 6, color = "white"),
-        legend.title = element_text(size = 6, color = "white"),
-        axis.title.y = element_blank(),
-        plot.title = element_text(),
-        plot.background = element_rect(fill = "transparent", colour = NA),
-        panel.background = element_rect(fill = "transparent"),
-        legend.background = element_rect(fill = "transparent")
-      ) +
-      scale_y_continuous(expand = expansion(mult = c(0, .05)), name = "") +
-      scale_x_discrete(
-        name = "", limits = label_age,
-        labels = function(labels) {
-          # scatter labels
-          sapply(seq_along(labels), function(i)
-            paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))
-        }
-      ) +
-      scale_fill_manual(
-        # name = "Gender",
-        # values = c("#D50032", "#428BCA", "#F9C218"),
-        values = c("Female" = "#D50032", "Male" = "#428BCA", "Unknown" = "#F9C218")
-        # aesthetics = c("colour", "fill")
-        # na.translate = FALSE
+    plot_ly(
+      age_sex_table,
+      type = 'bar',
+      x = ~ age,
+      y = ~ n,
+      color = ~ sex,
+      colors = c("#D50032","#428BCA", "#F9C218"), #colors for female, male, unknown in this order
+      hovertemplate = paste('<br>%{x}<br>',
+                            '<b>%{y: .0f}<b>')
+    ) %>%
+      layout(
+        legend = list(x = 0, y = 100, orientation = 'h', font = list(size = 10, color = "white")),
+        margin = list(
+          r = 0,
+          l = 0,
+          t = 0,
+          b = 0
+        ),
+        xaxis = list(title = "", tickfont = list(size = 10, color = "white"), tickangle = 0),
+        yaxis = list(title = "", showgrid = FALSE, tickfont = list(size = 10, color = "white")),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)',
+        barmode = 'stack'
       )
-    # coord_flip()
+        # labels = function(labels) { # this scatters labels so they fit on two lines
+        #   sapply(seq_along(labels), function(i)
+        #     paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))
+        # }
+   })
 
-    p_age_gender_chart %>% ggplotly() %>% layout(
-      legend = list(x = 0, y = 100, orientation = 'h'), # horizontal legend, on top of chart
-      margin = list( # no margins
-        r = 0,
-        l = 0,
-        t = 0,
-        b = 0
-      )
-    )
-  })
+# this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
 
-  # output$map_crash <-  # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
-  #   renderLeaflet({
-  #
-  #   filtered_crash_lat_long() %>%
-  #    leaflet() %>% addTiles() %>% addCircles() %>% addHexbin(lowEndColor='green', highEndColor='red',  uniformSize = TRUE, radius = 25)
-  #     # registerPlugin(hexBin) %>%
-  #     # onRender("function(el, x) { L.HexbinLayer({}).addTo(this);}")
-  #       #newHex()
-  #   })
-
-
-  # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
+    # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/418
-
-  # observeEvent(input$map_btn, {
-  #   id <- paste0("map_", input$map_btn)
-  #   output[[id]] <- renderLeaflet({
-  #     l <- filtered_crash_lat_long() %>%
-  #          leaflet() %>% addTiles() %>% addCircles() %>% addHexbin()
-  #     l
-  #   })
-  #   output$map <- renderUI({
-  #     leafletOutput(id)
-  #   })
-  # })
 
   output$map <- renderUI({
     # works!!
@@ -640,19 +484,6 @@ server <- function(input, output, session) {
           fillOpacity = 0.2,
           stroke = FALSE
         ) %>%
-        # addHexbin(
-        #   lng = tomap$lng,
-        #   lat = tomap$lat,
-        #   radius = 5,
-        #   group = "Hex analysis",
-        #   layerId = "Hex",
-        #   opacity = 0.8,
-        #   options = hexbinOptions(
-        #     colorRange = c("#b0d0f2", "#05366b"),
-        #     resizetoCount = TRUE,
-        #     radiusRange = c(5, 5) # same size, must match radius
-        #   )
-        # ) %>% 
       addLayersControl(
         overlayGroups = c(
           "Crashes"
@@ -661,7 +492,7 @@ server <- function(input, output, session) {
       ) 
       mymap
     })
-    observeEvent(input$hexize, { # observe if hexsize has been changed
+    observeEvent(input$hexize, { # observe if hexsize changed
       proxy <- leafletProxy("map_TRUE", data = tomap)
       # proxy %>% clearControls()
       if (input$hexsize) { # both addHexbin functions must match
@@ -703,28 +534,7 @@ server <- function(input, output, session) {
 
     leafletOutput(id)
   })
-  # observeEvent(input$addhex, { # reactive to when hex check box changes by user
-  #   cmv_latlong <- cmv_latlong_data()
-  #   if (input$addhex) {
-  #     leafletProxy("map") %>% 
-  #       # clearHexbin() %>%
-  #       addHexbin(
-  #         lng = cmv_latlong$LONDECDG,
-  #         lat = cmv_latlong$LATDECDG,
-  #         radius = input$hexsize,
-  #         opacity = 0.8,
-  #         options = hexbinOptions(
-  #           colorRange = c("#99d899", "#005100"),
-  #           # blue c("#b0d0f2", "#05366b"),
-  #           resizetoCount = TRUE,
-  #           radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-  #         )) }
-  #   else {
-  #     leafletProxy("map") %>%
-  #       hideHexbin()
-  #   }
-  # })
-  #                                                                               TABLES
+  # TABLES
   table_crsh <- all_crashes %>%
     tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
     tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements

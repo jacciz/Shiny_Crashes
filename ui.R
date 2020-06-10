@@ -198,24 +198,19 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             plotlyOutput("person_age_gender", height = "200px", inline = T)
           )
         )
-      ),
-      # fluid row end
-
-      # div(style = " padding: 0px 0px; margin-top:-2em"),
-    )
-  ),
+      )
+    ),
 # Table Tab
 tabItem(tabName = "tables",
         h2("Tables tab content"),
-
         fluidRow(box(
           width = 6, DTOutput("biketable", height = 600)
         )))
+  )
 )
 
 # Put them together into a dashboardPage
 dashboardPage(
-  # skin = "blue_gradient",   #add a theme
-  dashboardHeader(title = logo_mytheme),
+  dashboardHeader(title = "WisDOT Vision Zero"),
               sidebar,
               body)
