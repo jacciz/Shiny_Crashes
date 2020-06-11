@@ -76,6 +76,35 @@ sidebar <- dashboardSidebar(
       "No Apparent Injury"
     )
   ),
+  # column(12, h5("Alcohol-related", style="display: inline-block; text-align:top; width: 0px;" ), 
+  # switchInput(inputId = "alcflag", value = FALSE, label = "", size = 'mini', inline = TRUE, width = "125px"),
+  # h5("Drug-related", style="display: inline-block; text-align:top; width: 0px;"),
+  # switchInput(inputId = "drugflag", value = FALSE, label = "", size = 'mini', inline = TRUE, width = "125px")
+  # ),
+ #  tags$head(
+ #    tags$style(type="text/css","label{ display: table-cell; text-align: center;vertical-align: middle; } .form-group { display: table-row;}") 
+ #  ),
+ # br(),
+  tags$table(width = "100%",
+    tags$tr(
+            tags$td(width = "50%", tags$div(style = "text-align:center;", "Alcohol-related")),
+            tags$td(width = "50%", tags$div(style = "text-align:center;", "Drug-related"))),
+    tags$tr(
+            tags$td(width = "50%",  switchInput(inputId = "drugflag1", value = FALSE, size = 'mini', inline = TRUE)),
+            tags$td(width = "50%",  switchInput(inputId = "drugflag2", value = FALSE, size = 'mini', inline = TRUE))),
+ 
+ tags$tr(
+   tags$td(width = "50%", tags$div(style = "text-align:center;", "Distracted driving")),
+   tags$td(width = "50%", tags$div(style = "text-align:center;", "Speeding"))),
+ tags$tr(
+   tags$td(width = "50%",  switchInput(inputId = "drugflag3", value = FALSE, size = 'mini', inline = TRUE)),
+   tags$td(width = "50%",  switchInput(inputId = "drugflag4", value = FALSE, size = 'mini', inline = TRUE)))
+  ),
+  # materialSwitch(inputId = "alcflag", label = "Alcohol-related", status = "primary", inline = TRUE, width = "125px"),
+  # materialSwitch(inputId = "drugflag", label = "Drug-related", status = "primary", inline = FALSE, width = "125px"),
+  # materialSwitch(inputId = "distflag", label = "Distracted driving", status = "primary", inline = FALSE, width = "125px"),
+  # materialSwitch(inputId = "speedflag", label = "Speeding", status = "primary", inline = TRUE, width = "125px"),
+  
   checkboxGroupButtons(
     inputId = "crsh_flags",
     label = "Flag: (Selection = Or)",
@@ -92,18 +121,18 @@ sidebar <- dashboardSidebar(
       "Seat belt",
       "Intersection & lane dep?"
     ),
-    size = 'sm',
-    justified = TRUE,
+    size = 'xs',
+    justified = FALSE,
     status = "primary",
-    individual = TRUE,
+    individual = FALSE, # all the same width if false
     direction = 'vertical',
+    # width = '50%',
     checkIcon = list(
       yes = icon("ok", lib = "glyphicon"),
       no = icon("remove", lib = "glyphicon")
       # verbatimTextOutput("crsh_flags_out")
     )
-  ),
-  materialSwitch(inputId = "id", label = "Test switch", status = "danger")
+  )
 ))
 #                                                     BODY
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
@@ -137,21 +166,13 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         column(
           width = 3,
           box(
-            title = ("Crash Severity by Month"),
             width = NULL,
-            solidHeader = TRUE,
-            HTML("<div style='height: 200px;'>"),
-            plotlyOutput("crsh_svr_mth", height = "220px"),
+            HTML("<div style='height: 220px;'>"), # this make chart fit in box
+            plotlyOutput("crsh_svr_mth", height = "240px"),
             HTML("</div>")
-            # plotlyOutput("crsh_svr_mth", height = "200px", inline = T)
           ),
           box(
-            title = ("Time of Day Crashes"),
             width = NULL,
-            solidHeader = TRUE,
-            # HTML("<div style='height: 200px;'>"),
-            # d3heatmapOutput("timeofday_heat", height = "250px", width = "115%"),
-            # HTML("</div>")
             plotlyOutput("timeofday_heat", height = "240px", inline = T)
           ),
         ),
@@ -177,25 +198,17 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         column(
           width = 3,
           box(
-            "Manner of Collision",
             width = NULL,
-            solidHeader = TRUE,
-            # HTML("<div style='height: 220px;'>"),
-            plotlyOutput("mnrcoll", height = "240px", inline = T)
-            # HTML("</div>")
+            plotlyOutput("mnrcoll", height = "240px"),
             # plotlyOutput("mnrcoll", height = "200px", inline = T)
           ),
           box(
-            title = "Role of Persons",
             width = NULL,
-            solidHeader = TRUE,
-            plotlyOutput("person_role", height = "200px", inline = T)
+            plotlyOutput("person_role", height = "240px", inline = T)
           ),
           box(
-            title = "Age and Gender of Persons Involved",
             width = NULL,
-            solidHeader = TRUE,
-            plotlyOutput("person_age_gender", height = "200px", inline = T)
+            plotlyOutput("person_age_gender", height = "240px", inline = T)
           )
         )
       )

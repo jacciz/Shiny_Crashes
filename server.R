@@ -228,42 +228,54 @@ server <- function(input, output, session) {
     )
   })
 
-# SECOND row charts
-
+# Fonts for all charts
+  chart_title = list(size = 14, color = "rgb(205,205,205)", family = "Cambria")
+  chart_axis = list(size = 12, color = "rgb(205,205,205)", family = "Cambria")
+    
   output$crsh_svr_mth <- renderPlotly({
     
-    crshsvr_table <- table(month = filtered_crashes()$CRSHMTH, svr = filtered_crashes()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
-    
-    crshsvr_table$month <- factor(crshsvr_table$month, levels = month.name) # this orders months
+    if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="Crash Severity by Month", font = chart_title),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+
+      crshsvr_table <-
+        table(month = filtered_crashes()$CRSHMTH, svr = filtered_crashes()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
+      crshsvr_table$month <-
+        factor(crshsvr_table$month, levels = month.name) # this orders months
     
     # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
-
+    
     plot_ly(
       crshsvr_table,
       type = 'bar',
       x = ~ month,
       y = ~ n,
       color = ~ svr,
-      colors = c("#D50032", "#428BCA", "#4DB848"), #colors for female, male, unknown in this order
+      colors = c("#D50032", "#428BCA", "#4DB848"),
+      #colors for female, male, unknown in this order
       hovertemplate = paste('<br>%{x}<br>',
                             '<b>%{y: .0f} Crashes<b>')
     ) %>%
       layout(
+        title = list(text ="Crash Severity by Month", font = chart_title, y = 1),
         legend = list(
-          x = 0,
-          y = 100,
+          x = .5,
+          y = 1.1,
           orientation = 'h',
-          font = list(size = 10, color = "white")
+          font = chart_axis
         ),
         margin = list(
           r = 0,
           l = 0,
-          t = 0,
           b = 0
         ),
         xaxis = list(
           title = "",
-          tickfont = list(size = 10, color = "white"),
+          tickfont = chart_axis,
           tickangle = 0,
           # automargin = TRUE
           dtick = 5 # every 5 months are labeled
@@ -271,31 +283,40 @@ server <- function(input, output, session) {
         yaxis = list(
           title = "",
           showgrid = FALSE,
-          tickfont = list(size = 10, color = "white")
+          tickfont = chart_axis
         ),
         plot_bgcolor = 'rgba(0,0,0,0)',
         # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
         barmode = 'stack'
       )
-      # scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
-        # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
-  
+    }
+    # scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
+    # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
+    
   })
 
   output$timeofday_heat <- renderPlotly({
-    day_time_data <- filtered_crashes() %>% # make a df for chart
-      na.omit(newtime) %>%
-      mutate(newtime = forcats::fct_explicit_na(newtime)) %>% # keep NA value, do this
-      group_by(newtime, DAYNMBR) %>%
-      summarise(n = n()) %>%
-      filter(newtime != '') %>%
-      tidyr::spread(DAYNMBR, n, fill = 0) 
     
+    if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
+      plotly_empty(type = "heatmap") %>% layout(
+        title = list(text ="Time of Day Crashes", font = chart_title),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      day_time_data <- filtered_crashes() %>% # make a df for chart
+        na.omit(newtime) %>%
+        mutate(newtime = forcats::fct_explicit_na(newtime)) %>% # keep NA value, do this
+        group_by(newtime, DAYNMBR) %>%
+        summarise(n = n()) %>%
+        filter(newtime != '') %>%
+        tidyr::spread(DAYNMBR, n, fill = 0)
+      
     # Used to create the empty tibble
     x <- c("Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday") #newtime
     y = c("12am","1am","2am","3am", "4am","5am", "6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm",
-          "5pm","6pm","7pm","8pm","9pm","10pm","11pm")
+          "5pm","6pm","7pm","8pm","9pm","10pm","11pm")    
     
     # create an empty tibble so we get a full matrix for heat map
     empty_tibble <- tibble(newtime = y)
@@ -306,7 +327,7 @@ server <- function(input, output, session) {
     # function to find if column exists, if not, adds column with NA values
     fncols <- function(data, cname) {
       add <-cname[!cname%in%names(data)]
-      if(length(add)!=0) data[add] <- NA
+      if(length(add)!=0) data[add] <- 0
       data
     }
     
@@ -339,57 +360,76 @@ server <- function(input, output, session) {
                             '<b>%{z:.0f} Crashes<b>')
       ) %>% 
       layout(
-        margin = list(r = 0,l = 0,t = 0,b = 0
+        title = list(text ="Time of Day Crashes", font = chart_title),
+        margin = list(r = 0,l = 0, b = 0
         ),
-        xaxis = list(tickfont = list(size = 10, color = "white"), tickangle = 0),
-        yaxis = list(tickfont = list(size = 10, color = "white")),
+        xaxis = list(tickfont = chart_axis, tickangle = 0),
+        yaxis = list(tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
+    }
   })
 
     output$mnrcoll <- renderPlotly({
-    
-    mnr_crashes <- filtered_crashes() %>%
-      filter(MNRCOLL != "Unknown")
-    mnr_crashes_table <- table(mnrcoll = mnr_crashes$MNRCOLL) %>% as_tibble()
-    
-    plot_ly(
-      mnr_crashes_table,
-      type = 'bar',
-      orientation = 'h',
-      x = ~ n,
-      y = ~ reorder(mnrcoll, n), # reorder from big to small values
-      marker = list(color = "#428BCA"), # blue!
-      hovertemplate = paste('%{text}', '<br>%{x: .0f} Crashes<br>'),
-      text = ~ format(n, big.mark=","), # bar end number
-      textfont = list(
-        family = 'Cambria',
-        size = 10,
-        color = 'white'
-      ),
-      textposition = 'outside',
-      cliponaxis = FALSE
-    ) %>%
-      layout(
-        margin = list(
-          r = 30, # set to 30 so labels don't get cut off
-          l = 0,
-          t = 0,
-          b = 0
+
+      if (dim(filtered_crashes())[1] == 0){ # if no crashes, show empty plot, else make plot
+        # hide("mnrcoll")
+        plotly_empty(type = "bar") %>% layout(
+          title = list(text ="Manner of Collision", font = chart_title),
+          plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        )
+      } else {
+        
+      mnr_crashes <- filtered_crashes() %>%
+        filter(MNRCOLL != "Unknown")
+      
+      mnr_crashes_table <- table(mnrcoll = mnr_crashes$MNRCOLL) %>% as_tibble()
+      
+      plot_ly(
+        mnr_crashes_table,
+        type = 'bar',
+        orientation = 'h',
+        x = ~ n,
+        y = ~ reorder(mnrcoll, n), # reorder from big to small values
+        marker = list(color = "#428BCA"), # blue!
+        hovertemplate = paste('%{text}', '<br>%{x: .0f} Crashes<br>'),
+        text = ~ format(n, big.mark=","), # bar end number
+        textfont = list(
+          family = 'Cambria',
+          size = 10,
+          color = 'white'
         ),
-        xaxis = list(
-          title = "",
-          showgrid = FALSE,
-          showticklabels = FALSE # remove axis labels
-        ),
-        yaxis = list(title = "", tickfont = list(size = 10, color = "white")),
-        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
+        textposition = 'outside',
+        cliponaxis = FALSE
+      ) %>%
+        layout(
+          title = list(text ="Manner of Collision", font = chart_title),
+          margin = list(
+            r = 30, # set to 30 so labels don't get cut off
+            l = 0,
+            # t = 0, # this will cut off title
+            b = 0
+          ),
+          xaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE # remove axis labels
+          ),
+          yaxis = list(title = "", tickfont = chart_axis),
+          plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        )
+      }
   })
 
   output$person_role <- renderPlotly({  # have a symbol for each role
+    
+    if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="Role of Persons Involved", font = chart_title),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
     
     role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() # get counts of ROLE, put in a tibble
 
@@ -411,10 +451,10 @@ server <- function(input, output, session) {
       cliponaxis = FALSE
     ) %>%
       layout(
+        title = list(text ="Role of Persons Involved", font = chart_title),
         margin = list(
           r = 30, # set to 30 so labels don't get cut off
           l = 0,
-          t = 0,
           b = 0
         ),
         xaxis = list(
@@ -422,13 +462,22 @@ server <- function(input, output, session) {
           showgrid = FALSE,
           showticklabels = FALSE # remove axis labels
         ),
-        yaxis = list(title = "", tickfont = list(size = 10, color = "white")),
+        yaxis = list(title = "", tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
+    }
   })
 
   output$person_age_gender <- renderPlotly({
+    
+    if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="Age and Gender of Persons Involved", font = chart_title),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
     
     person <-
       filtered_persons() %>% select(age_group, SEX)
@@ -446,15 +495,15 @@ server <- function(input, output, session) {
                             '<b>%{y: .0f}<b>')
     ) %>%
       layout(
-        legend = list(x = 0, y = 100, orientation = 'h', font = list(size = 10, color = "white")),
+        title = list(text ="Age and Gender of Persons Involved", font = chart_title, y = 1),
+        legend = list(x = .5, y = 1, orientation = 'h', font = chart_axis),
         margin = list(
           r = 0,
           l = 0,
-          t = 0,
           b = 0
         ),
-        xaxis = list(title = "", tickfont = list(size = 10, color = "white"), tickangle = 0),
-        yaxis = list(title = "", showgrid = FALSE, tickfont = list(size = 10, color = "white")),
+        xaxis = list(title = "", tickfont = chart_axis, tickangle = 0),
+        yaxis = list(title = "", showgrid = FALSE, tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
         barmode = 'stack'
@@ -463,6 +512,7 @@ server <- function(input, output, session) {
         #   sapply(seq_along(labels), function(i)
         #     paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))
         # }
+    }
    })
 
 # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
@@ -471,13 +521,13 @@ server <- function(input, output, session) {
   # -> https://github.com/rstudio/leaflet/issues/418
 
   output$map <- renderUI({
-    # works!!
     tomap <- filtered_crash_lat_long()
     id = "map_TRUE" # not sure what this means but it should be set to TRUE
-    output[[id]] = renderLeaflet ({
+    output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
       input$print
       mymap <- tomap %>%
-        leaflet() %>% addTiles() %>% addCircleMarkers(
+        leaflet() %>% addTiles() %>%
+        addCircleMarkers(
           group = "Crashes",
           fillColor = "red",
           radius = 1,
@@ -514,7 +564,7 @@ server <- function(input, output, session) {
     
     observeEvent(input$hex, { # observe if hex has been checked
       proxy <- leafletProxy("map_TRUE", data = tomap)
-      proxy %>% clearControls() # what does this do?
+      # proxy %>% clearControls() # what does this do?
       if (input$hex) {  # both addHexbin functions must match
         proxy %>% addHexbin(
                 lng = tomap$lng,
