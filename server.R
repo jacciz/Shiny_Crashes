@@ -4,22 +4,15 @@ library(DT)    # create pretty tables
 # library(expss) # format freq tables
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
-# library(d3heatmap) # makes time of day / week heat chart
 library(lubridate) # for dates
 library(htmltools)
 library(htmlwidgets)
-# library(ggrepel)  # adjusts labels for ggplots, not for axis
 library(leaflet)
-# library(leaflethex)
 library(leaflet.extras2) # hexbin, newer than leafthehe
 library(tidyverse)
-# library(r2d3)
-# library(rbokeh)
-# library(tmap)
-# library(geogrid)
-# library(hexbin)
-# library(shinyjs)
-# library(RColorBrewer)
+library(tigris) # census tiger files
+library(sf)
+
 
 # download.file('https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js', 'C:/CSV/hex.js', mode="wb")
 # helloLocalFile <- htmlDependency("hex", "1.0",
@@ -32,15 +25,15 @@ server <- function(input, output, session) {
     if (!is.null(session$user)) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
-    attachDependencies( # import file for hex
-      tags$script("
-        alert('goodbye')
-      "),
-       helloLocalFile
-    )
-
   })
-
+  
+  # Load county spatial data
+  wi_counties <- counties(state = '55', cb=TRUE, class = 'sf') # get counties data
+  wi_munis <- places(state = '55', cb=TRUE, class = 'sf')
+  # wi_counties84 <- st_transform(wi_counties, crs = ('+proj=longlat +datum=WGS84'))
+  # wi_counties_crs <- st_transform(wi_counties, 3071) # CRS
+  
+  
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
@@ -49,22 +42,22 @@ server <- function(input, output, session) {
 
     muni_cnty_list <- muni_recode %>% filter(CntyCode %in% input$cntynum)
 
-    updateSelectInput(session,
-                      "muni_names",
+    updateSelectInput(session, "muni_names",
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   })
-
-  output$crsh_svr_out <- renderPrint(input$crsh_svr) # delete?
-
-  updateSelectInput(session,
-                    "year",
-                    selected = 2019,
-                    # default selection
+  
+  updateSelectInput(session, "year",
+                    selected = 2019, # default selection
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
 
-    # Filtered data based on input by the user
+# Filtered data based on input by the user
   crash_flags_selected <-
     reactive({
+      # # selected_flags <- c(input$drugflag1, input$drugflag2)
+      # filter_var1 <- dplyr::quo(fcol1)
+      # flags <- crsh_flags %>% filter1_by(vars(!!(input$DRUGFLAG)))
+      # return (flags$CRSHNMBR)
+      
       # what flags are selected - this is set to OR (not AND)
         rename_crsh_flags <- # rename inputs so we can select flag columns
           c("Alcohol-related" = "ALCFLAG",
@@ -79,10 +72,9 @@ server <- function(input, output, session) {
           )
         new_crsh_flags <-
           rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
-        # seleced_crash_flag_crshes = c('Speeding','Teen driver', 'Older driver')
-        seleced_crash_flag_crshes <-
+        seleced_crash_flag_crshes <- # selects crashs flags, goes through each row and finds all Y
           crsh_flags[apply(crsh_flags [new_crsh_flags], 1, function(x)
-            any(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # any, so OR flags are selected
+            all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # all so ALL flags are selected
         return (seleced_crash_flag_crshes$CRSHNMBR) # output is df of CRSHNMBRS
     })
 
@@ -93,11 +85,17 @@ server <- function(input, output, session) {
         # CNTYCODE %in% 13,
         # year(CRSHDATE) %in% 2018
         year(CRSHDATE) %in% input$year,
-        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR
-
-        # CRSHSVR %in% crsh_svr_out - wrong)
-        # INJSVR %in% input$inj_svr_out
+        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR,
+        CRSHSVR %in% input$crsh_svr
       )
+  #   
+  #   input$update
+  # },  {
+  #   req(data())
+  #   if(is.null(input$select) || input$select == "")
+  #     data() else 
+  #       data()[, colnames(data()) %in% input$select]
+  # })
   })
 
   filtered_persons <- reactive({
@@ -106,7 +104,8 @@ server <- function(input, output, session) {
         CNTYCODE %in% input$cntynum,
         year(CRSHDATE) %in% input$year,
         if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR,
-        WISINJ %in% input$inj_svr
+        # WISINJ %in% input$inj_svr
+        CRSHSVR %in% input$crsh_svr
       )
   })
 
@@ -228,10 +227,10 @@ server <- function(input, output, session) {
     )
   })
 
-# Fonts for all charts
+  ################### BODY CHARTS #######################
   chart_title = list(size = 14, color = "rgb(205,205,205)", family = "Cambria")
   chart_axis = list(size = 12, color = "rgb(205,205,205)", family = "Cambria")
-    
+
   output$crsh_svr_mth <- renderPlotly({
     
     if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
@@ -241,59 +240,52 @@ server <- function(input, output, session) {
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
     } else {
-
       crshsvr_table <-
         table(month = filtered_crashes()$CRSHMTH, svr = filtered_crashes()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
       crshsvr_table$month <-
         factor(crshsvr_table$month, levels = month.name) # this orders months
     
     # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
-    
+    # month_factor = month.name
+      
     plot_ly(
       crshsvr_table,
       type = 'bar',
       x = ~ month,
       y = ~ n,
       color = ~ svr,
-      colors = c("#D50032", "#428BCA", "#4DB848"),
-      #colors for female, male, unknown in this order
-      hovertemplate = paste('<br>%{x}<br>',
-                            '<b>%{y: .0f} Crashes<b>')
-    ) %>%
+      colors = c("#D50032", "#428BCA", "#4DB848"),  #colors for female, male, unknown in this order
+      hovertemplate = paste('%{x}<br>',
+                            '<b>%{y: .0f} Crashes')
+    ) %>% #Price: %{y:$.2f}<extra></extra>
       layout(
         title = list(text ="Crash Severity by Month", font = chart_title, y = 1),
         legend = list(
           x = .5,
-          y = 1.1,
+          y = 1.2,
           orientation = 'h',
           font = chart_axis
         ),
-        margin = list(
-          r = 0,
-          l = 0,
-          b = 0
+        margin = list(r = 0, l = 0, b = 0, t = 45
         ),
         xaxis = list(
           title = "",
           tickfont = chart_axis,
           tickangle = 0,
-          # automargin = TRUE
+          # automargin = TRUE,
           dtick = 5 # every 5 months are labeled
         ),
         yaxis = list(
-          title = "",
           showgrid = FALSE,
           tickfont = chart_axis
         ),
-        plot_bgcolor = 'rgba(0,0,0,0)',
-        # make transparent background
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
         barmode = 'stack'
       )
     }
     # scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
     # sapply(seq_along(labels), function(i) paste0(ifelse(i %% 2 == 0, '', '\n'), labels[i]))}
-    
   })
 
   output$timeofday_heat <- renderPlotly({
@@ -356,8 +348,8 @@ server <- function(input, output, session) {
       type = "heatmap",
       colorscale = colz,
       showscale = FALSE, # No legend
-      hovertemplate = paste('<br>%{x} %{y}<br>',
-                            '<b>%{z:.0f} Crashes<b>')
+      hovertemplate = paste('%{x} %{y}<br>',
+                            '<b>%{z:.0f} Crashes')
       ) %>% 
       layout(
         title = list(text ="Time of Day Crashes", font = chart_title),
@@ -372,7 +364,6 @@ server <- function(input, output, session) {
   })
 
     output$mnrcoll <- renderPlotly({
-
       if (dim(filtered_crashes())[1] == 0){ # if no crashes, show empty plot, else make plot
         # hide("mnrcoll")
         plotly_empty(type = "bar") %>% layout(
@@ -492,17 +483,18 @@ server <- function(input, output, session) {
       color = ~ sex,
       colors = c("#D50032","#428BCA", "#F9C218"), #colors for female, male, unknown in this order
       hovertemplate = paste('<br>%{x}<br>',
-                            '<b>%{y: .0f}<b>')
+                            '<b>%{y: .0f} people<b>')
     ) %>%
       layout(
         title = list(text ="Age and Gender of Persons Involved", font = chart_title, y = 1),
-        legend = list(x = .5, y = 1, orientation = 'h', font = chart_axis),
+        legend = list(x = .5, y = 1.2, orientation = 'h', font = chart_axis),
         margin = list(
           r = 0,
           l = 0,
-          b = 0
+          b = 0,
+          t = 45
         ),
-        xaxis = list(title = "", tickfont = chart_axis, tickangle = 0),
+        xaxis = list(title = "", tickfont = chart_axis, tickangle = 0, categoryarray = ~age, categoryorder = "array", dtick = 2),
         yaxis = list(title = "", showgrid = FALSE, tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
@@ -521,16 +513,30 @@ server <- function(input, output, session) {
   # -> https://github.com/rstudio/leaflet/issues/418
 
   output$map <- renderUI({
+    
+  # this takes the selected county and zooms to it
+    # county <- wi_counties %>% filter(NAME %in% input$counties)
+    #   bbox <- st_bbox(county) %>% as.vector()
+    #   fitBounds(county[1], county[2], county[3], county[4]) %>% # zooms to county
+
     tomap <- filtered_crash_lat_long()
     id = "map_TRUE" # not sure what this means but it should be set to TRUE
     output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
       input$print
       mymap <- tomap %>%
         leaflet() %>% addTiles() %>%
+        # addPolygons(
+        #   data = wi_counties$geometry,
+        #   group = "Counties",
+        #   color = "#444444",
+        #   fillOpacity = 0,
+        #   weight = 1,
+        #   smoothFactor = 0.5
+        # ) %>%
         addCircleMarkers(
           group = "Crashes",
           fillColor = "red",
-          radius = 1,
+          radius = 3,
           fillOpacity = 0.2,
           stroke = FALSE
         ) %>%
@@ -582,7 +588,7 @@ server <- function(input, output, session) {
       }
     })
 
-    leafletOutput(id)
+    leafletOutput(id, height = "680px")
   })
   # TABLES
   table_crsh <- all_crashes %>%
