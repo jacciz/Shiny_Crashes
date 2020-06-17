@@ -1,7 +1,7 @@
 library(dplyr) # select, filter functions
 library(ggplot2) # create pretty graphs
 library(DT)    # create pretty tables
-# library(expss) # format freq tables
+library(expss) # format freq tables, tab_cells
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(lubridate) # for dates
@@ -12,6 +12,15 @@ library(leaflet.extras2) # hexbin, newer than leafthehe
 library(tidyverse)
 library(tigris) # census tiger files
 library(sf)
+library(data.table) # setnames function
+
+# profvis::profvis({ # see performance
+#   shiny::runApp(
+#     appDir = dirname(sys.frame(1)$ofile),
+#     port = 8888,
+#     launch.browser = FALSE,
+#     quiet = TRUE)
+# }) # uncompressed files are the fastest
 
 
 # download.file('https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js', 'C:/CSV/hex.js', mode="wb")
@@ -28,10 +37,10 @@ server <- function(input, output, session) {
   })
   
   # Load county spatial data
-  wi_counties <- counties(state = '55', cb=TRUE, class = 'sf') # get counties data
-  wi_munis <- places(state = '55', cb=TRUE, class = 'sf')
-  # wi_counties84 <- st_transform(wi_counties, crs = ('+proj=longlat +datum=WGS84'))
-  # wi_counties_crs <- st_transform(wi_counties, 3071) # CRS
+  # wi_counties <- counties(state = '55', cb=TRUE, class = 'sf') # get counties data
+  # wi_munis <- places(state = '55', cb=TRUE, class = 'sf')
+  # wi_counties84 <- st_transform(wi_counties, crs = ('+proj=longlat +datum=WGS84')) # dont need to do
+  # wi_counties_crs <- st_transform(wi_counties, 3071) # CRS, dont need to do
   
   
   updateSelectInput(session, # choose county
@@ -120,6 +129,7 @@ server <- function(input, output, session) {
     # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
     setnames(crash_lat_long_j, "LONDECDG", "lng") # could move this to data import part
     setnames(crash_lat_long_j, "LATDECDG", "lat")
+    # use pull(lat/long) ??
   })
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
@@ -228,8 +238,9 @@ server <- function(input, output, session) {
   })
 
   ################### BODY CHARTS #######################
-  chart_title = list(size = 14, color = "rgb(205,205,205)", family = "Cambria")
-  chart_axis = list(size = 12, color = "rgb(205,205,205)", family = "Cambria")
+  chart_title = list(size = 16, color = "rgb(205,205,205)", family = "Cambria")
+  chart_axis = list(size = 14, color = "rgb(205,205,205)", family = "Cambria")
+  chart_axis_bar = list(size = 14, color = "#428BCA", family = "Cambria", face = "bold")
 
   output$crsh_svr_mth <- renderPlotly({
     
@@ -387,11 +398,7 @@ server <- function(input, output, session) {
         marker = list(color = "#428BCA"), # blue!
         hovertemplate = paste('%{text}', '<br>%{x: .0f} Crashes<br>'),
         text = ~ format(n, big.mark=","), # bar end number
-        textfont = list(
-          family = 'Cambria',
-          size = 10,
-          color = 'white'
-        ),
+        textfont = chart_axis_bar,
         textposition = 'outside',
         cliponaxis = FALSE
       ) %>%
@@ -433,11 +440,7 @@ server <- function(input, output, session) {
       marker = list(color = "#428BCA"), # blue!
       # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
       text = ~ format(n, big.mark=","),
-      textfont = list(
-        family = 'Cambria',
-        size = 10,
-        color = 'white'
-      ),
+      textfont = chart_axis_bar,
       textposition = 'outside',
       cliponaxis = FALSE
     ) %>%
@@ -550,7 +553,6 @@ server <- function(input, output, session) {
     })
     observeEvent(input$hexize, { # observe if hexsize changed
       proxy <- leafletProxy("map_TRUE", data = tomap)
-      # proxy %>% clearControls()
       if (input$hexsize) { # both addHexbin functions must match
         proxy %>%
           clearHexbin() %>%

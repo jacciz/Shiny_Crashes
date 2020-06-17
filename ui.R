@@ -17,17 +17,22 @@ table_style = "text-align:center; margin:0px;"
 sidebar <- dashboardSidebar(
   width = "250px", # sidebar width
   sidebarMenu(
-  menuItem(
-    "Dashboard",
-    tabName = "dashboard",
-    icon = icon("dashboard")
-  ),
-  menuItem(
-    "Tables",
-    icon = icon("th"),
-    tabName = "tables",
-    badgeColor = "green"
-  ),
+  # menuItem(
+  #   "Main Page",
+  #   tabName = "landing",
+  #   icon = icon("dashboard")
+  #   ),
+  # menuItem(
+  #   "Dashboard",
+  #   tabName = "dashboard",
+  #   icon = icon("dashboard")
+  # ),
+  # menuItem(
+  #   "Tables",
+  #   icon = icon("th"),
+  #   tabName = "tables",
+  #   badgeColor = "green"
+  # ),
   selectInput(
     "cntynum",
     "County",
@@ -93,7 +98,7 @@ sidebar <- dashboardSidebar(
  #  ),
   checkboxGroupButtons(
     inputId = "crsh_flags",
-    label = "Select Flags",
+    label = "Select crashes involving...",
     choices = c(
       "Alcohol-related", # icon("calendar")  
       "Distracted driving (NO)",
@@ -116,95 +121,74 @@ sidebar <- dashboardSidebar(
       yes = icon("ok", lib = "glyphicon"),
       no = icon("remove", lib = "glyphicon")
     )
-  ),
- 
-  tags$h5(style = "text-align:left; padding: 15px;", "Map Settings"),
- checkboxInput("hex", "Show Hex", FALSE),
- sliderInput(
-   "hexsize",
-   "Change Hex Size:",
-   min = 1,
-   max = 30,
-   value = 10
- )
+  )
 ))
 ################### BODY #######################
+# The body is separated by tabs
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
-  tabItems(
-    tabItem(
-      tabName = "dashboard",
-      fluidRow( #style='padding:5px;',
-        # tags$head(tags$style(HTML(".small-box {color: rgba(0,0,0,1)}"))), # change height, icon size of all value boxes
-        tags$style(".small-box {background-color: rgb(52,62,72) !important; color: rgb(52,62,72)!important; }"),
-        # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
-        valueBoxOutput("tot_crash", width = 2),
+      
+      # This disables scrollbar inside app
+      tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
+      
+      # valueBoxOutput("tot_crash", width = 2),
+      # # # for column, width = NULL
+      # valueBoxOutput("tot_inj", width = 2),
+      # valueBoxOutput("tot_fatal", width = 2),
+      column(width = 6,#style='padding:5px;',
+        fluidRow(valueBoxOutput("tot_crash"),
         # # for column, width = NULL
-        valueBoxOutput("tot_inj", width = 2),
-        valueBoxOutput("tot_fatal", width = 2),
-        valueBoxOutput("passveh_box", width = 2),
-        valueBoxOutput("light_truck_box", width = 2),
-        valueBoxOutput("large_truck_box", width = 2)
-      ),
-      fluidRow(
-        column( # column layout
-          width = 3, offset = 0, style='padding:5px;',
-          box(
-            width = NULL, # MUST BE NULL FOR COLUMN LAYOUT
-            HTML("<div style='height: 220px;'>"), # this makes chart fit in box
+        valueBoxOutput("tot_inj"),
+        valueBoxOutput("tot_fatal")),
+        # tags$head(tags$style(HTML(".small-box {color: rgba(0,0,0,1)}"))), # change height, icon size of all value boxes
+        # tags$style(".small-box {background-color: rgb(52,62,72) !important; color: rgb(52,62,72)!important; }"),
+        # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
+        tabBox(
+          title = NULL,
+          width = NULL,
+          # The id lets us use input$tabset1 on the server to find the current tab
+          id = "tabset1",
+          # height = "600px",
+          tabPanel(
+            tagList(shiny::icon("paper-plane"), "Front"),
+            tags$h3(
+              "Welcome to the Wisconsin Department of Transportation Crash Statistics Dashboard."
+            ),
+            tags$h5(
+              "You can explore crash statistics and locations from 2017 - 2019, click on the tabs to display specific data. Data is provided by TOPS"
+            )
+          ),
+          tabPanel(
+            tagList(shiny::icon("car-crash"), "Crashes"),
             plotlyOutput("crsh_svr_mth", height = "240px"),
-            HTML("</div>")
+            plotlyOutput("timeofday_heat", height = "240px"),
+            plotlyOutput("mnrcoll", height = "240px")
           ),
-          box(
-            width = NULL,
-            # HTML("<div style='height: 220px;'>"), # this makes chart fit in box
-            plotlyOutput("timeofday_heat", height = "240px")
-            # HTML("</div>")
-          )
-        ),
-        column(
-          # p(
-          #   actionButton("map_btn", "Show Hex")
-          # ),
-          width = 6, offset = 0, style='padding:5px;',
-          box(
-            width = NULL,
-            HTML("<div style='height: 660px;'>"),
-            uiOutput("map"),
-            HTML("</div>")
-          )
-        ),
-        column(
-          width = 3, offset = 0, style='padding:5px;',
-          box(
-            width = NULL,
-            HTML("<div style='height: 220px;'>"), # this makes chart fit in box
-            plotlyOutput("mnrcoll", height = "240px"),
-            HTML("</div>")
-            # plotlyOutput("mnrcoll", height = "200px", inline = T)
-          ),
-          box(
-            width = NULL,
-            HTML("<div style='height: 220px;'>"),
+          tabPanel(
+            tagList(shiny::icon("user-friends"), "People"),
             plotlyOutput("person_role", height = "240px"),
-            HTML("</div>")
+            plotlyOutput("person_age_gender", height = "240px")
           ),
-          box(
-            width = NULL,
-            HTML("<div style='height: 220px;'>"),
-            plotlyOutput("person_age_gender", height = "240px"),
-            HTML("</div>")
-          )
-        )
+          tabPanel(
+            tagList(shiny::icon("car"), "Vehicles"),
+                   valueBoxOutput("passveh_box"),
+                   valueBoxOutput("light_truck_box"),
+                   valueBoxOutput("large_truck_box")
+                   ),
+          tabPanel(
+            tagList(shiny::icon("map"), "Map Settings/Analysis"),
+                   checkboxInput("hex", "Show Hex", FALSE),
+                   sliderInput(
+                     "hexsize",
+                     "Change Hex Size:",
+                     min = 1,
+                     max = 30,
+                     value = 10
+                   ))
+        )), 
+      column( width = 6,
+            uiOutput("map")
       )
-    ),
-# Table Tab
-tabItem(tabName = "tables",
-        h2("Tables tab content"),
-        fluidRow(box(
-          width = 6, DTOutput("biketable", height = 600)
-        )))
-  )
-)
+        )
 
 # Put them together into a dashboardPage
 dashboardPage(

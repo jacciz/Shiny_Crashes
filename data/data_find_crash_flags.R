@@ -54,9 +54,9 @@ import_all_crashes <- function(csv_name, file_loc = file) {
 
 
 # Import the data
-all_crashes <- import_all_crashes("crash")
-all_persons <- import_all_persons("person")
-all_persons <- readRDS(file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") #alternatively, load this
+# all_crashes <- import_all_crashes("crash")
+# all_persons <- import_all_persons("person")
+# all_persons <- readRDS(file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") #alternatively, load this
 
 
 # Functions to get a list when flag == Y #### grepl("^346.55|^346.56|^346.57|^346.58|^346.59(1)|^346.59(2)", thisrow)
@@ -92,13 +92,13 @@ get_list_crashflags <- function(crashes_df){
 }
 
 # Run the functions
-speedflag_crshes <- get_list_speedflags(all_persons) # list of crshnmbers
-teenflag_crshes <- get_list_teendrvrflags(all_persons) # list of crshnmbers
-olderflag_crshes <- get_list_olderdrvrflags(all_persons) # list of crshnmbers
-allcrashflag_crshes <- get_list_crashflags(all_crashes) # list of crshnmbers
+# speedflag_crshes <- get_list_speedflags(all_persons) # list of crshnmbers
+# teenflag_crshes <- get_list_teendrvrflags(all_persons) # list of crshnmbers
+# olderflag_crshes <- get_list_olderdrvrflags(all_persons) # list of crshnmbers
+# allcrashflag_crshes <- get_list_crashflags(all_crashes) # list of crshnmbers
 
 
 # Combine and save crash flags as an RDS
-all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"), list(speedflag_crshes, teenflag_crshes, olderflag_crshes, allcrashflag_crshes)) # combine to one df
-saveRDS(all_flags, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/crsh_flags.rds") # save final crash flags df into rds
+# all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"), list(speedflag_crshes, teenflag_crshes, olderflag_crshes, allcrashflag_crshes)) # combine to one df
+# saveRDS(all_flags, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/crsh_flags.rds") # save final crash flags df into rds
 # saveRDS(all_persons, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") # save this once, just in case
