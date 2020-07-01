@@ -4,20 +4,20 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
+# This script imports data from a CSV, selects certain columns, add columns (such as newtime and age group),
+# then exports to an FST file. global. Raw data must be put in 'data/' file
+
+# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
 # file_loc = "Data Prep for R Shiny/"
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
-file = "C:/CSV/csv_from_sas/" # this is where the raw CSVs are
+# file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved
 
-# This script imports data from a CSV, selects certain columns, add columns (such as newtime and age group),
-# then exports to an RDS file. global.R will read this RDS file. Raw data must be put in 'data/' file
 import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
           select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
-                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL",
-                     "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG")
-          )
+                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL", "LATDECDG", "LONDECDG")
+          ) #  "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG"
   all_crashes <-
     all_crashes %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
   all_crashes <- all_crashes %>% mutate(newtime = cut(  # this finds crash time by hour
@@ -77,7 +77,8 @@ import_all_crashes <- function(csv_name, file_loc = file) {
     ),
     include.lowest = T
   ))
- saveRDS(all_crashes, file = paste0(file_loc, csv_name, ".rds"))
+ # saveRDS(all_crashes, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
+ write_fst(all_crashes, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
 import_all_persons <- function(csv_name, file_loc = file) {
@@ -95,7 +96,6 @@ import_all_persons <- function(csv_name, file_loc = file) {
         "CNTYCODE",
         "MUNICODE",
         "WISINJ",
-        "SFTYEQP",
         "ROLE",
         "SEX",
         "AGE",
@@ -160,7 +160,8 @@ import_all_persons <- function(csv_name, file_loc = file) {
                                                         SEX == "M" ~ "Male",
                                                         SEX == "U" ~ "Unknown"))
 
-  saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"))
+  # saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
+  write_fst(all_persons, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
 import_all_vehicles <- function(csv_name, file_loc = file) {
@@ -170,18 +171,18 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
     )
   all_vehicles <-
     all_vehicles %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
-  saveRDS(all_vehicles, file = paste0(file_loc, csv_name, ".rds"))
+  # saveRDS(all_vehicles, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
+  write_fst(all_vehicles, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
-
 # input is name of csv
-all_crashes <- import_all_crashes("crash")
+all_crashes <- import_all_crashes("crash20")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 #
-all_persons <- import_all_persons("person")
+all_persons <- import_all_persons("person20")
 # Note: Creates a age_group field, relabels ROLE, SEX
 
-all_vehicles <- import_all_vehicles("vehicle")
+all_vehicles <- import_all_vehicles("vehicle20")
 
 
 # To import county and muni recode to get names
@@ -190,5 +191,3 @@ all_vehicles <- import_all_vehicles("vehicle")
 #
 # saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
 # saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
-
-# rbind() to combine df vertically

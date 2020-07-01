@@ -11,28 +11,12 @@ library(htmlwidgets)
 source("www/theme_grey_dark.R")  # adds a cool theme
 
 # Style for crash flag table
-table_style = "text-align:center; margin:0px;"
+# table_style = "text-align:center; margin:0px;"
 
 ################### SIDEBAR #######################
 sidebar <- dashboardSidebar(
   width = "250px", # sidebar width
   sidebarMenu(
-  # menuItem(
-  #   "Main Page",
-  #   tabName = "landing",
-  #   icon = icon("dashboard")
-  #   ),
-  # menuItem(
-  #   "Dashboard",
-  #   tabName = "dashboard",
-  #   icon = icon("dashboard")
-  # ),
-  # menuItem(
-  #   "Tables",
-  #   icon = icon("th"),
-  #   tabName = "tables",
-  #   badgeColor = "green"
-  # ),
   selectInput(
     "cntynum",
     "County",
@@ -127,7 +111,7 @@ sidebar <- dashboardSidebar(
 # The body is separated by tabs
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
       
-      # This disables scrollbar inside app
+      # This disables scrollbar inside app, or does it?
       tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
       
       # valueBoxOutput("tot_crash", width = 2),
@@ -146,7 +130,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
           title = NULL,
           width = NULL,
           # The id lets us use input$tabset1 on the server to find the current tab
-          id = "tabset1",
+          # id = "tabset1",
           # height = "600px",
           tabPanel(
             tagList(shiny::icon("paper-plane"), "Front"),
@@ -154,8 +138,9 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
               "Welcome to the Wisconsin Department of Transportation Crash Statistics Dashboard."
             ),
             tags$h5(
-              "You can explore crash statistics and locations from 2017 - 2019, click on the tabs to display specific data. Data is provided by TOPS"
-            )
+              "You can explore crash statistics and locations from 2017 - 2019, click on the tabs to display specific data. Data is provided by TOPS."
+            ),
+            tags$h5("For data requests, email BOTSTS (link).")
           ),
           tabPanel(
             tagList(shiny::icon("car-crash"), "Crashes"),
@@ -164,7 +149,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             plotlyOutput("mnrcoll", height = "240px")
           ),
           tabPanel(
-            tagList(shiny::icon("user-friends"), "People"),
+            tagList(shiny::icon("users"), "People"),
             plotlyOutput("person_role", height = "240px"),
             plotlyOutput("person_age_gender", height = "240px")
           ),

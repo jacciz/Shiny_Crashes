@@ -5,29 +5,23 @@ library(expss) # format freq tables, tab_cells
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(lubridate) # for dates
-library(htmltools)
-library(htmlwidgets)
-library(leaflet)
-library(leaflet.extras2) # hexbin, newer than leafthehe
-library(tidyverse)
+library(htmltools) # buttons and stuff
+library(htmlwidgets) # buttons and stuff
+library(leaflet) # the map
+library(leaflet.extras2) # hexbin
 library(tigris) # census tiger files
-library(sf)
-library(data.table) # setnames function
+library(sf) # spatial analysis
+library(data.table) # setnames function, data format for large data
+# library(future) # async data, faster data loading - https://rstudio.com/resources/webinars/scaling-shiny-apps-with-asynchronous-programming/
+# library(promises) # async data, faster data loading
 
-# profvis::profvis({ # see performance
-#   shiny::runApp(
-#     appDir = dirname(sys.frame(1)$ofile),
-#     port = 8888,
-#     launch.browser = FALSE,
-#     quiet = TRUE)
-# }) # uncompressed files are the fastest
+# shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
+# run this code in the console to see performance (total time is 10230, app start 2880)
+# profvis::profvis({ shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/') })
+# shinyloadtest::record_session(shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/'), output_file = "C:/W_shortcut/recording.log")
+# shinyloadtest::record_session("http://127.0.0.1:3184") # run with Docker
 
-# download.file('https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js', 'C:/CSV/hex.js', mode="wb")
-# helloLocalFile <- htmlDependency("hex", "1.0",
-                                 # src = c(file = normalizePath('C:/CSV')),  script = "hex.js")
-# jsfile <- "https://rawgit.com/Asymmetrik/leaflet-d3/master/src/js/hexbin/HexbinLayer.js" # Hex map file
-#
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
     # session$user is non-NULL only in authenticated sessions
@@ -35,13 +29,11 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  
   # Load county spatial data
   # wi_counties <- counties(state = '55', cb=TRUE, class = 'sf') # get counties data
   # wi_munis <- places(state = '55', cb=TRUE, class = 'sf')
   # wi_counties84 <- st_transform(wi_counties, crs = ('+proj=longlat +datum=WGS84')) # dont need to do
   # wi_counties_crs <- st_transform(wi_counties, 3071) # CRS, dont need to do
-  
   
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
@@ -58,16 +50,30 @@ server <- function(input, output, session) {
   updateSelectInput(session, "year",
                     selected = 2019, # default selection
                     choices = c(2020, 2019, 2018, 2017)) #Set years of data
+  
+  min_date_selected <- reactive({ 
+    # used to find date range
+    if (length(input$year) > 1) {
+      return (min(input$year))
+    } else {
+      return (input$year) # ERROR Warning: All formats failed to parse. No formats found.
+    }
+  })
+  max_date_selected <- reactive({
+    if (length(input$year) > 1) {
+      return (max(input$year))
+    } else {
+      return (input$year)
+    }
+  })
 
 # Filtered data based on input by the user
-  crash_flags_selected <-
+  filtered_crashes <-
     reactive({
-      # # selected_flags <- c(input$drugflag1, input$drugflag2)
-      # filter_var1 <- dplyr::quo(fcol1)
-      # flags <- crsh_flags %>% filter1_by(vars(!!(input$DRUGFLAG)))
-      # return (flags$CRSHNMBR)
-      
-      # what flags are selected - this is set to OR (not AND)
+      if (length(input$crsh_flags) == 0) { # if no flags selected 
+        return (filtered_crashes_no_flags())
+      } else { # if at least 1 flag was selected
+      # what flags are selected - this is set to AND
         rename_crsh_flags <- # rename inputs so we can select flag columns
           c("Alcohol-related" = "ALCFLAG",
             "Drug-related" = "DRUGFLAG",
@@ -81,41 +87,38 @@ server <- function(input, output, session) {
           )
         new_crsh_flags <-
           rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
-        seleced_crash_flag_crshes <- # selects crashs flags, goes through each row and finds all Y
-          crsh_flags[apply(crsh_flags [new_crsh_flags], 1, function(x)
-            all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # all so ALL flags are selected
-        return (seleced_crash_flag_crshes$CRSHNMBR) # output is df of CRSHNMBRS
+        # crsh_flags <- c("Alcohol-related", "Speeding")
+        
+        selected_crash_flags <- # selects crash flags, goes through each row and finds all Y
+          all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
+            all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
+        
+        # returns the join with filtered_crashes
+        return(semi_join(filtered_crashes_no_flags(), selected_crash_flags, by = c("CRSHNMBR"= "CRSHNMBR")))
+      }
     })
 
-  filtered_crashes <- reactive({
-    all_crashes %>%
-      filter(
-        CNTYCODE %in% input$cntynum,
-        # CNTYCODE %in% 13,
-        # year(CRSHDATE) %in% 2018
-        year(CRSHDATE) %in% input$year,
-        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR,
-        CRSHSVR %in% input$crsh_svr
-      )
-  #   
-  #   input$update
-  # },  {
-  #   req(data())
-  #   if(is.null(input$select) || input$select == "")
-  #     data() else 
-  #       data()[, colnames(data()) %in% input$select]
-  # })
+  filtered_crashes_no_flags <- reactive({
+    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+    setkeyv(all_crashes, keycols) # this is also data.table
+    yearrange <- interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+
+    # filter data table
+    filter_crashes <- all_crashes[CNTYCODE %in% input$cntynum & CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+
+    filter_crashes
   })
 
   filtered_persons <- reactive({
-    all_persons %>%
-      filter(
-        CNTYCODE %in% input$cntynum,
-        year(CRSHDATE) %in% input$year,
-        if (length(input$crsh_flags) > 0) CRSHNMBR %in% crash_flags_selected() else CRSHNMBR,
-        # WISINJ %in% input$inj_svr
-        CRSHSVR %in% input$crsh_svr
-      )
+    
+    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+    setkeyv(all_persons, keycols) # this is also data.table
+    yearrange <- interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+    
+    # filter data table
+    filter_persons <- all_persons[CNTYCODE %in% input$cntynum & CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+ 
+    filter_persons
   })
 
   filtered_vehicles <- reactive({
@@ -124,12 +127,11 @@ server <- function(input, output, session) {
   })
 
   filtered_crash_lat_long <- reactive({ # get lat longs for map
-
-    crash_lat_long_j = filtered_crashes() %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG) # get rid on NA values, i.e. crashes not mapped
-    # crashes_to_map = crash_lat_long[1:20,] %>% dplyr::filter(!is.na(LATDECDG)) %>% select(LONDECDG, LATDECDG)
-    setnames(crash_lat_long_j, "LONDECDG", "lng") # could move this to data import part
+    
+    crash_lat_long_j <-  filtered_crashes()[, .(LONDECDG, LATDECDG)] %>% na.omit() # select lat long columns
+    
+    setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns
     setnames(crash_lat_long_j, "LATDECDG", "lat")
-    # use pull(lat/long) ??
   })
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
@@ -308,7 +310,8 @@ server <- function(input, output, session) {
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
     } else {
-      day_time_data <- filtered_crashes() %>% # make a df for chart
+      day_time_data <- filtered_crashes() %>% as.data.frame() # make a df for chart
+      day_time_data <- day_time_data %>% 
         na.omit(newtime) %>%
         mutate(newtime = forcats::fct_explicit_na(newtime)) %>% # keep NA value, do this
         group_by(newtime, DAYNMBR) %>%
@@ -474,7 +477,7 @@ server <- function(input, output, session) {
     } else {
     
     person <-
-      filtered_persons() %>% select(age_group, SEX)
+      filtered_persons()[, .(age_group, SEX)]
     
     age_sex_table <- table(age = person$age_group, sex = person$SEX) %>% as_tibble() # get counts, put in a tibble
 
@@ -591,15 +594,17 @@ server <- function(input, output, session) {
     })
 
     leafletOutput(id, height = "680px")
+
   })
   # TABLES
-  table_crsh <- all_crashes %>%
-    tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
-    tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-    tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
-    tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
-    tab_pivot() %>%
-    drop_empty_columns() %>%
-    datatable(rownames = FALSE)
-  output$biketable <- renderDT({table_crsh})
+  # table_crsh <- all_crashes %>%
+  #   tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
+  #   tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
+  #   tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
+  #   tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
+  #   tab_pivot() %>%
+  #   drop_empty_columns() %>%
+  #   datatable(rownames = FALSE)
+  # output$biketable <- renderDT({table_crsh})
+
 }

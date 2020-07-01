@@ -3,6 +3,8 @@ library(dplyr)
 library(memisc)
 # library(sjmisc)
 
+# don't need this scrips anymore
+
 setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")
 # file_loc = "Data Prep for R Shiny/"
 file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
@@ -19,7 +21,7 @@ import_all_crashes <- function(csv_name, file_loc = file) {
                  "LATDECDG",
                  "LONDECDG")
     )
-  
+
   saveRDS(all_crashes, file = paste0(file_loc, "crash_lat_long", ".rds"))
 }
 
