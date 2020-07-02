@@ -1,0 +1,376 @@
+{
+  "input": {
+    "cntynum": "13",
+    "crsh_flags": [
+      "Alcohol-related",
+      "Teen driver"
+    ],
+    "crsh_svr": [
+      "Fatal",
+      "Injury",
+      "Property Damage"
+    ],
+    "hex": false,
+    "hexsize": 10,
+    "map_TRUE_bounds": {
+      "north": 43.7492731811147,
+      "east": -88.9755249023438,
+      "south": 42.3849227578481,
+      "west": -89.8709106445312
+    },
+    "map_TRUE_center": {
+      "lng": -89.42291505,
+      "lat": 43.0705143644779
+    },
+    "map_TRUE_groups": "Crashes",
+    "map_TRUE_zoom": 9,
+    "muni_names": "1301",
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "year": "2017"
+  },
+  "output": {
+    "map": {
+      "html": "<div id=\"map_TRUE\" style=\"width:100%; height:680px; \" class=\"leaflet html-widget html-widget-output\"><\/div>",
+      "deps": [
+        {
+          "name": "htmlwidgets",
+          "version": "1.5.1",
+          "src": {
+            "href": "htmlwidgets-1.5.1"
+          },
+          "meta": null,
+          "script": "htmlwidgets.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "jquery",
+          "version": "1.12.4",
+          "src": {
+            "href": "jquery-1.12.4"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "leaflet",
+          "version": "1.3.1",
+          "src": {
+            "href": "leaflet-1.3.1"
+          },
+          "meta": null,
+          "script": "leaflet.js",
+          "stylesheet": "leaflet.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "leafletfix",
+          "version": "1.0.0",
+          "src": {
+            "href": "leafletfix-1.0.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "leafletfix.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "Proj4Leaflet",
+          "version": "1.0.1",
+          "src": {
+            "href": "Proj4Leaflet-1.0.1"
+          },
+          "meta": null,
+          "script": [
+            "proj4-compressed.js",
+            "proj4leaflet.js"
+          ],
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "rstudio_leaflet",
+          "version": "1.3.1",
+          "src": {
+            "href": "rstudio_leaflet-1.3.1"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "rstudio_leaflet.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "leaflet-binding",
+          "version": "2.0.3",
+          "src": {
+            "href": "leaflet-binding-2.0.3"
+          },
+          "meta": null,
+          "script": "leaflet.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": false
+        }
+      ]
+    },
+    "map_TRUE": {
+      "x": {
+        "options": {
+          "crs": {
+            "crsClass": "L.CRS.EPSG3857",
+            "code": null,
+            "proj4def": null,
+            "projectedBounds": null,
+            "options": {
+
+            }
+          }
+        },
+        "calls": [
+          {
+            "method": "addTiles",
+            "args": [
+              "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              null,
+              null,
+              {
+                "minZoom": 0,
+                "maxZoom": 18,
+                "tileSize": 256,
+                "subdomains": "abc",
+                "errorTileUrl": "",
+                "tms": false,
+                "noWrap": false,
+                "zoomOffset": 0,
+                "zoomReverse": false,
+                "opacity": 1,
+                "zIndex": 1,
+                "detectRetina": false,
+                "attribution": "&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"
+              }
+            ]
+          },
+          {
+            "method": "addCircleMarkers",
+            "args": [
+              [
+                43.07870523,
+                43.07477551,
+                43.016870241,
+                43.109984851,
+                43.176160698,
+                43.104972787,
+                43.197833731,
+                43.023451279,
+                43.050125489,
+                42.896420232,
+                43.091423145,
+                42.963329358,
+                42.99081904,
+                43.088262856,
+                43.256806552,
+                43.067011874,
+                43.07692332,
+                43.060624352,
+                43.268101041,
+                43.106452147,
+                43.064034203,
+                43.036699791,
+                43.172253037,
+                43.13738545,
+                42.940891377,
+                43.110555963,
+                42.848480631
+              ],
+              [
+                -89.21705285,
+                -89.54422814,
+                -89.72320991,
+                -89.34556533,
+                -89.26461805,
+                -89.19926884,
+                -89.46177305,
+                -89.51784356,
+                -89.45111794,
+                -89.34752294,
+                -89.60884744,
+                -89.48509717,
+                -89.16302671,
+                -89.21582681,
+                -89.21176396,
+                -89.39508263,
+                -89.38690521,
+                -89.63557083,
+                -89.06850431,
+                -89.33913474,
+                -89.51259303,
+                -89.45292242,
+                -89.26501396,
+                -89.44228448,
+                -89.43765227,
+                -89.19923708,
+                -89.03325373
+              ],
+              4,
+              null,
+              "Crashes",
+              {
+                "interactive": true,
+                "className": "",
+                "stroke": false,
+                "color": "#03F",
+                "weight": 5,
+                "opacity": 0.5,
+                "fill": true,
+                "fillColor": "red",
+                "fillOpacity": 0.2
+              },
+              null,
+              null,
+              null,
+              null,
+              null,
+              {
+                "interactive": false,
+                "permanent": false,
+                "direction": "auto",
+                "opacity": 1,
+                "offset": [
+                  0,
+                  0
+                ],
+                "textsize": "10px",
+                "textOnly": false,
+                "className": "",
+                "sticky": true
+              },
+              null
+            ]
+          },
+          {
+            "method": "addLayersControl",
+            "args": [
+              [
+
+              ],
+              "Crashes",
+              {
+                "collapsed": false,
+                "autoZIndex": true,
+                "position": "topright"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "lat": [
+            42.848480631,
+            43.268101041
+          ],
+          "lng": [
+            -89.72320991,
+            -89.03325373
+          ]
+        }
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+
+      ]
+    },
+    "tot_crash": {
+      "html": "<div class=\"small-box bg-red\">\n  <div class=\"inner\">\n    <h3>29<\/h3>\n    <p>Total Crashes<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-car-crash\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "5.13.0",
+          "src": {
+            "href": "font-awesome-5.13.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "tot_fatal": {
+      "html": "<div class=\"small-box bg-red\">\n  <div class=\"inner\">\n    <h3>0<\/h3>\n    <p>Total Fatalities<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-skull\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "5.13.0",
+          "src": {
+            "href": "font-awesome-5.13.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "tot_inj": {
+      "html": "<div class=\"small-box bg-red\">\n  <div class=\"inner\">\n    <h3>19<\/h3>\n    <p>Total Injuries<\/p>\n  <\/div>\n  <div class=\"icon-large\">\n    <i class=\"fa fa-band-aid\"><\/i>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "font-awesome",
+          "version": "5.13.0",
+          "src": {
+            "href": "font-awesome-5.13.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": [
+            "css/all.min.css",
+            "css/v4-shims.min.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

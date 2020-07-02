@@ -12,15 +12,16 @@ library(leaflet.extras2) # hexbin
 library(tigris) # census tiger files
 library(sf) # spatial analysis
 library(data.table) # setnames function, data format for large data
-# library(future) # async data, faster data loading - https://rstudio.com/resources/webinars/scaling-shiny-apps-with-asynchronous-programming/
-# library(promises) # async data, faster data loading
+library(tibble) # quick data frames
 
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
-# run this code in the console to see performance (total time is 10230, app start 2880)
+# run this code in the console to see performance (total time is 10230, app start 2880) now 9170 & 790
 # profvis::profvis({ shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/') })
 # shinyloadtest::record_session(shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/'), output_file = "C:/W_shortcut/recording.log")
 # shinyloadtest::record_session("http://127.0.0.1:3184") # run with Docker
+
+# https://rstudio.github.io/shinyloadtest/
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -66,73 +67,100 @@ server <- function(input, output, session) {
       return (input$year)
     }
   })
+filtered_crsh_flags <- reactive({
+  # what flags are selected - this is set to AND
+  rename_crsh_flags <- # rename inputs so we can select flag columns
+    c("Alcohol-related" = "ALCFLAG",
+      "Drug-related" = "DRUGFLAG",
+      # "Distracted driving",  # don't have this one, also CMV
+      'Speeding' = 'speedflag',
+      'Teen driver' = 'teenflag',
+      'Older driver' = 'olderflag',
+      "Bicyclist" = "BIKEFLAG",
+      "Pedestrian" = "PEDFLAG",
+      "Motorcycle" = "CYCLFLAG"
+    )
+  new_crsh_flags <-
+    rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
+  # crsh_flags <- c("Alcohol-related", "Speeding")
+  
+  selected_crash_flags <-
+    # selects crash flags, goes through each row and finds all Y
+    all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
+      all(x == "Y")),] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
+  selected_crash_flags # returns datatable with crshnmbr to match
+})
 
-# Filtered data based on input by the user
-  filtered_crashes <-
-    reactive({
-      if (length(input$crsh_flags) == 0) { # if no flags selected 
-        return (filtered_crashes_no_flags())
-      } else { # if at least 1 flag was selected
-      # what flags are selected - this is set to AND
-        rename_crsh_flags <- # rename inputs so we can select flag columns
-          c("Alcohol-related" = "ALCFLAG",
-            "Drug-related" = "DRUGFLAG",
-            # "Distracted driving",  # don't have this one, also CMV
-            'Speeding' = 'speedflag',
-            'Teen driver' = 'teenflag',
-            'Older driver' = 'olderflag',
-            "Bicyclist" = "BIKEFLAG",
-            "Pedestrian" = "PEDFLAG",
-            "Motorcycle" = "CYCLFLAG"
-          )
-        new_crsh_flags <-
-          rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
-        # crsh_flags <- c("Alcohol-related", "Speeding")
-        
-        selected_crash_flags <- # selects crash flags, goes through each row and finds all Y
-          all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
-            all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
-        
-        # returns the join with filtered_crashes
-        return(semi_join(filtered_crashes_no_flags(), selected_crash_flags, by = c("CRSHNMBR"= "CRSHNMBR")))
-      }
-    })
-
-  filtered_crashes_no_flags <- reactive({
-    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(all_crashes, keycols) # this is also data.table
-    yearrange <- interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
-
-    # filter data table
-    filter_crashes <- all_crashes[CNTYCODE %in% input$cntynum & CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
-
-    filter_crashes
+filtered_crashes <-
+  reactive({
+    if (length(input$crsh_flags) == 0) {
+      # if no flags selected
+      return (filtered_crashes_no_flags())
+    } else {
+      # if at least 1 flag was selected
+      # returns the join with filtered_crashes
+      return(semi_join(
+        filtered_crashes_no_flags(),
+        filtered_crsh_flags(),
+        by = c("CRSHNMBR" = "CRSHNMBR")
+      ))
+    }
   })
 
-  filtered_persons <- reactive({
-    
-    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(all_persons, keycols) # this is also data.table
-    yearrange <- interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
-    
-    # filter data table
-    filter_persons <- all_persons[CNTYCODE %in% input$cntynum & CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
- 
-    filter_persons
+filtered_persons <-
+  reactive({
+    if (length(input$crsh_flags) == 0) {
+      # if no flags selected
+      return (filtered_persons_no_flags())
+    } else {
+      # if at least 1 flag was selected
+      # returns the join with filtered_crashes
+      return(semi_join(
+        filtered_persons_no_flags(),
+        filtered_crsh_flags(),
+        by = c("CRSHNMBR" = "CRSHNMBR")
+      ))
+    }
   })
 
-  filtered_vehicles <- reactive({
-    all_vehicles <-
-      inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
-  })
+filtered_crashes_no_flags <- reactive({
+  keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+  setkeyv(all_crashes, keycols) # this is also data.table
+  yearrange <-
+    interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+  
+  # filter data table
+  filter_crashes <-
+    all_crashes[CNTYCODE %in% input$cntynum &
+                  CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+  filter_crashes
+})
 
-  filtered_crash_lat_long <- reactive({ # get lat longs for map
-    
-    crash_lat_long_j <-  filtered_crashes()[, .(LONDECDG, LATDECDG)] %>% na.omit() # select lat long columns
-    
-    setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns
-    setnames(crash_lat_long_j, "LATDECDG", "lat")
-  })
+filtered_persons_no_flags <- reactive({
+  keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+  setkeyv(all_persons, keycols) # this is also data.table
+  yearrange <-
+    interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+  
+  # filter data table
+  filter_persons <-
+    all_persons[CNTYCODE %in% input$cntynum &
+                  CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+  filter_persons
+})
+
+filtered_vehicles <- reactive({ # joins with the already filtered_crashes
+  all_vehicles <-
+    inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
+})
+
+filtered_crash_lat_long <- reactive({  # get lat longs for map
+  crash_lat_long_j <-
+    filtered_crashes()[, .(LONDECDG, LATDECDG)] %>% na.omit() # select lat long columns
+  
+  setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns
+  setnames(crash_lat_long_j, "LATDECDG", "lat")
+})
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
   output$tot_crash <- renderInfoBox({
@@ -160,21 +188,13 @@ server <- function(input, output, session) {
       color = "red"
     )
   })
-  # output$tot_some <- renderInfoBox({
-  #   valueBox(
-  #     3400, "Total Vehicles", icon = icon("car"),
-  #     color = "red"
-  #   )
-  # })
-  #
-  # X row charts
   output$passveh_box <- renderInfoBox({
     valueBox(
       filtered_vehicles() %>% filter(
         VEHTYPE %in% c(
           "Passenger Car",
           "(Sport) Utility Vehicle",
-          "Passenger Car",
+          "Passenger Van",
           "Cargo Van (10,000 Lbs or Less)"
         )
       ) %>% nrow() %>% format(big.mark = ","),
@@ -248,7 +268,7 @@ server <- function(input, output, session) {
     
     if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "bar") %>% layout(
-        title = list(text ="Crash Severity by Month", font = chart_title),
+        title = list(text ="Crash Severity by Month", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -272,7 +292,7 @@ server <- function(input, output, session) {
                             '<b>%{y: .0f} Crashes')
     ) %>% #Price: %{y:$.2f}<extra></extra>
       layout(
-        title = list(text ="Crash Severity by Month", font = chart_title, y = 1),
+        title = list(text ="Crash Severity by Month", font = chart_title, y = 1, x = 0),
         legend = list(
           x = .5,
           y = 1.2,
@@ -305,19 +325,16 @@ server <- function(input, output, session) {
     
     if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "heatmap") %>% layout(
-        title = list(text ="Time of Day Crashes", font = chart_title),
+        title = list(text ="Time of Day Crashes", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
     } else {
-      day_time_data <- filtered_crashes() %>% as.data.frame() # make a df for chart
-      day_time_data <- day_time_data %>% 
-        na.omit(newtime) %>%
-        mutate(newtime = forcats::fct_explicit_na(newtime)) %>% # keep NA value, do this
-        group_by(newtime, DAYNMBR) %>%
-        summarise(n = n()) %>%
-        filter(newtime != '') %>%
-        tidyr::spread(DAYNMBR, n, fill = 0)
+      day_time_data <- filtered_crashes()[ , .(.N), by = .(newtime, DAYNMBR)]
+      day_time_data[DAYNMBR == "", DAYNMBR := NA] # if DAYNMBR not exist, make it NA
+      day_time_data <- day_time_data %>% na.omit() # remove all NA values
+      day_time_data <- dcast(day_time_data, newtime ~ DAYNMBR, # reshape to long table
+                             value.var = "N", fill = 0)
       
     # Used to create the empty tibble
     x <- c("Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday") #newtime
@@ -366,7 +383,7 @@ server <- function(input, output, session) {
                             '<b>%{z:.0f} Crashes')
       ) %>% 
       layout(
-        title = list(text ="Time of Day Crashes", font = chart_title),
+        title = list(text ="Time of Day Crashes", font = chart_title, x = 0),
         margin = list(r = 0,l = 0, b = 0
         ),
         xaxis = list(tickfont = chart_axis, tickangle = 0),
@@ -381,7 +398,7 @@ server <- function(input, output, session) {
       if (dim(filtered_crashes())[1] == 0){ # if no crashes, show empty plot, else make plot
         # hide("mnrcoll")
         plotly_empty(type = "bar") %>% layout(
-          title = list(text ="Manner of Collision", font = chart_title),
+          title = list(text ="Manner of Collision", font = chart_title, x = 0),
           plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
@@ -406,7 +423,7 @@ server <- function(input, output, session) {
         cliponaxis = FALSE
       ) %>%
         layout(
-          title = list(text ="Manner of Collision", font = chart_title),
+          title = list(text ="Manner of Collision", font = chart_title, x = 0),
           margin = list(
             r = 30, # set to 30 so labels don't get cut off
             l = 0,
@@ -426,7 +443,7 @@ server <- function(input, output, session) {
     
     if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "bar") %>% layout(
-        title = list(text ="Role of Persons Involved", font = chart_title),
+        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -448,7 +465,7 @@ server <- function(input, output, session) {
       cliponaxis = FALSE
     ) %>%
       layout(
-        title = list(text ="Role of Persons Involved", font = chart_title),
+        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
         margin = list(
           r = 30, # set to 30 so labels don't get cut off
           l = 0,
@@ -465,12 +482,40 @@ server <- function(input, output, session) {
       )
     }
   })
+  
+  output$person_role_treemap <- renderPlotly({
+    
+    if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
+      plotly_empty(type = "treemap") %>% layout(
+        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+    
+    role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() %>% mutate(parent = "role")
+    plot_ly(
+      role_table,
+      type = 'treemap',
+      textfont = list(size = 14, family = "Cambria"),
+      labels = ~role,
+      parents = ~parent,
+      values = ~n
+    ) %>% 
+      layout(
+        title = list(text ="Role of Persons Involved", font = chart_title, y = 1, x = 0),
+        margin = list(r = 0, l = 0, b = 10, t = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    }
+  })
 
   output$person_age_gender <- renderPlotly({
     
     if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "bar") %>% layout(
-        title = list(text ="Age and Gender of Persons Involved", font = chart_title),
+        title = list(text ="Age and Gender of Persons Involved", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -492,7 +537,7 @@ server <- function(input, output, session) {
                             '<b>%{y: .0f} people<b>')
     ) %>%
       layout(
-        title = list(text ="Age and Gender of Persons Involved", font = chart_title, y = 1),
+        title = list(text ="Age and Gender of Persons Involved", font = chart_title, y = 1, x = 0),
         legend = list(x = .5, y = 1.2, orientation = 'h', font = chart_axis),
         margin = list(
           r = 0,
@@ -512,14 +557,66 @@ server <- function(input, output, session) {
         # }
     }
    })
-
+  output$vehicle_treemap <- renderPlotly({
+    
+    if (dim(filtered_vehicles())[1] == 0) {
+      plotly_empty(type = "treemap") %>% layout(
+        title = list(text ="Vehicles Involved", font = chart_title, x = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+    newcar <- filtered_vehicles() %>% # put this is data import
+      mutate(
+        cate = case_when(
+          VEHTYPE == "Passenger Car" ~ "Passenger Veh.",
+          VEHTYPE == "(Sport) Utility Vehicle" ~ "Passenger Veh.",
+          VEHTYPE == "Cargo Van (10,000 Lbs or Less)" ~ "Passenger Veh.",
+          VEHTYPE == "Passenger Van" ~ "Passenger Veh.",
+          VEHTYPE == "Utility Truck/Pickup Truck" ~ "Light Trucks",
+          VEHTYPE == "Straight Truck" ~ "Large Trucks",
+          VEHTYPE == "Truck Tractor (Trailer Not Attached)" ~ "Large Trucks",
+          VEHTYPE == "Truck Tractor (Trailer Attached)" ~ "Large Trucks",
+          VEHTYPE == "Truck Tractor (More Than One Trailer)" ~ "Large Trucks",
+          VEHTYPE == VEHTYPE ~ "Other"
+        )
+      )
+    car_tib <- # then change newcar to filtered_vehicles()
+      table(vehtype = newcar$VEHTYPE, parent = newcar$cate) %>%
+      as_tibble() %>% filter(n != 0)
+    
+    parent_tib <- xtabs(car_tib$n~car_tib$parent) %>% as_tibble()# then rbind
+    names(parent_tib)[names(parent_tib)=="car_tib$parent"] <- "vehtype"
+    parent_tib <- parent_tib %>% mutate(parent = "Vehicle Type")
+    
+    car_tib <- rbind(car_tib, parent_tib)
+    
+    plot_ly(car_tib,
+            type='treemap',
+            branchvalues="total",
+            textfont = list(size = 14, family = "Cambria"),
+            # insidetextfont = list(size = 14, family = "Cambria"),
+            tiling = list(packing = "ratio"),
+            ids = ~vehtype,
+            labels= ~vehtype,
+            parents= ~parent,
+            values= ~n,
+            textinfo="label+value+percent parent+percent"
+    ) %>% 
+      layout(
+        title = list(text ="Vehicles Involved", font = chart_title, y = 1, x = 0),
+        margin = list(r = 0, l = 0, b = 0, t = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    }
+  })
 # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
 
     # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
-  # -> https://github.com/rstudio/leaflet/issues/418
+  # -> https://github.com/rstudio/leaflet/issues/151
 
-  output$map <- renderUI({
-    
+  output$map <- renderUI({ # HEXBIN WHEN ZOOMED IN??
   # this takes the selected county and zooms to it
     # county <- wi_counties %>% filter(NAME %in% input$counties)
     #   bbox <- st_bbox(county) %>% as.vector()
@@ -529,7 +626,7 @@ server <- function(input, output, session) {
     id = "map_TRUE" # not sure what this means but it should be set to TRUE
     output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
       input$print
-      mymap <- tomap %>%
+      mymap <- filtered_crash_lat_long() %>%
         leaflet() %>% addTiles() %>%
         # addPolygons(
         #   data = wi_counties$geometry,
@@ -542,8 +639,8 @@ server <- function(input, output, session) {
         addCircleMarkers(
           group = "Crashes",
           fillColor = "red",
-          radius = 3,
-          fillOpacity = 0.2,
+          radius = 4,
+          # fillOpacity = 0.2,
           stroke = FALSE
         ) %>%
       addLayersControl(
@@ -551,25 +648,24 @@ server <- function(input, output, session) {
           "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
-      ) 
+      )
       mymap
     })
-    observeEvent(input$hexize, { # observe if hexsize changed
-      proxy <- leafletProxy("map_TRUE", data = tomap)
-      if (input$hexsize) { # both addHexbin functions must match
-        proxy %>%
-          clearHexbin() %>%
-          addHexbin(
-            lng = tomap$lng,
-            lat = tomap$lat,
-            radius = input$hexsize,
-            opacity = 0.8,
-            options = hexbinOptions(
-              colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
-              resizetoCount = TRUE,
-              radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-            )
+    observe({ # observe when hexsize changes
+      if (input$hex) {
+      leafletProxy("map_TRUE", data = tomap) %>%
+        clearHexbin() %>%
+        addHexbin( # both addHexbin functions must match
+          lng = tomap$lng,
+          lat = tomap$lat,
+          radius = input$hexsize,
+          opacity = 0.8,
+          options = hexbinOptions(
+            colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
+            resizetoCount = TRUE,
+            radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
           )
+        )
       }
     })
     
@@ -577,7 +673,8 @@ server <- function(input, output, session) {
       proxy <- leafletProxy("map_TRUE", data = tomap)
       # proxy %>% clearControls() # what does this do?
       if (input$hex) {  # both addHexbin functions must match
-        proxy %>% addHexbin(
+        proxy %>% clearHexbin() %>% 
+            addHexbin(
                 lng = tomap$lng,
                 lat = tomap$lat,
                 radius = input$hexsize,
@@ -592,19 +689,6 @@ server <- function(input, output, session) {
         proxy %>% hideHexbin()
       }
     })
-
-    leafletOutput(id, height = "680px")
-
+    leafletOutput(id, height = "600px") #from 680
   })
-  # TABLES
-  # table_crsh <- all_crashes %>%
-  #   tab_cells(CNTYCODE) %>%                           # stuff to put in the rows
-  #   tab_subgroup(ALCFLAG == "Yes") %>%                # only select certain elements
-  #   tab_cols(CRSHSVR %nest% ALCFLAG, total()) %>%     # columns with nesting
-  #   tab_stat_cases(total_label = "Total Crashes") %>% # frequency count, can also do percent
-  #   tab_pivot() %>%
-  #   drop_empty_columns() %>%
-  #   datatable(rownames = FALSE)
-  # output$biketable <- renderDT({table_crsh})
-
 }

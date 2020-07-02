@@ -112,7 +112,7 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
       
       # This disables scrollbar inside app, or does it?
-      tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
+      # tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
       
       # valueBoxOutput("tot_crash", width = 2),
       # # # for column, width = NULL
@@ -126,6 +126,8 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
         # tags$head(tags$style(HTML(".small-box {color: rgba(0,0,0,1)}"))), # change height, icon size of all value boxes
         # tags$style(".small-box {background-color: rgb(52,62,72) !important; color: rgb(52,62,72)!important; }"),
         # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
+        tags$head(tags$style(HTML(".small-box {height: 90px; text-align:center;} .fa {vertical-align: middle;} "))), # change height, icon size of all value boxes
+        
         tabBox(
           title = NULL,
           width = NULL,
@@ -133,7 +135,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
           # id = "tabset1",
           # height = "600px",
           tabPanel(
-            tagList(shiny::icon("paper-plane"), "Front"),
+            tagList(shiny::icon("paper-plane"), "Main"),
             tags$h3(
               "Welcome to the Wisconsin Department of Transportation Crash Statistics Dashboard."
             ),
@@ -142,22 +144,30 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
             ),
             tags$h5("For data requests, email BOTSTS (link).")
           ),
+          tabPanel( # NOTE   br(), adds space between charts
+            tagList(shiny::icon("car-crash"), "Crash trends"),
+            plotlyOutput("crsh_svr_mth", height = "240px"), br(),
+            plotlyOutput("timeofday_heat", height = "240px")
+          ),
           tabPanel(
-            tagList(shiny::icon("car-crash"), "Crashes"),
-            plotlyOutput("crsh_svr_mth", height = "240px"),
-            plotlyOutput("timeofday_heat", height = "240px"),
+            tagList(shiny::icon("car-crash"), "Crash types"),
             plotlyOutput("mnrcoll", height = "240px")
           ),
           tabPanel(
-            tagList(shiny::icon("users"), "People"),
-            plotlyOutput("person_role", height = "240px"),
+            tagList(shiny::icon("users"), "People involved"),
+            plotlyOutput("person_role_treemap", height = "250px"),  br(),
+            # plotlyOutput("person_role", height = "240px"),
             plotlyOutput("person_age_gender", height = "240px")
           ),
           tabPanel(
-            tagList(shiny::icon("car"), "Vehicles"),
-                   valueBoxOutput("passveh_box"),
-                   valueBoxOutput("light_truck_box"),
-                   valueBoxOutput("large_truck_box")
+            tagList(shiny::icon("users"), "Driver Behaviour")
+          ),
+          tabPanel(
+            tagList(shiny::icon("car"), "Vehicles involved"),
+            plotlyOutput("vehicle_treemap", height = "240px")
+                   # valueBoxOutput("passveh_box"),
+                   # valueBoxOutput("light_truck_box"),
+                   # valueBoxOutput("large_truck_box")
                    ),
           tabPanel(
             tagList(shiny::icon("map"), "Map Settings/Analysis"),
@@ -170,7 +180,7 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
                      value = 10
                    ))
         )), 
-      column( width = 6,
+      column(width = 6,
             uiOutput("map")
       )
         )

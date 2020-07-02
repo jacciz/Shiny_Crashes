@@ -1,0 +1,10 @@
+app <- ShinyDriver$new("../../")
+app$snapshotInit("mytest")
+
+app$setInputs(year = "2017")
+app$setInputs(crsh_flags = "Alcohol-related")
+app$setInputs(crsh_flags = c("Alcohol-related", "Teen driver"))
+app$snapshot()
+app$setInputs(crsh_flags = "Alcohol-related")
+app$setInputs(crsh_flags = character(0))
+app$snapshot()

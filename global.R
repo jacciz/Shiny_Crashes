@@ -38,8 +38,6 @@ all_crsh_flags <- import_all_databases("crsh_flags")
 county_recode <- readRDS("data/county_recode.rds")
 muni_recode <- readRDS("data/muni_recode.rds")
 
-crash_lat_long <- readRDS("data/crash_lat_long.rds") # soon wont need this
-
 # For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
 # Also shiny::reactLog() for issues with reactivity
 
