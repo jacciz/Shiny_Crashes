@@ -9,8 +9,8 @@ library(htmltools) # buttons and stuff
 library(htmlwidgets) # buttons and stuff
 library(leaflet) # the map
 library(leaflet.extras2) # hexbin
-library(tigris) # census tiger files
-library(sf) # spatial analysis
+# library(tigris) # census tiger files
+# library(sf) # spatial analysis
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 
@@ -158,7 +158,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
   crash_lat_long_j <-
     filtered_crashes()[, .(LONDECDG, LATDECDG)] %>% na.omit() # select lat long columns
   
-  setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns
+  setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns - put this in data import??
   setnames(crash_lat_long_j, "LATDECDG", "lat")
 })
 
@@ -280,7 +280,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     
     # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
     # month_factor = month.name
-      
+
     plot_ly(
       crshsvr_table,
       type = 'bar',
@@ -569,10 +569,10 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     newcar <- filtered_vehicles() %>% # put this is data import
       mutate(
         cate = case_when(
-          VEHTYPE == "Passenger Car" ~ "Passenger Veh.",
-          VEHTYPE == "(Sport) Utility Vehicle" ~ "Passenger Veh.",
-          VEHTYPE == "Cargo Van (10,000 Lbs or Less)" ~ "Passenger Veh.",
-          VEHTYPE == "Passenger Van" ~ "Passenger Veh.",
+          VEHTYPE == "Passenger Car" ~ "Passenger Vehicle",
+          VEHTYPE == "(Sport) Utility Vehicle" ~ "Passenger Vehicle",
+          VEHTYPE == "Cargo Van (10,000 Lbs or Less)" ~ "Passenger Vehicle",
+          VEHTYPE == "Passenger Van" ~ "Passenger Vehicle",
           VEHTYPE == "Utility Truck/Pickup Truck" ~ "Light Trucks",
           VEHTYPE == "Straight Truck" ~ "Large Trucks",
           VEHTYPE == "Truck Tractor (Trailer Not Attached)" ~ "Large Trucks",
@@ -614,50 +614,120 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
 # this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
 
     # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
-  # -> https://github.com/rstudio/leaflet/issues/151
+  # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
 
-  output$map <- renderUI({ # HEXBIN WHEN ZOOMED IN??
-  # this takes the selected county and zooms to it
-    # county <- wi_counties %>% filter(NAME %in% input$counties)
-    #   bbox <- st_bbox(county) %>% as.vector()
-    #   fitBounds(county[1], county[2], county[3], county[4]) %>% # zooms to county
-
-    tomap <- filtered_crash_lat_long()
-    id = "map_TRUE" # not sure what this means but it should be set to TRUE
-    output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
-      input$print
-      mymap <- filtered_crash_lat_long() %>%
-        leaflet() %>% addTiles() %>%
-        # addPolygons(
-        #   data = wi_counties$geometry,
-        #   group = "Counties",
-        #   color = "#444444",
-        #   fillOpacity = 0,
-        #   weight = 1,
-        #   smoothFactor = 0.5
-        # ) %>%
-        addCircleMarkers(
-          group = "Crashes",
-          fillColor = "red",
-          radius = 4,
-          # fillOpacity = 0.2,
-          stroke = FALSE
-        ) %>%
+  # output$map <- renderUI({ # HEXBIN WHEN ZOOMED IN??
+  # # this takes the selected county and zooms to it
+  #   # county <- wi_counties %>% filter(NAME %in% input$counties)
+  #   #   bbox <- st_bbox(county) %>% as.vector()
+  #   #   fitBounds(county[1], county[2], county[3], county[4]) %>% # zooms to county
+  # 
+  #   tomap <- filtered_crash_lat_long()
+  #   id = "map_TRUE" # not sure what this means but it should be set to TRUE
+  #   output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
+  #     input$print
+  #     mymap <- filtered_crash_lat_long() %>%
+  #       leaflet() %>% addTiles() %>%
+  #       # addPolygons(
+  #       #   data = wi_counties$geometry,
+  #       #   group = "Counties",
+  #       #   color = "#444444",
+  #       #   fillOpacity = 0,
+  #       #   weight = 1,
+  #       #   smoothFactor = 0.5
+  #       # ) %>%
+  #       addCircleMarkers(
+  #         group = "Crashes",
+  #         fillColor = "red",
+  #         radius = 4,
+  #         # fillOpacity = 0.2,
+  #         stroke = FALSE
+  #       ) %>%
+  #     addLayersControl(
+  #       overlayGroups = c(
+  #         "Crashes"
+  #       ),
+  #       options = layersControlOptions(collapsed = FALSE)
+  #     )
+  #     mymap
+  #   })
+  #   observe({ # observe when hexsize changes
+  #     if (input$hex) {
+  #     leafletProxy("map_TRUE", data = tomap) %>%
+  #       clearHexbin() %>%
+  #       addHexbin( # both addHexbin functions must match
+  #         lng = tomap$lng,
+  #         lat = tomap$lat,
+  #         radius = input$hexsize,
+  #         opacity = 0.8,
+  #         options = hexbinOptions(
+  #           colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
+  #           resizetoCount = TRUE,
+  #           radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+  #         )
+  #       )
+  #     }
+  #   })
+  #   
+  #   observeEvent(input$hex, { # observe if hex has been checked
+  #     proxy <- leafletProxy("map_TRUE", data = tomap)
+  #     # proxy %>% clearControls() # what does this do?
+  #     if (input$hex) {  # both addHexbin functions must match
+  #       proxy %>% clearHexbin() %>% 
+  #           addHexbin(
+  #               lng = tomap$lng,
+  #               lat = tomap$lat,
+  #               radius = input$hexsize,
+  #               opacity = 0.8,
+  #               options = hexbinOptions(
+  #                 colorRange = c("#b0d0f2", "#05366b"),
+  #                 resizetoCount = TRUE,
+  #                 radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+  #               )
+  #             )
+  #     } else {
+  #       proxy %>% hideHexbin()
+  #     }
+  #   })
+  #   leafletOutput(id, height = "600px") #from 680
+  # })
+  output$map <- renderUI({
+    tags$script(HTML(paste0(
+      'document.getElementById("map1");'
+    )))
+  })
+  output$map1 <- renderLeaflet({
+    filtered_crash_lat_long() %>% #render map
+      leaflet() %>% addTiles() %>%
+      # addPolygons(
+      #   data = wi_counties$geometry,
+      #   group = "Counties",
+      #   color = "#444444",
+      #   fillOpacity = 0,
+      #   weight = 1,
+      #   smoothFactor = 0.5
+      # ) %>%
+      addCircleMarkers(
+        group = "Crashes",
+        fillColor = "red",
+        radius = 4,
+        # fillOpacity = 0.2,
+        stroke = FALSE
+      ) %>%
       addLayersControl(
         overlayGroups = c(
           "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
       )
-      mymap
-    })
-    observe({ # observe when hexsize changes
-      if (input$hex) {
-      leafletProxy("map_TRUE", data = tomap) %>%
+  })
+  observe({ # observe when hexsize changes
+    if (input$hex) {
+      leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         clearHexbin() %>%
         addHexbin( # both addHexbin functions must match
-          lng = tomap$lng,
-          lat = tomap$lat,
+          lng = filtered_crash_lat_long()$lng,
+          lat = filtered_crash_lat_long()$lat,
           radius = input$hexsize,
           opacity = 0.8,
           options = hexbinOptions(
@@ -666,29 +736,27 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
             radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
           )
         )
-      }
-    })
-    
-    observeEvent(input$hex, { # observe if hex has been checked
-      proxy <- leafletProxy("map_TRUE", data = tomap)
-      # proxy %>% clearControls() # what does this do?
-      if (input$hex) {  # both addHexbin functions must match
-        proxy %>% clearHexbin() %>% 
-            addHexbin(
-                lng = tomap$lng,
-                lat = tomap$lat,
-                radius = input$hexsize,
-                opacity = 0.8,
-                options = hexbinOptions(
-                  colorRange = c("#b0d0f2", "#05366b"),
-                  resizetoCount = TRUE,
-                  radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-                )
-              )
-      } else {
-        proxy %>% hideHexbin()
-      }
-    })
-    leafletOutput(id, height = "600px") #from 680
+    }
+  })
+  
+  observeEvent(input$hex, { # observe if hex has been checked
+    proxy <- leafletProxy("map", data = filtered_crash_lat_long())
+    # proxy %>% clearControls() # what does this do?
+    if (input$hex) {  # both addHexbin functions must match
+      proxy %>% clearHexbin() %>% 
+        addHexbin(
+          lng = filtered_crash_lat_long()$lng,
+          lat = filtered_crash_lat_long()$lat,
+          radius = input$hexsize,
+          opacity = 0.8,
+          options = hexbinOptions(
+            colorRange = c("#b0d0f2", "#05366b"),
+            resizetoCount = TRUE,
+            radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+          )
+        )
+    } else {
+      proxy %>% hideHexbin()
+    }
   })
 }

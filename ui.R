@@ -181,7 +181,9 @@ body <- dashboardBody(mytheme_grey_dark,  # the awesome theme
                    ))
         )), 
       column(width = 6,
-            uiOutput("map")
+            uiOutput("map"),
+            leafletOutput("map1", height = "600px") #from 680 # try this instead
+            
       )
         )
 
