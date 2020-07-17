@@ -1,16 +1,14 @@
 library(dplyr) # select, filter functions
-library(ggplot2) # create pretty graphs
+# library(ggplot2) # create pretty graphs
 library(DT)    # create pretty tables
-library(expss) # format freq tables, tab_cells
+# library(expss) # format freq tables, tab_cells
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(lubridate) # for dates
-library(htmltools) # buttons and stuff
-library(htmlwidgets) # buttons and stuff
+# library(htmltools) # buttons and stuff
+# library(htmlwidgets) # buttons and stuff
 library(leaflet) # the map
 library(leaflet.extras2) # hexbin
-# library(tigris) # census tiger files
-# library(sf) # spatial analysis
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 
@@ -21,7 +19,7 @@ library(tibble) # quick data frames
 # shinyloadtest::record_session(shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/'), output_file = "C:/W_shortcut/recording.log")
 # shinyloadtest::record_session("http://127.0.0.1:3184") # run with Docker
 
-# https://rstudio.github.io/shinyloadtest/
+# https://rstudio.github.io/shinyloadtest/ # month.abb[month]
 
 server <- function(input, output, session) {
   output$userpanel <- renderUI({
@@ -30,12 +28,7 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  # Load county spatial data
-  # wi_counties <- counties(state = '55', cb=TRUE, class = 'sf') # get counties data
-  # wi_munis <- places(state = '55', cb=TRUE, class = 'sf')
-  # wi_counties84 <- st_transform(wi_counties, crs = ('+proj=longlat +datum=WGS84')) # dont need to do
-  # wi_counties_crs <- st_transform(wi_counties, 3071) # CRS, dont need to do
-  
+  ################### SIDEBAR OBSERVE EVENTS #######################
   updateSelectInput(session, # choose county
                     "cntynum", selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
@@ -48,9 +41,9 @@ server <- function(input, output, session) {
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   })
   
-  updateSelectInput(session, "year",
-                    selected = 2019, # default selection
-                    choices = c(2020, 2019, 2018, 2017)) #Set years of data
+  # updateSelectInput(session, "year",
+  #                   selected = 2019, # default selection
+  #                   choices = c(2020, 2019, 2018, 2017)) #Set years of data
   
   min_date_selected <- reactive({ 
     # used to find date range
@@ -67,7 +60,22 @@ server <- function(input, output, session) {
       return (input$year)
     }
   })
-filtered_crsh_flags <- reactive({
+  crshsvr_selected <- reactive({ # returns list of crsh svr selected
+    crsh_list = list()
+    if (input$fatal) {
+      crsh_list <- c(crsh_list,"Fatal")
+    }
+    if (input$injury) {
+      crsh_list <- c(crsh_list,"Injury")
+    }
+    if (input$propertydamage) {
+      crsh_list <- c(crsh_list,"Property Damage")
+    }
+    return (crsh_list)
+})
+  ################### DATA OBSERVE EVENTS #######################
+  
+filtered_crsh_flags <- reactive({ # returns crash numbers of crash flags selected
   # what flags are selected - this is set to AND
   rename_crsh_flags <- # rename inputs so we can select flag columns
     c("Alcohol-related" = "ALCFLAG",
@@ -91,7 +99,7 @@ filtered_crsh_flags <- reactive({
   selected_crash_flags # returns datatable with crshnmbr to match
 })
 
-filtered_crashes <-
+filtered_crashes <- # returns crash data, depends if a flag was selected
   reactive({
     if (length(input$crsh_flags) == 0) {
       # if no flags selected
@@ -132,7 +140,7 @@ filtered_crashes_no_flags <- reactive({
   # filter data table
   filter_crashes <-
     all_crashes[CNTYCODE %in% input$cntynum &
-                  CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+                  CRSHSVR %in% crshsvr_selected() & CRSHDATE %within% yearrange]
   filter_crashes
 })
 
@@ -145,7 +153,7 @@ filtered_persons_no_flags <- reactive({
   # filter data table
   filter_persons <-
     all_persons[CNTYCODE %in% input$cntynum &
-                  CRSHSVR %in% input$crsh_svr & CRSHDATE %within% yearrange]
+                  CRSHSVR %in% crshsvr_selected() & CRSHDATE %within% yearrange]
   filter_persons
 })
 
@@ -163,12 +171,13 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
 })
 
   # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
+################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
     valueBox(
       # tags$h6("11,888", style = "font-size: 100%; vertical-align: middle;"),
       format(nrow(filtered_crashes()), big.mark = ","),
       "Total Crashes",
-      icon = icon("car-crash"),
+      icon = icon("car-alt"),
       color = "red"
     )
   })
@@ -188,81 +197,11 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       color = "red"
     )
   })
-  output$passveh_box <- renderInfoBox({
-    valueBox(
-      filtered_vehicles() %>% filter(
-        VEHTYPE %in% c(
-          "Passenger Car",
-          "(Sport) Utility Vehicle",
-          "Passenger Van",
-          "Cargo Van (10,000 Lbs or Less)"
-        )
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Passenger Veh.",
-      icon = icon("car"),
-      color = "yellow"
-    )
-  })
-  output$light_truck_box <- renderInfoBox({
-    valueBox(
-      filtered_vehicles() %>% filter(
-        VEHTYPE %in% c("Utility Truck/Pickup Truck")
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Light Trucks",
-      icon = icon("truck"),
-      color = "yellow"
-    )
-  })
-  output$large_truck_box <- renderInfoBox({
-    valueBox(
-      filtered_vehicles() %>% filter(
-        VEHTYPE %in% c(
-          "Straight Truck",
-          "Truck Tractor (Trailer Not Attached)",
-          "Truck Tractor (Trailer Attached)",
-          "Truck Tractor (More Than One Trailer)"
-        )
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Large Trucks",
-      icon = icon("truck-moving"),
-      color = "yellow"
-    )
-  })
-  output$motorcycle_box <- renderInfoBox({
-    valueBox(
-      filtered_vehicles() %>% filter(
-        VEHTYPE %in% c("Motorcycle")
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Motorcycles",
-      icon = icon("motorcycle"),
-      color = "yellow"
-    )
-  })
-  output$bike_box <- renderInfoBox({
-    valueBox(
-      filtered_vehicles() %>% filter(
-        VEHTYPE %in% c("Bicycle")
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Bicycles",
-      icon = icon("bicycle"),
-      color = "yellow"
-    )
-  })
-  output$ped_box <- renderInfoBox({  # should I use vehicle??
-    valueBox(
-      filtered_persons() %>% filter(
-        ROLE %in% c("Pedestrian")
-      ) %>% nrow() %>% format(big.mark = ","),
-      "Pedestrians",
-      icon = icon("walking"),
-      color = "yellow"
-    )
-  })
-
+  
   ################### BODY CHARTS #######################
-  chart_title = list(size = 16, color = "rgb(205,205,205)", family = "Cambria")
-  chart_axis = list(size = 14, color = "rgb(205,205,205)", family = "Cambria")
-  chart_axis_bar = list(size = 14, color = "#428BCA", family = "Cambria", face = "bold")
+  chart_title = list(size = 16, color = "rgb(243,243,245)", family = "Arial")
+  chart_axis = list(size = 14, color = "rgb(205,205,205)", family = "Arial")
+  chart_axis_bar = list(size = 14, color = "#428BCA", family = "Arial", face = "bold")
 
   output$crsh_svr_mth <- renderPlotly({
     
@@ -279,7 +218,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         factor(crshsvr_table$month, levels = month.name) # this orders months
     
     # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
-    # month_factor = month.name
+    # crshsvr_table$month <- month.abb[crshsvr_table$month]
+      # month_factor = month.name
 
     plot_ly(
       crshsvr_table,
@@ -305,6 +245,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           title = "",
           tickfont = chart_axis,
           tickangle = 0,
+          # ticktext = ~month.abb[crshsvr_table$month],
           # automargin = TRUE,
           dtick = 5 # every 5 months are labeled
         ),
@@ -532,7 +473,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       x = ~ age,
       y = ~ n,
       color = ~ sex,
-      colors = c("#D50032","#428BCA", "#F9C218"), #colors for female, male, unknown in this order
+      colors = c("#D50032","#428BCA", "#F9C218"), #colors for female, male, unknown in this alphabetical order
       hovertemplate = paste('<br>%{x}<br>',
                             '<b>%{y: .0f} people<b>')
     ) %>%
@@ -611,87 +552,13 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       )
     }
   })
-# this is the map - using Leaflet, can also do clusterOptions = markerClusterOptions()
-
-    # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
+  
+  ################### BODY MAP #######################
+  
+  # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
 
-  # output$map <- renderUI({ # HEXBIN WHEN ZOOMED IN??
-  # # this takes the selected county and zooms to it
-  #   # county <- wi_counties %>% filter(NAME %in% input$counties)
-  #   #   bbox <- st_bbox(county) %>% as.vector()
-  #   #   fitBounds(county[1], county[2], county[3], county[4]) %>% # zooms to county
-  # 
-  #   tomap <- filtered_crash_lat_long()
-  #   id = "map_TRUE" # not sure what this means but it should be set to TRUE
-  #   output[[id]] = renderLeaflet ({ # this initializes the map, need observeEvent when layers change
-  #     input$print
-  #     mymap <- filtered_crash_lat_long() %>%
-  #       leaflet() %>% addTiles() %>%
-  #       # addPolygons(
-  #       #   data = wi_counties$geometry,
-  #       #   group = "Counties",
-  #       #   color = "#444444",
-  #       #   fillOpacity = 0,
-  #       #   weight = 1,
-  #       #   smoothFactor = 0.5
-  #       # ) %>%
-  #       addCircleMarkers(
-  #         group = "Crashes",
-  #         fillColor = "red",
-  #         radius = 4,
-  #         # fillOpacity = 0.2,
-  #         stroke = FALSE
-  #       ) %>%
-  #     addLayersControl(
-  #       overlayGroups = c(
-  #         "Crashes"
-  #       ),
-  #       options = layersControlOptions(collapsed = FALSE)
-  #     )
-  #     mymap
-  #   })
-  #   observe({ # observe when hexsize changes
-  #     if (input$hex) {
-  #     leafletProxy("map_TRUE", data = tomap) %>%
-  #       clearHexbin() %>%
-  #       addHexbin( # both addHexbin functions must match
-  #         lng = tomap$lng,
-  #         lat = tomap$lat,
-  #         radius = input$hexsize,
-  #         opacity = 0.8,
-  #         options = hexbinOptions(
-  #           colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
-  #           resizetoCount = TRUE,
-  #           radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-  #         )
-  #       )
-  #     }
-  #   })
-  #   
-  #   observeEvent(input$hex, { # observe if hex has been checked
-  #     proxy <- leafletProxy("map_TRUE", data = tomap)
-  #     # proxy %>% clearControls() # what does this do?
-  #     if (input$hex) {  # both addHexbin functions must match
-  #       proxy %>% clearHexbin() %>% 
-  #           addHexbin(
-  #               lng = tomap$lng,
-  #               lat = tomap$lat,
-  #               radius = input$hexsize,
-  #               opacity = 0.8,
-  #               options = hexbinOptions(
-  #                 colorRange = c("#b0d0f2", "#05366b"),
-  #                 resizetoCount = TRUE,
-  #                 radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-  #               )
-  #             )
-  #     } else {
-  #       proxy %>% hideHexbin()
-  #     }
-  #   })
-  #   leafletOutput(id, height = "600px") #from 680
-  # })
-  output$map <- renderUI({
+  output$map <- renderUI({ # output the map
     tags$script(HTML(paste0(
       'document.getElementById("map1");'
     )))
@@ -699,6 +566,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
   output$map1 <- renderLeaflet({
     filtered_crash_lat_long() %>% #render map
       leaflet() %>% addTiles() %>%
+      # fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat)) %>% 
       # addPolygons(
       #   data = wi_counties$geometry,
       #   group = "Counties",
@@ -706,8 +574,10 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       #   fillOpacity = 0,
       #   weight = 1,
       #   smoothFactor = 0.5
-      # ) %>%
+      # ) %>% 
+      
       addCircleMarkers(
+        clusterOptions = markerClusterOptions(),
         group = "Crashes",
         fillColor = "red",
         radius = 4,
