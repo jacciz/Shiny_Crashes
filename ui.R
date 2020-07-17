@@ -26,7 +26,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
   # changes sliderInput,  materialSwitch, fa is icon,   font size (right click and inspect element to find tag) # fa color: rgb(143,155,179) ??
   # https://www.w3schools.com/css/ a resource for CSS
   tags$style(type = "text/css", "
-      .irs-grid-text { font-size: 12pt; }
+      .irs-grid-text { font-size: 12pt;}
       .irs-from { font-size: 12pt; }
       .irs-to { font-size: 12pt; }
       .shiny-input-container { font-size: 12pt;}
@@ -39,6 +39,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .fa-car-crash {color: rgb(143,155,179)}
       .fa-flag {color: rgb(143,155,179)}
       .fa-map {color: rgb(143,155,179)}
+      .fa-angle-left {color: rgb(143,155,179)}
       
       .fa-users {color: rgb(143,155,179)}
       .fa-paper-plane {color: rgb(143,155,179)}
@@ -48,8 +49,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .small-box.bg-red {height: 90px; text-align:center; background-color: rgb(34,43,69) !important; color: rgb(34,43,69) !important;}
       .skin-blue .wrapper {background-color: rgb(22,26,48);}
 
-      .main-header .logo {font-family: Arial; font-size: 16px;}
-      .skin-blue .main-header .navbar {background: rgb(34,43,69)}
+      .main-header .logo {font-family: Arial; font-size: 20px; font-weight: bold}
+      .skin-blue .main-header .navbar {background: rgb(34,43,69);}
     "), # last 3 dont work, add tab margins
   width = "250px",
   # sidebar width
@@ -133,7 +134,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       awesomeCheckboxGroup(
         inputId = "id1",
         label = "Make a choice:",
-        choices = c("graphics", tagList(shiny::icon("paper-plane"), strong("Main")))
+        choices = c("graphics", "ggplot2")
       ),
       prettyCheckboxGroup(
         inputId = "checkgroup1",
@@ -183,27 +184,26 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
         max = 30,
         value = 10
       )
-    ),
+    )
     
     # footer - wisdot logo is here
-    tags$footer(
-      img(
-        src = 'zero-logo.png',
-        style = "width: 100px; display: block;
-                    margin-left: auto; margin-right: auto; background: grey"
-      ),
-      # tags$footer(img(src='tops-lab-logo.png', style="width: 100px; display: block;
-      #                 margin-left: auto; margin-right: auto;"),
-      align = "center",
-      style = "
-              position:absolute;
-              bottom:0;
-              width:100%;
-              height:150px;   /* Height of the footer */
-              color: grey;
-              padding: 10px;
-              z-index: 1000;"
-    )
+    # tags$footer(
+    #   img(
+    #     src = 'zero-logo.png',
+    #     style = "width: 100px; display: block;
+    #                 margin-left: auto; margin-right: auto; background: grey"
+    #   ),
+    #   align = "center",
+    #   style = "
+    #           position:absolute;
+    #           bottom:0;
+    #           width:100%;
+    #           height:150px;   /* Height of the footer */
+    #           color: grey;
+    #           padding: 10px;
+    #           z-index: 1000;"
+    # )
+    
     
     # tags$h5(style = "text-align:left; padding: 15px;", "Crash Flags"),
     #  tags$table(width = "100%",

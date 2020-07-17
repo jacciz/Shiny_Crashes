@@ -54,7 +54,7 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,sidebarTabTextSize = 16 # 14
     ,sidebarTabBorderStyle ="none none solid none" #  "none"
     ,sidebarTabBorderColor = "rgb(22,26,48)" #  "rgb(70,80,90)" #"none" #match bg
-    ,sidebarTabBorderWidth = 3 #0
+    ,sidebarTabBorderWidth = 2 #0 # space between sidebar tabs
 
     ,sidebarTabBackColorSelected = "rgb(34,43,69)" # "rgb(70,80,90)"
     ,sidebarTabTextColorSelected = "rgb(243,243,245)" # "rgb(255,255,255)" #white
@@ -114,7 +114,7 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
 logo_mytheme <- shinyDashboardLogoDIY(
   boldText = ""
   ,mainText = "WisDOT Vision Zero Dashboard"
-  ,textSize = 14
+  ,textSize = 16
   ,badgeText = "BETA"
   ,badgeTextColor = "rgb(243,243,245)"
   ,badgeTextSize = 2

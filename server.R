@@ -441,7 +441,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       textfont = list(size = 14, family = "Cambria"),
       labels = ~role,
       parents = ~parent,
-      values = ~n
+      values = ~n,
+      textinfo="label+value+percent parent+percent"
     ) %>% 
       layout(
         title = list(text ="Role of Persons Involved", font = chart_title, y = 1, x = 0),
