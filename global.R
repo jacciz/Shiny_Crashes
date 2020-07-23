@@ -1,6 +1,7 @@
 library(fst) # loads data really fast
 library(dplyr)
 library(data.table)
+library(sf)
 
 # source("data/data_import.R") # this scripts creates data so this scrips imports for the app
 
@@ -37,6 +38,10 @@ all_crsh_flags <- import_all_databases("crsh_flags")
 # These are to get county/muni names
 county_recode <- readRDS("data/county_recode.rds")
 muni_recode <- readRDS("data/muni_recode.rds")
+
+# Read shapefiles for map
+# ctv <- st_read("map/ctv.shp")
+county <- st_read("map/county.shp")
 
 # For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
 # Also shiny::reactLog() for issues with reactivity

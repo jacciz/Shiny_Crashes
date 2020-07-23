@@ -30,14 +30,14 @@ server <- function(input, output, session) {
   })
   ################### SIDEBAR OBSERVE EVENTS #######################
   updateSelectInput(session, # choose county
-                    "cntynum", selected = 13, # default selection
+                    "cntynum", # selected = 13, # default selection
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
 
   observeEvent(input$cntynum, { # choose municipality
 
     muni_cnty_list <- muni_recode %>% filter(CntyCode %in% input$cntynum)
 
-    updateSelectInput(session, "muni_names",
+  updateSelectInput(session, "muni_names",
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   })
   
@@ -73,7 +73,15 @@ server <- function(input, output, session) {
     }
     return (crsh_list)
 })
-  ################### DATA OBSERVE EVENTS #######################
+
+  selected_county <- reactive({ # this takes the selected county and zooms to it
+    sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
+    bbox <- st_bbox(sel_county) %>% as.vector()
+    bbox
+    # print(sel_county)
+    # print(bbox)
+  })
+  ################### DATA OBSERVE EVENTS OF DATA #######################
   
 filtered_crsh_flags <- reactive({ # returns crash numbers of crash flags selected
   # what flags are selected - this is set to AND
@@ -164,7 +172,7 @@ filtered_vehicles <- reactive({ # joins with the already filtered_crashes
 
 filtered_crash_lat_long <- reactive({  # get lat longs for map
   crash_lat_long_j <-
-    filtered_crashes()[, .(LONDECDG, LATDECDG)] %>% na.omit() # select lat long columns
+    filtered_crashes()[, .(LONDECDG, LATDECDG, CRSHSVR)] %>% na.omit() # select lat long columns
   
   setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns - put this in data import??
   setnames(crash_lat_long_j, "LATDECDG", "lat")
@@ -366,8 +374,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         layout(
           title = list(text ="Manner of Collision", font = chart_title, x = 0),
           margin = list(
-            r = 30, # set to 30 so labels don't get cut off
-            l = 0,
+            r = 40, # set to 30 so labels don't get cut off
+            l = 200, # so axis label don't get cut off
             # t = 0, # this will cut off title
             b = 0
           ),
@@ -508,7 +516,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
     } else {
-    newcar <- filtered_vehicles() %>% # put this is data import
+    newcar <- filtered_vehicles() %>% # put this is data import  # vehcate
       mutate(
         cate = case_when(
           VEHTYPE == "Passenger Car" ~ "Passenger Vehicle",
@@ -556,44 +564,90 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
   
   ################### BODY MAP #######################
   
-  # odd issue with asynchronous data loading, need to renderUI so map gets updated based on user inputs
+  # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
 
-  output$map <- renderUI({ # output the map
-    tags$script(HTML(paste0(
-      'document.getElementById("map1");'
-    )))
-  })
-  output$map1 <- renderLeaflet({
-    filtered_crash_lat_long() %>% #render map
+  # output$map <- renderUI({ # output the map
+  #   tags$script(HTML(paste0(
+  #     'document.getElementById("map1");'
+  #   )))
+  # })
+  output$map1 <- renderLeaflet({ #render basic map
+    
       leaflet() %>% addTiles() %>%
-      # fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat)) %>% 
-      # addPolygons(
-      #   data = wi_counties$geometry,
-      #   group = "Counties",
-      #   color = "#444444",
-      #   fillOpacity = 0,
-      #   weight = 1,
-      #   smoothFactor = 0.5
-      # ) %>% 
-      
-      addCircleMarkers(
-        clusterOptions = markerClusterOptions(),
-        group = "Crashes",
+      addPolygons(
+        data = county$geometry,
+        group = "Counties",
+        color = "#444444",
+        fillOpacity = 0,
+        weight = 1,
+        smoothFactor = 0.5
+        # options = pathOptions(clickable = FALSE)
+      ) %>% setView(44.468414,  -89.965079, zoom = 3)
+  })
+  
+  observeEvent(input$cntynum, { # change view if location selected changes
+    county_zoom <- selected_county()
+    # print(selected_county())
+    leafletProxy("map1") %>%
+     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4]) # zoom to selected county
+    })
+ 
+  observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
+    
+    filtered_crash_with_icons <- filtered_crash_lat_long() %>% # create a dataframe with a column to specify icon names
+      mutate(crash_icon = case_when(
+        CRSHSVR == 'Fatal' ~ "fatal",
+        CRSHSVR == 'Injury' ~ "injury",
+        CRSHSVR == 'Property Damage' ~ "property"))
+ 
+    crshIcons <- awesomeIconList( # icon list
+      fatal = makeAwesomeIcon(icon = "skull", library = "fa", 
+                              markerColor = "red"),
+      injury = makeAwesomeIcon(icon = "user-injured", library = "fa", 
+                              markerColor = "blue"),
+      property = makeAwesomeIcon(icon = "car", library = "fa", 
+                               markerColor = "green")
+    )
+
+    leafletProxy("map1")    %>%
+      clearMarkers() %>% clearMarkerClusters() %>%
+      addCircleMarkers( # reason for XMLRequest issue thing
+        clusterOptions = markerClusterOptions(maxClusterRadius = 30),
+        lng = filtered_crash_with_icons$lng,
+        lat = filtered_crash_with_icons$lat,
+        group = "Clusters of Crashes",
         fillColor = "red",
         radius = 4,
         # fillOpacity = 0.2,
         stroke = FALSE
       ) %>%
+      # addAwesomeMarkers(
+      #   lng = filtered_crash_with_icons$lng,
+      #   lat = filtered_crash_with_icons$lat
+        # icon = crshIcons[filtered_crash_with_icons$crash_icon],
+      # ) %>%
+      # addCircleMarkers( # reason for XMLRequest issue thing
+      #   lng = filtered_crash_lat_long()$lng,
+      #   lat = filtered_crash_lat_long()$lat,
+      #   group = "Crashes",
+      #   fillColor = "red",
+      #   radius = 4,
+      #   # fillOpacity = 0.2,
+      #   stroke = FALSE
+      # ) %>%
       addLayersControl(
         overlayGroups = c(
-          "Crashes"
+          "Clusters of Crashes"
+          # "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
-      )
-  })
-  observe({ # observe when hexsize changes
-    if (input$hex) {
+      ) %>% 
+      hideGroup("Crashes")
+   })
+  
+  observe({ # observe when hexsize changes or if hex is checked
+    if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         clearHexbin() %>%
         addHexbin( # both addHexbin functions must match
@@ -602,32 +656,12 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           radius = input$hexsize,
           opacity = 0.8,
           options = hexbinOptions(
-            colorRange = c("#b0d0f2", "#05366b"), #blue  c("#99d899", "#005100") green
+            colorRange = c("#b0d0f2", "#05366b"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
             resizetoCount = TRUE,
             radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
           )
         )
-    }
-  })
-  
-  observeEvent(input$hex, { # observe if hex has been checked
-    proxy <- leafletProxy("map", data = filtered_crash_lat_long())
-    # proxy %>% clearControls() # what does this do?
-    if (input$hex) {  # both addHexbin functions must match
-      proxy %>% clearHexbin() %>% 
-        addHexbin(
-          lng = filtered_crash_lat_long()$lng,
-          lat = filtered_crash_lat_long()$lat,
-          radius = input$hexsize,
-          opacity = 0.8,
-          options = hexbinOptions(
-            colorRange = c("#b0d0f2", "#05366b"),
-            resizetoCount = TRUE,
-            radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
-          )
-        )
-    } else {
-      proxy %>% hideHexbin()
-    }
+    } else { # remove hex if unchecked
+      leafletProxy("map1") %>% clearHexbin() }
   })
 }

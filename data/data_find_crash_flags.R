@@ -5,11 +5,15 @@ library(memisc)
 library(gdata)
 library(fst)
 
-# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")
-# file_loc = "Data Prep for R Shiny/"
-# file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
-file = "C:/CSV/csv_from_sas/from_sas_csv/"
-# Import databases from a CSV, grabs FLAG fields and fields to determine if FLAG
+# This script return a dataframe with a list of crshnmbr with flags for each year. The script finds crashes with a certain flag (i.e. older driver, speed),
+# adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe and saves as an FST. 
+# Exported data must be put in 'data/' file. Do this for each year.
+
+# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")  # set WD
+# file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/" # where CSV are saved
+# file = "C:/CSV/csv_from_sas/from_sas_csv/"                    # where CSV are saved
+
+# Functions to import databases from a CSV, grabs FLAG fields and fields to determine if a type of FLAG
 import_all_persons <- function(csv_name, file_loc = file) {
   all_persons <-
     fread(
@@ -56,13 +60,11 @@ import_all_crashes <- function(csv_name, file_loc = file) {
   )
 }
 
-# Import the data, select the crash year CSV
+# Import the data from 'file', select the crash year CSV
 all_crashes <- import_all_crashes("crash20")
 all_persons <- import_all_persons("person20")
-# all_persons <- readRDS(file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") #alternatively, load this
 
-
-# Functions to get a list when flag == Y #### grepl("^346.55|^346.56|^346.57|^346.58|^346.59(1)|^346.59(2)", thisrow)
+# Functions to get a list when a flag is found
 get_list_speedflags <- function(persons_df) {
   speedflags <-
     persons_df %>% filter(ROLE == 'Driver', apply(., 1, function(thisrow)
@@ -94,15 +96,17 @@ get_list_crashflags <- function(crashes_df){
     any(thisrow %in% "Y"))) # returns any row where there is at least 1 flag
 }
 
-# Run the functions
-speedflag_crshes <- get_list_speedflags(all_persons) # list of crshnmbers
-teenflag_crshes <- get_list_teendrvrflags(all_persons) # list of crshnmbers
-olderflag_crshes <- get_list_olderdrvrflags(all_persons) # list of crshnmbers
-allcrashflag_crshes <- get_list_crashflags(all_crashes) # list of crshnmbers
+# Run the functions, these all return a list of crshnmbers and a column of the respected flag(s)
+speedflag_crshes <- get_list_speedflags(all_persons)
+teenflag_crshes <- get_list_teendrvrflags(all_persons)
+olderflag_crshes <- get_list_olderdrvrflags(all_persons)
+allcrashflag_crshes <- get_list_crashflags(all_crashes)
 
 
-# Combine and save crash flags as an RDS or FST
+# Combine dataframes
 all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"), list(speedflag_crshes, teenflag_crshes, olderflag_crshes, allcrashflag_crshes)) # combine to one df
+
+#  Save crash flags as an RDS or FST, no compression so they open faster and are larger in size
 # saveRDS(all_flags, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/crsh_flags17.rds") # save final crash flags df into rds, CHANGE YEAR
 # saveRDS(all_flags, file = "C:/W_shortcut/Shiny_Crashes_Dashboard/data/crsh_flags20.rds", compress = FALSE) # save final crash flags df into rds, CHANGE YEAR
 

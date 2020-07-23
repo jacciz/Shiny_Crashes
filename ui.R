@@ -15,20 +15,20 @@ source("www/theme_grey_dark.R")  # adds a cool theme
 # Style for crash flag table
 # table_style = "text-align:center; margin:0px;"
 
-
 # tags$head(tags$style(HTML(".small-box {color: rgba(0,0,0,1)}"))), # change height, icon size of all value boxes
 # tags$style(".small-box {background-color: rgb(52,62,72) !important; color: rgb(52,62,72)!important; }"),
 # tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
 
-
 ################### SIDEBAR #######################
 sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
-  # changes sliderInput,  materialSwitch, fa is icon,   font size (right click and inspect element to find tag) # fa color: rgb(143,155,179) ??
+  # changes sliderInput,  materialSwitch, fa is icon,   font size (right click and inspect element to find tag) # fa color: rgb(143,155,179) ??  .fa-car.fa-inverse::before {font-size: 6px;}
   # https://www.w3schools.com/css/ a resource for CSS
   tags$style(type = "text/css", "
+      
       .irs-grid-text { font-size: 12pt;}
-      .irs-from { font-size: 12pt; }
-      .irs-to { font-size: 12pt; }
+      .irs-min {font-size: 12pt;}
+      .irs-max {font-size: 12pt;}
+      .treeview-menu.menu-open {padding-bottom: 15px;}
       .shiny-input-container { font-size: 12pt;}
       .material-switch {font-size: 12pt; float:right; margin-right: 25px;}
       .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
@@ -38,28 +38,28 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .fa-map {color: rgb(143,155,179)}
       .fa-car-crash {color: rgb(143,155,179)}
       .fa-flag {color: rgb(143,155,179)}
-      .fa-map {color: rgb(143,155,179)}
       .fa-angle-left {color: rgb(143,155,179)}
       
-      .fa-users {color: rgb(143,155,179)}
       .fa-paper-plane {color: rgb(143,155,179)}
+      .fa-users {color: rgb(143,155,179)}
+      .fa-bicycle {color: rgb(143,155,179)}
+      .fa-walking {color: rgb(143,155,179)}
       .fa-car {color: rgb(143,155,179)}
       
-      .small-box .icon-large{top: 0px}
+      .small-box .icon-large{top: 0px;}
       .small-box.bg-red {height: 90px; text-align:center; background-color: rgb(34,43,69) !important; color: rgb(34,43,69) !important;}
       .skin-blue .wrapper {background-color: rgb(22,26,48);}
 
       .main-header .logo {font-family: Arial; font-size: 20px; font-weight: bold}
       .skin-blue .main-header .navbar {background: rgb(34,43,69);}
-    "), # last 3 dont work, add tab margins
-  width = "250px",
-  # sidebar width
+
+    "), # add tab margins, 'label' is labelcontrol on map
+  width = "250px",  # sidebar width
   sidebarMenu(
     # div(class = "inlay", style = "height:15px;width:100%;background-color: #ecf0f5;"),
     menuItem(
       strong("Year"),
       tabName = "year",
-      # this selects year of data
       icon = icon("calendar"),
       # startExpanded = TRUE, # start expanded
       sliderInput(
@@ -111,10 +111,10 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       icon = icon("car-crash"),
       # startExpanded = TRUE, # start expanded
       
-      materialSwitch(inputId = "fatal", label = "Fatal", status = "danger", value = TRUE),
+      materialSwitch(inputId = "fatal", label = "Fatal", status = "primary", value = TRUE),
       materialSwitch(inputId = "injury", label = "Injury", status = "primary", value = TRUE),
       materialSwitch(inputId = "propertydamage", label = "Property Damage", status = "primary", value = TRUE)
-    ),
+      ),
     menuItem(
       strong("Flags"),
       tabName = "crash_flags",
@@ -131,16 +131,17 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       #              tags$tr(
       #                tags$td(width = "50%", tags$h5(style = "text-align:center; margin:5px;", icon("paper-plane"))))
       #   )),
-      awesomeCheckboxGroup(
-        inputId = "id1",
-        label = "Make a choice:",
-        choices = c("graphics", "ggplot2")
-      ),
-      prettyCheckboxGroup(
-        inputId = "checkgroup1",
-        label = "Click me!",
-        choices = c("Click me !", "Me !", "Or me !")
-      ),
+      
+      # awesomeCheckboxGroup(
+      #   inputId = "id1",
+      #   label = "Make a choice:",
+      #   choices = c("graphics", "ggplot2")
+      # ),
+      # prettyCheckboxGroup(
+      #   inputId = "checkgroup1",
+      #   label = "Click me!",
+      #   choices = c("Click me !", "Me !", "Or me !")
+      # ),
       checkboxGroupButtons(
         inputId = "crsh_flags",
         label = "Select crashes involving...",
@@ -175,15 +176,18 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       tabName = "map_sett",
       icon = icon("map"),
       # startExpanded = TRUE, # start expanded
-      # tagList(shiny::icon("map"), "Map Settings/Analysis"),
+
       checkboxInput("hex", "Show Hex", FALSE),
       sliderInput(
         "hexsize",
         "Change Hex Size:",
         min = 1,
         max = 30,
-        value = 10
+        value = 10,
+        ticks = FALSE
       )
+        # HTML("<span class=irs-max style=visibility: visible;>35</span>") #doesnt work
+      
     )
     
     # footer - wisdot logo is here
@@ -225,18 +229,14 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
   )
 )
 ################### BODY #######################
+
 # The body is separated by tabs
 body <- dashboardBody(
-  mytheme_grey_dark,
-  # the awesome theme
+  mytheme_grey_dark,  # the awesome theme
   
   # This disables scrollbar inside app, or does it?
   # tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
-  
-  # valueBoxOutput("tot_crash", width = 2),
-  # # # for column, width = NULL
-  # valueBoxOutput("tot_inj", width = 2),
-  # valueBoxOutput("tot_fatal", width = 2),
+
   column(      # # for column, width = NULL
     width = 6,
     #style='padding:5px;',
@@ -281,18 +281,22 @@ body <- dashboardBody(
         # plotlyOutput("person_role", height = "240px"),
         plotlyOutput("person_age_gender", height = "240px")
       ),
-      tabPanel(tagList(shiny::icon("users"), strong("Driver Behaviour"))),
+      tabPanel(
+        tagList(shiny::icon("users"), strong("Driver Behavior")),
+        tags$h5("Top Driver Contributing Circumstance (DRVRPC)")
+        ),
+      tabPanel(
+        tagList(shiny::icon("bicycle"), shiny::icon("walking"), strong("Bike and Pedestrian Behavior")),
+        tags$h5("Top Actions of Pedestrians and Cyclists (NMTACT)"),
+        tags$h5("Top Locations (NMTLOC)")
+      ),
       tabPanel(
         tagList(shiny::icon("car"), strong("Vehicles involved")),
         plotlyOutput("vehicle_treemap", height = "240px")
-        # valueBoxOutput("passveh_box"),
-        # valueBoxOutput("light_truck_box"),
-        # valueBoxOutput("large_truck_box")
       )
     )
   ),
   column(width = 6,
-         # uiOutput("map"),
          leafletOutput("map1", height = "600px") #from 680 # try this instead)
   ))
 

@@ -4,18 +4,20 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-# This script imports data from a CSV, selects certain columns, add columns (such as newtime and age group),
-# then exports to an FST file. global. Raw data must be put in 'data/' file
+# This script basically readies the data for the dashboard and is exported into an uncompressed FST.
+
+# This script imports data from a CSV, selects certain columns, add new columns (such as newtime and age group),
+# then exports to an FST file. Exported data must be move to 'data/' folder. Do this for each year.
 
 # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
 # file_loc = "Data Prep for R Shiny/"
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
-# file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved
+file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved
 
 import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
-          select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL",
+          select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL", "TOTUNIT",
                      "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL", "LATDECDG", "LONDECDG")
           ) #  "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG"
   all_crashes <-
@@ -77,6 +79,10 @@ import_all_crashes <- function(csv_name, file_loc = file) {
     ),
     include.lowest = T
   ))
+  
+  setnames(all_crashes, "LONDECDG", "lng") # rename so leaflet grabs correct columns
+  setnames(all_crashes, "LATDECDG", "lat")
+  
  # saveRDS(all_crashes, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
  write_fst(all_crashes, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
@@ -99,7 +105,10 @@ import_all_persons <- function(csv_name, file_loc = file) {
         "ROLE",
         "SEX",
         "AGE",
-        "HLMTUSE"
+        "HLMTUSE",
+        paste0("NMTACT", c("01","02","03","04","05","06","07","08","09","10","11","12")),
+        "NMTLOC",
+        paste0("DRVRPC", c("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"))
       )
     )
   all_persons <-
@@ -170,19 +179,33 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
           select = c("CRSHNMBR", "INJSVR", "CRSHSVR", "CRSHDATE", "CNTYCODE", "MUNICODE", "VEHTYPE")
     )
   all_vehicles <-
-    all_vehicles %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
+    all_vehicles %>% mutate(
+      CRSHDATE = mdy(CRSHDATE),
+      vehcate = case_when(
+        VEHTYPE == "Passenger Car" ~ "Passenger Veh.",
+        VEHTYPE == "(Sport) Utility Vehicle" ~ "Passenger Veh.",
+        VEHTYPE == "Cargo Van (10,000 Lbs or Less)" ~ "Passenger Veh.",
+        VEHTYPE == "Passenger Van" ~ "Passenger Veh.",
+        VEHTYPE == "Utility Truck/Pickup Truck" ~ "Light Trucks",
+        VEHTYPE == "Straight Truck" ~ "Large Trucks",
+        VEHTYPE == "Truck Tractor (Trailer Not Attached)" ~ "Large Trucks",
+        VEHTYPE == "Truck Tractor (Trailer Attached)" ~ "Large Trucks",
+        VEHTYPE == "Truck Tractor (More Than One Trailer)" ~ "Large Trucks",
+        VEHTYPE == VEHTYPE ~ "Other"
+      )
+    ) # convert to date type
   # saveRDS(all_vehicles, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
   write_fst(all_vehicles, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
-# input is name of csv
-all_crashes <- import_all_crashes("crash20")
+# input is name of csv, just change year
+all_crashes <- import_all_crashes("crash19")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 #
-all_persons <- import_all_persons("person20")
+all_persons <- import_all_persons("person19")
 # Note: Creates a age_group field, relabels ROLE, SEX
 
-all_vehicles <- import_all_vehicles("vehicle20")
+all_vehicles <- import_all_vehicles("vehicle19")
 
 
 # To import county and muni recode to get names

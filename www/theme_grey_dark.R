@@ -5,8 +5,9 @@
 # foreground from rgb(52,62,72) to "rgb(34,43,69)"
 # font color from "rgb(205,205,205)" to "rgb(243,243,245)"
 # icon colors will be "rgb(143,155,179)"
-# hover text will be "rgb(45,81,189)"
+# hover text will be "rgb(45,81,189)", switch to widDOT blue
 # light grey is rgb(153,153,153)
+# WisDOT blue #428BCA
 
 # bg of menu is rgb(80, 90, 100) to rgb(34,43,69)
 # menu select is rgb(30,144,255) to rgb(39, 75, 219)
@@ -26,8 +27,8 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,logoBackColor = "rgb(34,43,69)"  #"rgb(70,80,90)"
     ,headerButtonBackColor = "rgb(34,43,69)"# "rgb(70,80,90)"
     ,headerButtonIconColor = "rgb(143,155,179)"
-    ,headerButtonBackColorHover = "rgb(45,81,189)" #"rgb(40,50,60)"
-    ,headerButtonIconColorHover = "rgb(45,81,189)" #"rgb(0,0,0)"
+    ,headerButtonBackColorHover = "#428BCA" #"rgb(40,50,60)"
+    ,headerButtonIconColorHover = "#428BCA" #"rgb(0,0,0)"
 
     ,headerBackColor = "rgb(34,43,69)"
     ,headerBoxShadowColor = ""
@@ -61,7 +62,7 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,sidebarTabRadiusSelected = "5px"
 
     ,sidebarTabBackColorHover = "rgb(34,43,69)"# "rgb(55,65,75)"
-    ,sidebarTabTextColorHover = "rgb(45,81,189)" #"rgb(255,255,255)" 
+    ,sidebarTabTextColorHover = "#428BCA" #"rgb(255,255,255)" 
     ,sidebarTabBorderStyleHover = "none"
     ,sidebarTabBorderColorHover = "none"
     ,sidebarTabBorderWidthHover = 0
@@ -83,9 +84,9 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,tabBoxTabColor = "rgb(34,43,69)"#"rgb(52,62,72)"
     ,tabBoxTabTextSize = 14
     ,tabBoxTabTextColor = "rgb(243,243,245)"# "rgb(205,205,205)"
-    ,tabBoxTabTextColorSelected = "rgb(45,81,189)"# "rgb(205,205,205)"
+    ,tabBoxTabTextColorSelected = "#428BCA"# "rgb(205,205,205)"
     ,tabBoxBackColor = "rgb(34,43,69)"# "rgb(52,62,72)"
-    ,tabBoxHighlightColor = "rgb(45,81,189)" #"rgb(70,80,90)"
+    ,tabBoxHighlightColor = "#428BCA" #"rgb(70,80,90)"
     ,tabBoxBorderRadius = 5
 
     ### inputs
@@ -94,9 +95,9 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
     ,buttonBorderColor = "rgb(50,50,50)"
     ,buttonBorderRadius = 5
 
-    ,buttonBackColorHover = "rgb(45,81,189)" #"rgb(180,180,180)"
-    ,buttonTextColorHover = "rgb(45,81,189)"
-    ,buttonBorderColorHover = "rgb(45,81,189)"
+    ,buttonBackColorHover = "#428BCA" #"rgb(180,180,180)"
+    ,buttonTextColorHover = "#428BCA"
+    ,buttonBorderColorHover = "#428BCA"
 
     ,textboxBackColor = "rgb(22,26,48)" #"rgb(34,43,69)" #"rgb(68,80,90)"
     ,textboxBorderColor = "rgb(76,90,103)"
