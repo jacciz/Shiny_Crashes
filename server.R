@@ -5,13 +5,11 @@ library(DT)    # create pretty tables
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(lubridate) # for dates
-# library(htmltools) # buttons and stuff
-# library(htmlwidgets) # buttons and stuff
 library(leaflet) # the map
 library(leaflet.extras2) # hexbin
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
-
+# src("https://unpkg.com/ionicons@5.0.0/dist/ionicons.js") # for icons ?? didnt work
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
 # run this code in the console to see performance (total time is 10230, app start 2880) now 9170 & 790
@@ -73,7 +71,7 @@ server <- function(input, output, session) {
     }
     return (crsh_list)
 })
-
+# portage should be 49
   selected_county <- reactive({ # this takes the selected county and zooms to it
     sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
     bbox <- st_bbox(sel_county) %>% as.vector()
@@ -172,17 +170,12 @@ filtered_vehicles <- reactive({ # joins with the already filtered_crashes
 
 filtered_crash_lat_long <- reactive({  # get lat longs for map
   crash_lat_long_j <-
-    filtered_crashes()[, .(LONDECDG, LATDECDG, CRSHSVR)] %>% na.omit() # select lat long columns
-  
-  setnames(crash_lat_long_j, "LONDECDG", "lng") # rename so leaflet grabs correct columns - put this in data import??
-  setnames(crash_lat_long_j, "LATDECDG", "lat")
+    filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
 })
 
-  # Value boxes change font size by tags$p("100", style = "font-size: 200%;")
 ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
     valueBox(
-      # tags$h6("11,888", style = "font-size: 100%; vertical-align: middle;"),
       format(nrow(filtered_crashes()), big.mark = ","),
       "Total Crashes",
       icon = icon("car-alt"),
@@ -259,11 +252,13 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         ),
         yaxis = list(
           showgrid = FALSE,
-          tickfont = chart_axis
+          tickfont = chart_axis,
+          title = ""
         ),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
         barmode = 'stack'
+      ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Crash Severity by Month", scale = 2)
       )
     }
     # scale_x_discrete(limits = month.name, name = "", labels = function(labels) {  # scatter labels
@@ -339,6 +334,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         yaxis = list(tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
+      ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Time of Day Crashes", scale = 2)
       )
     }
   })
@@ -384,59 +380,61 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           yaxis = list(title = "", tickfont = chart_axis),
           plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
           paper_bgcolor = 'rgba(0,0,0,0)'
+        ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Manner of Collision", scale = 2)
         )
       }
   })
 
-  output$person_role <- renderPlotly({  # have a symbol for each role
-    
-    if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
-      plotly_empty(type = "bar") %>% layout(
-        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
-        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
-    } else {
-    
-    role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() # get counts of ROLE, put in a tibble
+  # output$person_role <- renderPlotly({  # have a symbol for each role
+  #   
+  #   if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
+  #     plotly_empty(type = "bar") %>% layout(
+  #       title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
+  #       plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+  #       paper_bgcolor = 'rgba(0,0,0,0)'
+  #     )
+  #   } else {
+  #   
+  #   role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() # get counts of ROLE, put in a tibble
 
-    plot_ly(
-      role_table,
-      type = 'bar',
-      orientation = 'h',
-      x = ~ n,
-      y = ~ reorder(role, n), # reorder from big to small values
-      marker = list(color = "#428BCA"), # blue!
-      # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
-      text = ~ format(n, big.mark=","),
-      textfont = chart_axis_bar,
-      textposition = 'outside',
-      cliponaxis = FALSE
-    ) %>%
-      layout(
-        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
-        margin = list(
-          r = 30, # set to 30 so labels don't get cut off
-          l = 0,
-          b = 0
-        ),
-        xaxis = list(
-          title = "",
-          showgrid = FALSE,
-          showticklabels = FALSE # remove axis labels
-        ),
-        yaxis = list(title = "", tickfont = chart_axis),
-        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
-        paper_bgcolor = 'rgba(0,0,0,0)'
-      )
-    }
-  })
+    # plot_ly(
+    #   role_table,
+    #   type = 'bar',
+    #   orientation = 'h',
+    #   x = ~ n,
+    #   y = ~ reorder(role, n), # reorder from big to small values
+    #   marker = list(color = "#428BCA"), # blue!
+    #   # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
+    #   text = ~ format(n, big.mark=","),
+    #   textfont = chart_axis_bar,
+    #   textposition = 'outside',
+    #   cliponaxis = FALSE
+    # ) %>%
+    #   layout(
+    #     title = list(text ="Role of All Persons", font = chart_title, x = 0),
+    #     margin = list(
+    #       r = 30, # set to 30 so labels don't get cut off
+    #       l = 0,
+    #       b = 0
+    #     ),
+    #     xaxis = list(
+    #       title = "",
+    #       showgrid = FALSE,
+    #       showticklabels = FALSE # remove axis labels
+    #     ),
+    #     yaxis = list(title = "", tickfont = chart_axis),
+    #     plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+    #     paper_bgcolor = 'rgba(0,0,0,0)'
+    #   ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Role of Persons", scale = 2)
+    #   )
+    # }
+  # })
   
   output$person_role_treemap <- renderPlotly({
     
     if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "treemap") %>% layout(
-        title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
+        title = list(text ="Role of All Persons", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -453,10 +451,11 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       textinfo="label+value+percent parent+percent"
     ) %>% 
       layout(
-        title = list(text ="Role of Persons Involved", font = chart_title, y = 1, x = 0),
+        title = list(text ="Role of All Persons", font = chart_title, y = 1, x = 0),
         margin = list(r = 0, l = 0, b = 10, t = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
+      ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Role of All Persons", scale = 2)
       )
     }
   })
@@ -465,7 +464,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     
     if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "bar") %>% layout(
-        title = list(text ="Age and Gender of Persons Involved", font = chart_title, x = 0),
+        title = list(text ="Age and Gender of All Persons", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -487,7 +486,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
                             '<b>%{y: .0f} people<b>')
     ) %>%
       layout(
-        title = list(text ="Age and Gender of Persons Involved", font = chart_title, y = 1, x = 0),
+        title = list(text ="Age and Gender of All Persons", font = chart_title, y = 1, x = 0),
         legend = list(x = .5, y = 1.2, orientation = 'h', font = chart_axis),
         margin = list(
           r = 0,
@@ -500,6 +499,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
         barmode = 'stack'
+      ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Age and Gender of All Persons", scale = 2)
       )
         # labels = function(labels) { # this scatters labels so they fit on two lines
         #   sapply(seq_along(labels), function(i)
@@ -511,7 +511,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     
     if (dim(filtered_vehicles())[1] == 0) {
       plotly_empty(type = "treemap") %>% layout(
-        title = list(text ="Vehicles Involved", font = chart_title, x = 0),
+        title = list(text ="All Vehicles Involved", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -554,10 +554,11 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
             textinfo="label+value+percent parent+percent"
     ) %>% 
       layout(
-        title = list(text ="Vehicles Involved", font = chart_title, y = 1, x = 0),
+        title = list(text ="All Vehicles Involved", font = chart_title, y = 1, x = 0),
         margin = list(r = 0, l = 0, b = 0, t = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
+      )  %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "All Vehicles Involved", scale = 2)
       )
     }
   })
@@ -583,7 +584,36 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         weight = 1,
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
-      ) %>% setView(44.468414,  -89.965079, zoom = 3)
+      ) %>%
+      addEasyButton(easyButton(
+        states = list(
+          easyButtonState( 
+            stateName="decluster-markers",
+            icon =  "ion-toggle", # icon("artificial-intelligence", lib = "glyphicon"),
+            title="Disable Clustering",
+            onClick = JS("
+          function(btn, map) {
+            var clusterManager =
+              map.layerManager.getLayer('cluster', 'crashCluster');
+            clusterManager.disableClustering();
+            btn.state('cluster-markers');
+          }")
+          ),
+          easyButtonState(
+            stateName="cluster-markers",
+            icon="ion-toggle-filled",
+            title="Enable Clustering",
+            onClick = JS("
+          function(btn, map) {
+            var clusterManager =
+              map.layerManager.getLayer('cluster', 'crashCluster');
+            clusterManager.enableClustering();
+            btn.state('decluster-markers');
+          }")
+          )
+        )
+      ))
+    
   })
   
   observeEvent(input$cntynum, { # change view if location selected changes
@@ -602,55 +632,49 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         CRSHSVR == 'Property Damage' ~ "property"))
  
     crshIcons <- awesomeIconList( # icon list
-      fatal = makeAwesomeIcon(icon = "skull", library = "fa", 
+      fatal = makeAwesomeIcon(icon = "skull", library = "ion",
                               markerColor = "red"),
-      injury = makeAwesomeIcon(icon = "user-injured", library = "fa", 
+      injury = makeAwesomeIcon(icon = "person", library = "ion",
                               markerColor = "blue"),
-      property = makeAwesomeIcon(icon = "car", library = "fa", 
+      property = makeAwesomeIcon(icon = "car-sport", library = "ion",
                                markerColor = "green")
     )
+    # crshIcons2 <- iconList( # icon list, dont like these
+    #   fatal = makeIcon("icons/skull.png", iconWidth = 20, iconHeight = 20),
+    #   injury = makeIcon("icons/user-injured-person.png", iconWidth = 20, iconHeight = 20),
+    #   property = makeIcon("icons/car-crash-solid.png", iconWidth = 20, iconHeight = 20)
+    # )
 
     leafletProxy("map1")    %>%
       clearMarkers() %>% clearMarkerClusters() %>%
-      addCircleMarkers( # reason for XMLRequest issue thing
-        clusterOptions = markerClusterOptions(maxClusterRadius = 30),
-        lng = filtered_crash_with_icons$lng,
-        lat = filtered_crash_with_icons$lat,
-        group = "Clusters of Crashes",
-        fillColor = "red",
-        radius = 4,
-        # fillOpacity = 0.2,
-        stroke = FALSE
-      ) %>%
-      # addAwesomeMarkers(
-      #   lng = filtered_crash_with_icons$lng,
-      #   lat = filtered_crash_with_icons$lat
-        # icon = crshIcons[filtered_crash_with_icons$crash_icon],
+      # addMarkers( # works, ugly
+      #     lng = filtered_crash_with_icons$lng,
+      #     lat = filtered_crash_with_icons$lat,
+          # icon = crshIcons2[filtered_crash_with_icons$crash_icon]
       # ) %>%
-      # addCircleMarkers( # reason for XMLRequest issue thing
-      #   lng = filtered_crash_lat_long()$lng,
-      #   lat = filtered_crash_lat_long()$lat,
-      #   group = "Crashes",
-      #   fillColor = "red",
-      #   radius = 4,
-      #   # fillOpacity = 0.2,
-      #   stroke = FALSE
-      # ) %>%
+    # issue with fa icons breaking https://github.com/rstudio/shinydashboard/issues/339
+    # use different icon library
+    addAwesomeMarkers( #car-crash, map-marked-alt, walking, valueboxes
+      clusterOptions = markerClusterOptions(maxClusterRadius = 30), clusterId = "crashCluster",
+      group = "Crashes",
+      lng = filtered_crash_with_icons$lng,
+      lat = filtered_crash_with_icons$lat,
+      icon = crshIcons[filtered_crash_with_icons$crash_icon]
+    ) %>%
       addLayersControl(
         overlayGroups = c(
           "Clusters of Crashes"
           # "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
-      ) %>% 
-      hideGroup("Crashes")
+      )
    })
   
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         clearHexbin() %>%
-        addHexbin( # both addHexbin functions must match
+        addHexbin(
           lng = filtered_crash_lat_long()$lng,
           lat = filtered_crash_lat_long()$lat,
           radius = input$hexsize,

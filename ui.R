@@ -5,8 +5,6 @@ library(dashboardthemes)
 library(plotly)
 library(leaflet)
 library(shiny)
-# library(htmltools)
-# library(htmlwidgets)
 # library(bsplus)
 
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
@@ -28,7 +26,9 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .irs-grid-text { font-size: 12pt;}
       .irs-min {font-size: 12pt;}
       .irs-max {font-size: 12pt;}
-      .treeview-menu.menu-open {padding-bottom: 15px;}
+      .treeview-menu.menu-open {padding: 15px;}
+      .Plotly.toImage(gd,{format:'png',height:800,width:800});
+      
       .shiny-input-container { font-size: 12pt;}
       .material-switch {font-size: 12pt; float:right; margin-right: 25px;}
       .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
@@ -177,7 +177,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       icon = icon("map"),
       # startExpanded = TRUE, # start expanded
 
-      checkboxInput("hex", "Show Hex", FALSE),
+      # checkboxInput("hex", "Show Hex", FALSE),
+      materialSwitch("hex", label = "Hex Bins", status = "primary", value = FALSE),
       sliderInput(
         "hexsize",
         "Change Hex Size:",
@@ -186,10 +187,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
         value = 10,
         ticks = FALSE
       )
-        # HTML("<span class=irs-max style=visibility: visible;>35</span>") #doesnt work
-      
     )
-    
     # footer - wisdot logo is here
     # tags$footer(
     #   img(
@@ -286,7 +284,7 @@ body <- dashboardBody(
         tags$h5("Top Driver Contributing Circumstance (DRVRPC)")
         ),
       tabPanel(
-        tagList(shiny::icon("bicycle"), shiny::icon("walking"), strong("Bike and Pedestrian Behavior")),
+        tagList(shiny::icon("bicycle"), shiny::icon("walking"), strong("Bike and Ped. Behavior")),
         tags$h5("Top Actions of Pedestrians and Cyclists (NMTACT)"),
         tags$h5("Top Locations (NMTLOC)")
       ),
