@@ -5,7 +5,7 @@
 # foreground from rgb(52,62,72) to "rgb(34,43,69)"
 # font color from "rgb(205,205,205)" to "rgb(243,243,245)"
 # icon colors will be "rgb(143,155,179)"
-# hover text will be "rgb(45,81,189)", switch to widDOT blue
+# hover text will be "rgb(45,81,189)", but then switched to wisDOT blue "#428BCA"
 # light grey is rgb(153,153,153)
 # WisDOT blue #428BCA
 
@@ -63,9 +63,9 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
 
     ,sidebarTabBackColorHover = "rgb(34,43,69)"# "rgb(55,65,75)"
     ,sidebarTabTextColorHover = "#428BCA" #"rgb(255,255,255)" 
-    ,sidebarTabBorderStyleHover = "none"
-    ,sidebarTabBorderColorHover = "none"
-    ,sidebarTabBorderWidthHover = 0
+    ,sidebarTabBorderStyleHover = "none none solid none" 
+    ,sidebarTabBorderColorHover = "rgb(22,26,48)"
+    ,sidebarTabBorderWidthHover = 2
     ,sidebarTabRadiusHover = "5px"
 
     ### boxes
@@ -114,13 +114,13 @@ mytheme_grey_dark <- shinyDashboardThemeDIY(
 
 logo_mytheme <- shinyDashboardLogoDIY(
   boldText = ""
-  ,mainText = "WisDOT Vision Zero Dashboard"
+  ,mainText = "WisDOT Crash Dashboard"
   ,textSize = 16
-  ,badgeText = "BETA"
-  ,badgeTextColor = "rgb(243,243,245)"
-  ,badgeTextSize = 2
-  ,badgeBackColor = "#40E0D0"
-  ,badgeBorderRadius = 3
+  ,badgeText = ""
+  ,badgeTextColor = "rgb(34,43,69)"
+  ,badgeTextSize = 0
+  ,badgeBackColor = "rgb(34,43,69)"
+  ,badgeBorderRadius = 0
 )
 
   # WisDOT Colors
@@ -129,3 +129,5 @@ logo_mytheme <- shinyDashboardLogoDIY(
 #   green = "#4DB848",
 #   red = "#D50032",
 #   yellow = "#F9C218"
+
+# img(src = 'zero-logo.png',  style = "width: 100px; display: block; margin-left: auto; margin-right: auto;")

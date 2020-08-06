@@ -1,4 +1,6 @@
 library(dplyr) # select, filter functions
+library(tidyr) # pivot_longer
+library(stringr) # str_wrap
 # library(ggplot2) # create pretty graphs
 library(DT)    # create pretty tables
 # library(expss) # format freq tables, tab_cells
@@ -71,6 +73,57 @@ server <- function(input, output, session) {
     }
     return (crsh_list)
 })
+  
+  get_crshflag_list <- reactive({
+    # returns list of crshflags selected
+    crshflag_list = as.character()
+    if (input$alc) {
+      crshflag_list <- c(crshflag_list, "ALCFLAG")
+    }
+    if (input$drug) {
+      crshflag_list <- c(crshflag_list, "DRUGFLAG")
+    }
+    if (input$speed) {
+      crshflag_list <- c(crshflag_list, "speedflag")
+    }
+    # if (input$distract) {
+    #   crshflag_list <- c(crshflag_list,"distract_flag")
+    # }
+    if (input$teen) {
+      crshflag_list <- c(crshflag_list, "teenflag")
+    }
+    if (input$older) {
+      crshflag_list <- c(crshflag_list, "olderflag")
+    }
+    if (input$motorcycle) {
+      crshflag_list <- c(crshflag_list, "CYCLFLAG")
+    }
+    if (input$ped) {
+      crshflag_list <- c(crshflag_list, "PEDFLAG")
+    }
+    if (input$bike) {
+      crshflag_list <- c(crshflag_list, "BIKEFLAG")
+    }
+    if (input$seatbelt) {
+      crshflag_list <- c(crshflag_list, "seatbeltflag")
+    }
+    return (crshflag_list)
+  })
+  
+  filtered_crsh_flags <- # this decides whether to return all or any crash flags, returns only CRSHNMBR
+    reactive({
+      crshflag_list = get_crshflag_list()
+      if (input$any_or_all) {
+        # default for this button is 'any'
+        # selects crash flags, goes through each row and finds all Y
+        return(all_crsh_flags[apply(all_crsh_flags [, ..crshflag_list], 1, function(x)
+          any(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR))) # all() so ALL flags are selected
+      }
+      # selects crash flags, goes through each row and finds all Y
+      return(all_crsh_flags[apply(all_crsh_flags [, ..crshflag_list], 1, function(x)
+        all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR))) # all() so ALL flags are selected
+    })
+  
 # portage should be 49
   selected_county <- reactive({ # this takes the selected county and zooms to it
     sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
@@ -81,33 +134,33 @@ server <- function(input, output, session) {
   })
   ################### DATA OBSERVE EVENTS OF DATA #######################
   
-filtered_crsh_flags <- reactive({ # returns crash numbers of crash flags selected
-  # what flags are selected - this is set to AND
-  rename_crsh_flags <- # rename inputs so we can select flag columns
-    c("Alcohol-related" = "ALCFLAG",
-      "Drug-related" = "DRUGFLAG",
-      # "Distracted driving",  # don't have this one, also CMV
-      'Speeding' = 'speedflag',
-      'Teen driver' = 'teenflag',
-      'Older driver' = 'olderflag',
-      "Bicyclist" = "BIKEFLAG",
-      "Pedestrian" = "PEDFLAG",
-      "Motorcycle" = "CYCLFLAG"
-    )
-  new_crsh_flags <-
-    rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
-  # crsh_flags <- c("Alcohol-related", "Speeding")
-  
-  selected_crash_flags <-
-    # selects crash flags, goes through each row and finds all Y
-    all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
-      all(x == "Y")),] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
-  selected_crash_flags # returns datatable with crshnmbr to match
-})
+# filtered_crsh_flags <- reactive({ # returns crash numbers of crash flags selected
+#   # what flags are selected - this is set to AND
+#   rename_crsh_flags <- # rename inputs so we can select flag columns
+#     c("Alcohol-related" = "ALCFLAG",
+#       "Drug-related" = "DRUGFLAG",
+#       # "Distracted driving",  # don't have this one, also CMV
+#       'Speeding' = 'speedflag',
+#       'Teen driver (Age 16-19)' = 'teenflag',
+#       'Older driver (Age 65+)' = 'olderflag',
+#       "Bicyclist" = "BIKEFLAG",
+#       "Pedestrian" = "PEDFLAG",
+#       "Motorcycle" = "CYCLFLAG"
+#     )
+#   new_crsh_flags <-
+#     rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
+#   # crsh_flags <- c("Alcohol-related", "Speeding")
+#   
+#   selected_crash_flags <-
+#     # selects crash flags, goes through each row and finds all Y
+#     all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
+#       all(x == "Y")),] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
+#   selected_crash_flags # returns datatable with crshnmbr to match
+# })
 
 filtered_crashes <- # returns crash data, depends if a flag was selected
   reactive({
-    if (length(input$crsh_flags) == 0) {
+    if (length(get_crshflag_list()) == 0) {
       # if no flags selected
       return (filtered_crashes_no_flags())
     } else {
@@ -123,7 +176,7 @@ filtered_crashes <- # returns crash data, depends if a flag was selected
 
 filtered_persons <-
   reactive({
-    if (length(input$crsh_flags) == 0) {
+    if (length(get_crshflag_list()) == 0) {
       # if no flags selected
       return (filtered_persons_no_flags())
     } else {
@@ -199,11 +252,11 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     )
   })
   
-  ################### BODY CHARTS #######################
+  ################### BODY - CHARTS #######################
   chart_title = list(size = 16, color = "rgb(243,243,245)", family = "Arial")
   chart_axis = list(size = 14, color = "rgb(205,205,205)", family = "Arial")
   chart_axis_bar = list(size = 14, color = "#428BCA", family = "Arial", face = "bold")
-
+  
   output$crsh_svr_mth <- renderPlotly({
     
     if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
@@ -216,19 +269,22 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       crshsvr_table <-
         table(month = filtered_crashes()$CRSHMTH, svr = filtered_crashes()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
       crshsvr_table$month <-
-        factor(crshsvr_table$month, levels = month.name) # this orders months
+        factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
     
-    # crshsvr_table$month <- c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
-    # crshsvr_table$month <- month.abb[crshsvr_table$month]
+    month_order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
+    crshsvr_table$month <- month.abb[crshsvr_table$month] # abbreviate months
       # month_factor = month.name
-
+      
+    # assigning colors
+    color_map <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
+      
     plot_ly(
-      crshsvr_table,
+      crshsvr_table, 
       type = 'bar',
       x = ~ month,
       y = ~ n,
-      color = ~ svr,
-      colors = c("#D50032", "#428BCA", "#4DB848"),  #colors for female, male, unknown in this order
+      color = ~svr,
+      colors = ~color_map[svr], # assign colors, this will give a warning 'Duplicate levels detected'
       hovertemplate = paste('%{x}<br>',
                             '<b>%{y: .0f} Crashes')
     ) %>% #Price: %{y:$.2f}<extra></extra>
@@ -238,17 +294,19 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           x = .5,
           y = 1.2,
           orientation = 'h',
-          font = chart_axis
+          font = chart_axis,
+          traceorder = "normal" # alphabetical legend order
         ),
         margin = list(r = 0, l = 0, b = 0, t = 45
         ),
         xaxis = list(
           title = "",
           tickfont = chart_axis,
-          tickangle = 0,
+          tickangle = -45,
+          categoryarray = ~month_order, categoryorder = "array" # sets order
           # ticktext = ~month.abb[crshsvr_table$month],
           # automargin = TRUE,
-          dtick = 5 # every 5 months are labeled
+          # dtick = 5 # every 5 months are labeled
         ),
         yaxis = list(
           showgrid = FALSE,
@@ -361,7 +419,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         x = ~ n,
         y = ~ reorder(mnrcoll, n), # reorder from big to small values
         marker = list(color = "#428BCA"), # blue!
-        hovertemplate = paste('%{text}', '<br>%{x: .0f} Crashes<br>'),
+        hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
         text = ~ format(n, big.mark=","), # bar end number
         textfont = chart_axis_bar,
         textposition = 'outside',
@@ -370,7 +428,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         layout(
           title = list(text ="Manner of Collision", font = chart_title, x = 0),
           margin = list(
-            r = 40, # set to 30 so labels don't get cut off
+            r = 40, # set to 40 so labels don't get cut off
             l = 200, # so axis label don't get cut off
             # t = 0, # this will cut off title
             b = 0
@@ -385,51 +443,6 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       }
   })
 
-  # output$person_role <- renderPlotly({  # have a symbol for each role
-  #   
-  #   if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
-  #     plotly_empty(type = "bar") %>% layout(
-  #       title = list(text ="Role of Persons Involved", font = chart_title, x = 0),
-  #       plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
-  #       paper_bgcolor = 'rgba(0,0,0,0)'
-  #     )
-  #   } else {
-  #   
-  #   role_table <- table(role = filtered_persons()$ROLE) %>% as_tibble() # get counts of ROLE, put in a tibble
-
-    # plot_ly(
-    #   role_table,
-    #   type = 'bar',
-    #   orientation = 'h',
-    #   x = ~ n,
-    #   y = ~ reorder(role, n), # reorder from big to small values
-    #   marker = list(color = "#428BCA"), # blue!
-    #   # hovertemplate = paste('%{x}', '<br>Count: %{text:.2s}<br>'),
-    #   text = ~ format(n, big.mark=","),
-    #   textfont = chart_axis_bar,
-    #   textposition = 'outside',
-    #   cliponaxis = FALSE
-    # ) %>%
-    #   layout(
-    #     title = list(text ="Role of All Persons", font = chart_title, x = 0),
-    #     margin = list(
-    #       r = 30, # set to 30 so labels don't get cut off
-    #       l = 0,
-    #       b = 0
-    #     ),
-    #     xaxis = list(
-    #       title = "",
-    #       showgrid = FALSE,
-    #       showticklabels = FALSE # remove axis labels
-    #     ),
-    #     yaxis = list(title = "", tickfont = chart_axis),
-    #     plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
-    #     paper_bgcolor = 'rgba(0,0,0,0)'
-    #   ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Role of Persons", scale = 2)
-    #   )
-    # }
-  # })
-  
   output$person_role_treemap <- renderPlotly({
     
     if (dim(filtered_persons())[1] == 0) { # or no crashes with a time ??
@@ -474,15 +487,17 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       filtered_persons()[, .(age_group, SEX)]
     
     age_sex_table <- table(age = person$age_group, sex = person$SEX) %>% as_tibble() # get counts, put in a tibble
-
+    
+    color_map <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
+    
     plot_ly(
       age_sex_table,
       type = 'bar',
       x = ~ age,
       y = ~ n,
       color = ~ sex,
-      colors = c("#D50032","#428BCA", "#F9C218"), #colors for female, male, unknown in this alphabetical order
-      hovertemplate = paste('<br>%{x}<br>',
+      colors = ~color_map[sex],
+      hovertemplate = paste('<br>Age %{x}<br>',
                             '<b>%{y: .0f} people<b>')
     ) %>%
       layout(
@@ -494,7 +509,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           b = 0,
           t = 45
         ),
-        xaxis = list(title = "", tickfont = chart_axis, tickangle = 0, categoryarray = ~age, categoryorder = "array", dtick = 2),
+        xaxis = list(title = "", tickfont = chart_axis, tickangle = -45, categoryarray = ~age, categoryorder = "array"),
         yaxis = list(title = "", showgrid = FALSE, tickfont = chart_axis),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)',
@@ -507,6 +522,151 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         # }
     }
    })
+  
+  output$drvrpc_chart <- renderPlotly({
+    
+    if (dim(filtered_persons())[1] == 0) {
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="No Driver Contributing Circumstances Found", font = chart_title, x = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      drvrpc <- filtered_persons() %>%
+        select(DRVRPC01:DRVRPC24) %>% pivot_longer(DRVRPC01:DRVRPC24) %>% filter(value !='')
+      # make freq table, remove variables, arrange and take top 8
+      drvrpc_table <- table(drvrpc_count = drvrpc$value) %>% as_tibble() %>%
+        filter(drvrpc_count != "No Contributing Action",
+               drvrpc_count != "Unknown") %>% arrange(desc(n)) %>% head(., 8)
+    #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
+      drvrpc_table$drvrpc_count <- reorder(drvrpc_table$drvrpc_count, drvrpc_table$n)  # reorder from big to small values
+      plot_ly(
+        drvrpc_table,
+        type = 'bar',
+        orientation = 'h',
+        x = ~ n,
+        y = ~ reorder(drvrpc_count, n), # reorder from big to small values, also wrap text
+        marker = list(color = "#428BCA"), # blue!
+        hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
+        text = ~ format(n, big.mark=","), # bar end number
+        textfont = chart_axis_bar,
+        textposition = 'outside',
+        cliponaxis = FALSE
+      ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
+        layout(
+          title = list(text ="Top Driver Contributing Circumstance", font = chart_title, x = 0),
+          margin = list(
+            r = 35, # set to 30 so labels don't get cut off
+            l = 200, # so axis label don't get cut off
+            # t = 0, # this will cut off title
+            b = 0
+          ),
+          xaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE # remove axis labels
+          ),
+          yaxis = list(title = "", tickfont = chart_axis),
+          plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Driver Contributing Circumstance", scale = 2)
+        )
+    }
+    })
+  output$nmtact_chart <- renderPlotly({
+    
+    if (dim(filtered_persons() %>% select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12)
+            %>% filter(value != "Unknown", value !=''))[1] == 0) {
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="No Pedestrians or Cyclists", font = chart_title, x = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      nmtact <- filtered_persons() %>%
+        select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12) %>% filter(value !='')
+      # make freq table, remove variables, arrange and take top 8
+      nmtact_table <- table(nmtact_count = nmtact$value) %>% as_tibble() %>%
+        filter(
+              # nmtact_count != "No Improper Action",
+               nmtact_count != "Unknown") %>%
+        arrange(desc(n)) %>% head(., 8)
+      #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
+      plot_ly(
+        nmtact_table,
+        type = 'bar',
+        orientation = 'h',
+        x = ~ n,
+        y = ~ reorder(nmtact_count, n), # reorder from big to small values, also wrap text
+        marker = list(color = "#428BCA"), # blue!
+        hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
+        text = ~ format(n, big.mark=","), # bar end number
+        textfont = chart_axis_bar,
+        textposition = 'outside',
+        cliponaxis = FALSE
+      ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
+        layout(
+          title = list(text ="Top Actions of Pedestrians and Cyclists", font = chart_title, x = 0),
+          margin = list(
+            r = 40, # set to 30 so labels don't get cut off
+            l = 200, # so axis label don't get cut off
+            # t = 0, # this will cut off title
+            b = 0
+          ),
+          xaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE # remove axis labels
+          ),
+          yaxis = list(title = "", tickfont = chart_axis),
+          plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Actions of Pedestrians and Cyclists", scale = 2)
+        )
+    }
+  })
+  output$nmtloc_chart <- renderPlotly({
+    
+    if (dim(filtered_persons() %>% filter(NMTLOC!=''))[1] == 0) {
+      plotly_empty(type = "bar") %>% layout(
+        title = list(text ="No Pedestrians or Cyclists", font = chart_title, x = 0),
+        plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      # nmtloc <- filtered_persons() %>%
+        # select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12) %>% filter(value !='')
+      # make freq table, remove variables, arrange and take top 8
+      nmtloc_table <- table(nmtloc_count = filtered_persons()$NMTLOC) %>% as_tibble() %>%
+        filter(nmtloc_count !='') %>% 
+        # filter(nmtact_count != "No Improper Action",
+               # nmtact_count != "Unknown") %>%
+        arrange(desc(n)) %>% head(., 8) 
+      #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
+      plot_ly(
+        nmtloc_table,
+        type = 'bar',
+        orientation = 'h',
+        x = ~ n,
+        y = ~ reorder(nmtloc_count, n), # reorder from big to small values, also wrap text
+        marker = list(color = "#428BCA"), # blue!
+        hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
+        text = ~ format(n, big.mark=","), # bar end number
+        textfont = chart_axis_bar,
+        textposition = 'outside',
+        cliponaxis = FALSE
+      ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
+        layout(
+          title = list(text ="Top Locations of Pedestrians and Cyclists", font = chart_title, x = 0),
+          margin = list(
+            r = 40, # set to 30 so labels don't get cut off
+            l = 200, # so axis label don't get cut off
+            # t = 0, # this will cut off title
+            b = 0
+          ),
+          xaxis = list(title = "", showgrid = FALSE, showticklabels = FALSE # remove axis labels
+          ),
+          yaxis = list(title = "", tickfont = chart_axis),
+          plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Locations of Pedestrians and Cyclists", scale = 2)
+        )
+    }
+  })
   output$vehicle_treemap <- renderPlotly({
     
     if (dim(filtered_vehicles())[1] == 0) {
@@ -563,18 +723,30 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     }
   })
   
-  ################### BODY MAP #######################
+  ################### BODY - MAP #######################
   
   # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
+  # observeEvent(input$my_easy_button, { #print status
+  #   if (input$my_easy_button == 'cluster'){
+  #     str("YAY")
+  #   }
+  #   str(input$my_easy_button)
+    # if (str(input$my_easy_button) == 'no cluster') {
 
-  # output$map <- renderUI({ # output the map
-  #   tags$script(HTML(paste0(
-  #     'document.getElementById("map1");'
-  #   )))
-  # })
+    # htmlwidgets::onRender("function(el, x) {
+    #         var clusterManager =
+    #           map.layerManager.getLayer('cluster', 'crashCluster');
+    #         clusterManager.disableClustering();}")
+    # }
+    # shinyjs::toggleState("decluster-markers", JS("
+    #       function(btn, map1) {
+    #         var clusterManager =
+    #           map.layerManager.getLayer('cluster', 'crashCluster');
+    #         clusterManager.disableClustering();"))
+  })
+  
   output$map1 <- renderLeaflet({ #render basic map
-    
       leaflet() %>% addTiles() %>%
       addPolygons(
         data = county$geometry,
@@ -585,6 +757,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
       ) %>%
+      # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
       addEasyButton(easyButton(
         states = list(
           easyButtonState( 
@@ -597,6 +770,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
               map.layerManager.getLayer('cluster', 'crashCluster');
             clusterManager.disableClustering();
             btn.state('cluster-markers');
+            Shiny.onInputChange('my_easy_button', 'no cluster');
           }")
           ),
           easyButtonState(
@@ -609,18 +783,20 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
               map.layerManager.getLayer('cluster', 'crashCluster');
             clusterManager.enableClustering();
             btn.state('decluster-markers');
+            Shiny.onInputChange('my_easy_button', 'cluster');
           }")
           )
         )
       ))
-    
   })
-  
+
+  ## MUST RESET TOGGLE BUTTON, observe if btn is toggled, if-else
   observeEvent(input$cntynum, { # change view if location selected changes
     county_zoom <- selected_county()
     # print(selected_county())
     leafletProxy("map1") %>%
      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4]) # zoom to selected county
+    # update btn / toggle ??
     })
  
   observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
@@ -632,11 +808,11 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         CRSHSVR == 'Property Damage' ~ "property"))
  
     crshIcons <- awesomeIconList( # icon list
-      fatal = makeAwesomeIcon(icon = "skull", library = "ion",
+      fatal = makeAwesomeIcon(icon = "close-circle", library = "ion",
                               markerColor = "red"),
       injury = makeAwesomeIcon(icon = "person", library = "ion",
                               markerColor = "blue"),
-      property = makeAwesomeIcon(icon = "car-sport", library = "ion",
+      property = makeAwesomeIcon(icon = "car", library = "ion",
                                markerColor = "green")
     )
     # crshIcons2 <- iconList( # icon list, dont like these
@@ -644,17 +820,20 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     #   injury = makeIcon("icons/user-injured-person.png", iconWidth = 20, iconHeight = 20),
     #   property = makeIcon("icons/car-crash-solid.png", iconWidth = 20, iconHeight = 20)
     # )
-
-    leafletProxy("map1")    %>%
+    
+    # "button-state state-cluster-markers cluster-markers-active"
+    # if ("button-state state-cluster-markers cluster-markers-active")
+    # 
+    
+    # if (input$my_easy_button == 'cluster') {}
+      
+    leafletProxy("map1") %>%
       clearMarkers() %>% clearMarkerClusters() %>%
-      # addMarkers( # works, ugly
-      #     lng = filtered_crash_with_icons$lng,
-      #     lat = filtered_crash_with_icons$lat,
-          # icon = crshIcons2[filtered_crash_with_icons$crash_icon]
-      # ) %>%
-    # issue with fa icons breaking https://github.com/rstudio/shinydashboard/issues/339
-    # use different icon library
-    addAwesomeMarkers( #car-crash, map-marked-alt, walking, valueboxes
+
+    # issue with fa icons breaking, use different icon library https://github.com/rstudio/shinydashboard/issues/339
+    # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addawesomemarkers-function-with-icons
+
+    addAwesomeMarkers(
       clusterOptions = markerClusterOptions(maxClusterRadius = 30), clusterId = "crashCluster",
       group = "Crashes",
       lng = filtered_crash_with_icons$lng,
@@ -663,11 +842,12 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     ) %>%
       addLayersControl(
         overlayGroups = c(
-          "Clusters of Crashes"
+          "Crashes"
           # "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
       )
+    
    })
   
   observe({ # observe when hexsize changes or if hex is checked
@@ -682,7 +862,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           options = hexbinOptions(
             colorRange = c("#b0d0f2", "#05366b"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
             resizetoCount = TRUE,
-            radiusRange = c(input$hexsize, input$hexsize) # same size, must match radius
+            radiusRange = c(input$hexsize, input$hexsize), # same size, must match radius
+            tooltip = "Crashes: "
           )
         )
     } else { # remove hex if unchecked
