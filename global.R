@@ -3,13 +3,13 @@ library(dplyr)
 library(data.table)
 library(sf)
 
-# source("data/data_import.R") # this scripts creates data so this scrips imports for the app
+# source("data/data_import.R") # this scripts creates data so this script imports that data for the app
 
 Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
 Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
 
-# This script loads all data files (crash, person, vehicle) that is in FST in a single file location
-# And combines into a single long format data.table
+# This script loads all data files (crash, person, vehicle) that is a FST in a single file location
+# And combines into a single long data.table format
 # This does so by grabbing all files with 'crash' (or person/vehicle) and FST in the name
 # This script also loads crsh_flags, county_recode, and muni_recode
 

@@ -1,7 +1,6 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(dashboardthemes)
-# library(DT)
 library(plotly)
 library(leaflet)
 library(shiny)
@@ -22,15 +21,22 @@ source("www/theme_grey_dark.R")  # adds a cool theme
 sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
   # changes sliderInput,  materialSwitch, fa is icon,   font size (right click and inspect element to find tag) # fa color: rgb(143,155,179) ??  .fa-car.fa-inverse::before {font-size: 6px;}
   # https://www.w3schools.com/css/ a resource for CSS
-  
+  # https://codepen.io/sosuke/pen/Pjoqqp to get FILTER colors for SVG (like hexbin) - plug in color and scroll down
   includeCSS("www/widgets.css"), # this applies css to certain shinyWidgets, I basically just changed the default settings
   tags$style(type = "text/css", "
       
       .irs-grid-text {font-size: 12pt;}
       .irs-min {font-size: 12pt;}
       .irs-max {font-size: 12pt;}
-      
-      .hexbin_svg {fill-color: rgb(143,155,179); fill: rgb(143,155,179);}
+
+      .hexbin_svg {display: inline-block; width: 15px; height: 15px; background-size: cover;
+      filter: invert(80%) sepia(84%) saturate(3572%) hue-rotate(177deg) brightness(102%) contrast(92%);}
+
+      .cluster_on_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
+      filter: invert(71%) sepia(82%) saturate(941%) hue-rotate(323deg) brightness(97%) contrast(96%);}
+
+      .cluster_off_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
+      filter: invert(48%) sepia(65%) saturate(0%) hue-rotate(167deg) brightness(92%) contrast(92%);}
 
       .Plotly.toImage(gd,{format:'png',height:800,width:800});
       .shiny-input-container {font-size: 12pt;}
@@ -118,9 +124,12 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       tabName = "crash_type",
       icon = icon("car-crash"),
       # startExpanded = TRUE, # start expanded
-      materialSwitch(inputId = "fatal", label = span("Fatal", style = "color:#D50032"), status = "danger", value = TRUE),
-      materialSwitch(inputId = "injury", label = span("Injury", style = "color:#428BCA"), status = "info", value = TRUE),
-      materialSwitch(inputId = "propertydamage", label = span("Property Damage", style = "color:#4DB848"), status = "success", value = TRUE)
+      # materialSwitch(inputId = "fatal", label = span("Fatal", style = "color:#D50032"), status = "danger", value = TRUE), 
+      # set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
+      materialSwitch(inputId = "fatal", label = tags$span(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="display:inline-block;">&ensp;Fatal&emsp;&emsp;&ensp;</p>')), status = "danger", value = TRUE),
+      materialSwitch(inputId = "injury", label = tags$span(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="display:inline-block;">&ensp;Injury&emsp;&emsp;&nbsp;</p>')), status = "info", value = TRUE),
+      materialSwitch(inputId = "propertydamage", label = tags$span(HTML('<i class="fa fa-car" style = "color:#4DB848;"></i><p style="display:inline-block;">&ensp;Property Damage</p>')), status = "success", value = TRUE),
+      tags$h5("")
       ),
     menuItem(
       strong("Flags"),
@@ -130,7 +139,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       # <br> add a break line
       tags$h5("Selection type:", style="display:inline-block; margin-top: 10px;"),
       tags$h5(switchInput(inputId = "any_or_all", value = TRUE, onLabel = "Any", offLabel = "All", onStatus = "primary", offStatus = "primary", size = "mini", inline = TRUE), style="display:inline-block; margin-top: 10px; padding: 0px;"),
-      tags$h5("Driver behavior", style = "margin-top: 10px;"),# set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
+      tags$h5("Driver behavior", style = "margin-top: 10px;"),
+      # set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
       materialSwitch(inputId = "alc", label = tags$span(HTML('<i class="fa fa-glass-martini" style = "color:rgb(143,155,179);"></i> Alcohol-related')), status = "info"),
       materialSwitch(inputId = "drug", label = tags$span(HTML('<i class="fa fa-pills" style = "color:rgb(143,155,179);"></i> Drug-related &ensp; &nbsp;')), status = "info"),
       materialSwitch(inputId = "speed", label = tags$span(HTML('<i class="fa fa-tachometer" style = "color:rgb(143,155,179);"></i> Speeding &emsp;&ensp; &nbsp;')), status = "info"),
@@ -155,14 +165,14 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       icon = icon("map"),
       startExpanded = TRUE,  # start expanded
       materialSwitch(
-        "hex",
+        "hex", 
         label = tags$span(
           HTML(
-            '<path id="hexbin-icon"/></svg><image class="hexbin_svg" width="25" height="25" src="hexbin.svg" /> Hex Bins'
+            '</svg><image class="hexbin_svg" src="hexbin.svg" /> Hex Bins'
           )
         ),
         status = "info",
-        value = FALSE
+        value = FALSE #tags$span(HTML('<i class="fa fa-car" style = "color:#4DB848;"></i><p style="display:inline-block;">xx</p>'))
       ),
       sliderInput(
         "hexsize",

@@ -11,6 +11,7 @@ library(leaflet) # the map
 library(leaflet.extras2) # hexbin
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
+
 # src("https://unpkg.com/ionicons@5.0.0/dist/ionicons.js") # for icons ?? didnt work
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
@@ -239,7 +240,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     valueBox(
       filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
       "Total Injuries",
-      icon = icon("band-aid"),
+      icon = icon("first-aid"),
       color = "red"
     )
   })
@@ -247,7 +248,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     valueBox(
       filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
       "Total Fatalities",
-      icon = icon("skull"),
+      icon = icon("heartbeat"),
       color = "red"
     )
   })
@@ -727,26 +728,29 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
   
   # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
-  # observeEvent(input$my_easy_button, { #print status
-  #   if (input$my_easy_button == 'cluster'){
-  #     str("YAY")
-  #   }
-  #   str(input$my_easy_button)
-    # if (str(input$my_easy_button) == 'no cluster') {
-
-    # htmlwidgets::onRender("function(el, x) {
-    #         var clusterManager =
-    #           map.layerManager.getLayer('cluster', 'crashCluster');
-    #         clusterManager.disableClustering();}")
-    # }
-    # shinyjs::toggleState("decluster-markers", JS("
-    #       function(btn, map1) {
-    #         var clusterManager =
-    #           map.layerManager.getLayer('cluster', 'crashCluster');
-    #         clusterManager.disableClustering();"))
-  })
   
-  output$map1 <- renderLeaflet({ #render basic map
+  # observeEvent(input$my_easy_button, { #print status
+  #   if (input$my_easy_button == 'no cluster'){ # this line works
+  #     shinyjs::enable("my_easy_button", shinyjs::toggle("no cluster"))
+  #   }
+  # })
+    # str(input$my_easy_button)
+  # if ((input$my_easy_button) == 'no cluster') {
+  #   str("YAY")
+  #   leafletProxy("map1") %>% clearMarkerClusters()
+  # htmlwidgets::onRender("function(el, x) {
+  #         var clusterManager =
+  #           map.layerManager.getLayer('cluster', 'crashCluster');
+  #         clusterManager.disableClustering();}")
+  
+  # shinyjs::toggleState("decluster-markers", JS("
+  #       function(btn, map1) {
+  #         var clusterManager =
+  #           map.layerManager.getLayer('cluster', 'crashCluster');
+  #         clusterManager.disableClustering();"))
+  # }
+
+  output$map1 <- renderLeaflet({ #render basic map, pretty much items that do not need a reactive
       leaflet() %>% addTiles() %>%
       addPolygons(
         data = county$geometry,
@@ -762,7 +766,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         states = list(
           easyButtonState( 
             stateName="decluster-markers",
-            icon =  "ion-toggle", # icon("artificial-intelligence", lib = "glyphicon"),
+            icon = tags$span(HTML('</svg><image class="cluster_on_svg" src="icons8-connect-filled.svg" />')),  #"ion-toggle-filled", # icon("artificial-intelligence", lib = "glyphicon"),
             title="Disable Clustering",
             onClick = JS("
           function(btn, map) {
@@ -775,7 +779,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
           ),
           easyButtonState(
             stateName="cluster-markers",
-            icon="ion-toggle-filled",
+            icon=tags$span(HTML('</svg><image class="cluster_off_svg" src="icons8-connect.svg" />')),
             title="Enable Clustering",
             onClick = JS("
           function(btn, map) {
@@ -800,9 +804,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     })
  
   observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
-    
     filtered_crash_with_icons <- filtered_crash_lat_long() %>% # create a dataframe with a column to specify icon names
-      mutate(crash_icon = case_when(
+      mutate(crash_icon = case_when( # For the crash icons
         CRSHSVR == 'Fatal' ~ "fatal",
         CRSHSVR == 'Injury' ~ "injury",
         CRSHSVR == 'Property Damage' ~ "property"))
@@ -823,10 +826,8 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     
     # "button-state state-cluster-markers cluster-markers-active"
     # if ("button-state state-cluster-markers cluster-markers-active")
-    # 
     
-    # if (input$my_easy_button == 'cluster') {}
-      
+    # Clear map so we can add new stuff
     leafletProxy("map1") %>%
       clearMarkers() %>% clearMarkerClusters() %>%
 
@@ -843,12 +844,10 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
       addLayersControl(
         overlayGroups = c(
           "Crashes"
-          # "Crashes"
         ),
         options = layersControlOptions(collapsed = FALSE)
       )
-    
-   })
+  })
   
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
