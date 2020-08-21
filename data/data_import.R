@@ -4,12 +4,13 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-# This script basically readies the data for the dashboard and is exported into an uncompressed FST.
+# This script basically readies the data for the dashboard and is exported into an uncompressed FST
+# so data will be loaded in the app in global.R
 
 # This script imports data from a CSV, selects certain columns, add new columns (such as newtime and age group),
-# then exports to an FST file. Exported data must be move to 'data/' folder. Do this for each year.
+# then exports to an FST file. Exported data must be moved to 'data/' folder. Do this for each year.
 
-# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
+setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
 # file_loc = "Data Prep for R Shiny/"
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
 file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved
@@ -199,14 +200,13 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
 }
 
 # input is name of csv, just change year
-all_crashes <- import_all_crashes("crash19")
+all_crashes <- import_all_crashes("19crash")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 #
-all_persons <- import_all_persons("person19")
+all_persons <- import_all_persons("19person")
 # Note: Creates a age_group field, relabels ROLE, SEX
 
-all_vehicles <- import_all_vehicles("vehicle19")
-
+all_vehicles <- import_all_vehicles("19vehicle")
 
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")

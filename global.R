@@ -14,11 +14,11 @@ Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
 # This script also loads crsh_flags, county_recode, and muni_recode
 
 # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard") # don't need this when uploading to server
-# setwd("C:/W_shortcut/Shiny_Crashes_Dashboard/")
+setwd("C:/W_shortcut/Shiny_Crashes_Dashboard/")
 
 # Function to import all data of type "databasetype" and is a FST and is in /data # https://gist.github.com/aammd/9ae2f5cce9afd799bafb
 import_all_databases <- function(databasetype) {
-  temp <- list.files(path = "data/", pattern = paste0("^\\", databasetype, ".*\\.fst$"))
+  temp <- list.files(path = "data/", pattern = paste0(databasetype, ".fst$")) # look for NAME.fst pattern
   read_fst2 <- function(path) read_fst(paste0("data/", path))
   combined_data <- lapply(temp, read_fst2) %>% rbindlist()
   combined_data

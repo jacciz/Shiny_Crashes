@@ -105,15 +105,24 @@ server <- function(input, output, session) {
     if (input$bike) {
       crshflag_list <- c(crshflag_list, "BIKEFLAG")
     }
-    if (input$seatbelt) {
-      crshflag_list <- c(crshflag_list, "seatbeltflag")
+    # if (input$seatbelt) {
+    #   crshflag_list <- c(crshflag_list, "seatbeltflag")
+    # }
+    if (input$singleveh) {
+      crshflag_list <- c(crshflag_list, "singlevehflag")
+    }
+    if (input$lanedep) {
+      crshflag_list <- c(crshflag_list, "lanedepflag")
+    }
+    if (input$deer) {
+      crshflag_list <- c(crshflag_list, "deerflag")
     }
     return (crshflag_list)
   })
   
   filtered_crsh_flags <- # this decides whether to return all or any crash flags, returns only CRSHNMBR
     reactive({
-      crshflag_list = get_crshflag_list()
+      crshflag_list = get_crshflag_list() # the if/else determines any or all selection
       if (input$any_or_all) {
         # default for this button is 'any'
         # selects crash flags, goes through each row and finds all Y
