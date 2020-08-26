@@ -41,11 +41,7 @@ server <- function(input, output, session) {
   updateSelectInput(session, "muni_names",
                       choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
   })
-  
-  # updateSelectInput(session, "year",
-  #                   selected = 2019, # default selection
-  #                   choices = c(2020, 2019, 2018, 2017)) #Set years of data
-  
+
   min_date_selected <- reactive({ 
     # used to find date range
     if (length(input$year) > 1) {

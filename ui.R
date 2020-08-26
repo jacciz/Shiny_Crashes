@@ -9,13 +9,6 @@ library(shiny)
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 source("www/theme_grey_dark.R")  # adds a cool theme
 
-# Style for crash flag table
-# table_style = "text-align:center; margin:0px;"
-
-# tags$head(tags$style(HTML(".small-box {color: rgba(0,0,0,1)}"))), # change height, icon size of all value boxes
-# tags$style(".small-box {background-color: rgb(52,62,72) !important; color: rgb(52,62,72)!important; }"),
-# tags$head(tags$style(HTML(".small-box {height: 60px;} .fa {font-size: 60px; vertical-align: middle;} "))), # change height, icon size of all value boxes
-
 ################### SIDEBAR #######################
 
 sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
