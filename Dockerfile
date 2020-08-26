@@ -43,8 +43,8 @@ RUN R -e "install.packages('sf', repos='https://cloud.r-project.org/')"
 RUN R -e "install.packages('Rmpfr', repos='https://cloud.r-project.org/')"
 
 # copy the app to the image
-RUN mkdir /root
-COPY crash_dashboard /root
+RUN mkdir /root/crash_dashboard
+COPY . /root/crash_dashboard
 
 COPY Rprofile.site /usr/lib/R/etc/
 
