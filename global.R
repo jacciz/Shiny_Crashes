@@ -5,8 +5,8 @@ library(sf)
 
 # source("data/data_import.R") # this scripts creates data so this script imports that data for the app
 
-Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
-Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
+# Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
+# Sys.setenv("plotly_api_key" = "")
 
 # This script loads all data files (crash, person, vehicle) that is a FST in a single file location
 # And combines into a single long data.table format
@@ -14,7 +14,7 @@ Sys.setenv("plotly_api_key" = "wrczHh7hA58lbPmrZ4jz")
 # This script also loads crsh_flags, county_recode, and muni_recode
 
 # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard") # don't need this when uploading to server
-setwd("C:/W_shortcut/Shiny_Crashes_Dashboard/")
+# setwd("C:/W_shortcut/Shiny_Crashes_Dashboard/")
 
 # Function to import all data of type "databasetype" and is a FST and is in /data # https://gist.github.com/aammd/9ae2f5cce9afd799bafb
 import_all_databases <- function(databasetype) {
