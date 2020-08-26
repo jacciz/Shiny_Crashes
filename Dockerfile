@@ -25,22 +25,22 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get install -y \
     libmpfr-dev
 	
-RUN R -e "install.packages('devtools', repos='https://cloud.r-project.org/')"
+# RUN R -e "install.packages('devtools', repos='https://cloud.r-project.org/')"
 # RUN R -e "install.packages('rgdal', repos='http://R-Forge.R-project.org')"
 
 # basic shiny functionality
-RUN R -e "install.packages(c('shiny', 'rmarkdown', 'sf'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('shiny', 'rmarkdown'), repos='https://cloud.r-project.org/')"
 
 # install other R packages required 
-RUN R -e "install.packages(c('littler', 'shinydashboard','shinyWidgets', 'DT', 'plotly', 'leaflet', 'dplyr', 'ggplot2', 'lubridate', 'leaflet.extras2', 'tibble', 'data.table', 'fst'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('littler', 'shinydashboard','shinyWidgets', 'DT', 'plotly', 'leaflet', 'dplyr', 'ggplot2', 'lubridate', 'leaflet.extras2', 'tibble', 'data.table', 'fst', 'dashboardthemes', 'sf', 'Rmpfr'), repos='https://cloud.r-project.org/')"
 
 # RUN R -e "devtools::install_github('nik01010/dashboardthemes')"
-RUN installGithub.r nik01010/dashboardthemes
+# RUN installGithub.r nik01010/dashboardthemes
 
-RUN R -e "install.packages('sf', repos='https://cloud.r-project.org/')"
+# RUN R -e "install.packages('sf', repos='https://cloud.r-project.org/')"
 
 # install dependencies of the crash_dashboard app
-RUN R -e "install.packages('Rmpfr', repos='https://cloud.r-project.org/')"
+# RUN R -e "install.packages('Rmpfr', repos='https://cloud.r-project.org/')"
 
 # copy the app to the image
 RUN mkdir /root/crash_dashboard
