@@ -11,6 +11,7 @@ library(leaflet) # the map
 library(leaflet.extras2) # hexbin
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
+library(leafgl) # add points, much faster than leaflet's CircleMarkerss
 
 # src("https://unpkg.com/ionicons@5.0.0/dist/ionicons.js") # for icons ?? didnt work
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
@@ -116,18 +117,20 @@ server <- function(input, output, session) {
     return (crshflag_list)
   })
   
-  filtered_crsh_flags <- # this decides whether to return all or any crash flags, returns only CRSHNMBR
+  filtered_crsh_flags <-
+    # this decides whether to return all or any crash flags, returns only CRSHNMBR
     reactive({
       crshflag_list = get_crshflag_list() # the if/else determines any or all selection
-      if (input$any_or_all) {
-        # default for this button is 'any'
-        # selects crash flags, goes through each row and finds all Y
-        return(all_crsh_flags[apply(all_crsh_flags [, ..crshflag_list], 1, function(x)
-          any(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR))) # all() so ALL flags are selected
+      if (input$any_or_all) { # default for this button is 'any'
+        # selects crash flags, filter each crshflag and finds any_vars == Y
+        return(
+          all_crsh_flags %>% select(CRSHNMBR, all_of(crshflag_list)) %>% filter_at(vars(all_of(crshflag_list)), any_vars(. == "Y")) %>% dplyr::select(CRSHNMBR)
+        )
       }
-      # selects crash flags, goes through each row and finds all Y
-      return(all_crsh_flags[apply(all_crsh_flags [, ..crshflag_list], 1, function(x)
-        all(x == "Y")), ] %>% dplyr::filter(!is.na(CRSHNMBR))) # all() so ALL flags are selected
+      # Same, but find all_vars == Y
+      return(
+        all_crsh_flags %>% select(CRSHNMBR, all_of(crshflag_list)) %>% filter_at(vars(all_of(crshflag_list)), all_vars(. == "Y")) %>% dplyr::select(CRSHNMBR)
+      )
     })
   
 # portage should be 49
@@ -135,102 +138,87 @@ server <- function(input, output, session) {
     sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
     bbox <- st_bbox(sel_county) %>% as.vector()
     bbox
-    # print(sel_county)
-    # print(bbox)
   })
   ################### DATA OBSERVE EVENTS OF DATA #######################
-  
-# filtered_crsh_flags <- reactive({ # returns crash numbers of crash flags selected
-#   # what flags are selected - this is set to AND
-#   rename_crsh_flags <- # rename inputs so we can select flag columns
-#     c("Alcohol-related" = "ALCFLAG",
-#       "Drug-related" = "DRUGFLAG",
-#       # "Distracted driving",  # don't have this one, also CMV
-#       'Speeding' = 'speedflag',
-#       'Teen driver (Age 16-19)' = 'teenflag',
-#       'Older driver (Age 65+)' = 'olderflag',
-#       "Bicyclist" = "BIKEFLAG",
-#       "Pedestrian" = "PEDFLAG",
-#       "Motorcycle" = "CYCLFLAG"
-#     )
-#   new_crsh_flags <-
-#     rename_crsh_flags[input$crsh_flags] # apply the rename to get a list
-#   # crsh_flags <- c("Alcohol-related", "Speeding")
-#   
-#   selected_crash_flags <-
-#     # selects crash flags, goes through each row and finds all Y
-#     all_crsh_flags[apply(all_crsh_flags [, ..new_crsh_flags], 1, function(x)
-#       all(x == "Y")),] %>% dplyr::filter(!is.na(CRSHNMBR)) # all() so ALL flags are selected
-#   selected_crash_flags # returns datatable with crshnmbr to match
-# })
 
-filtered_crashes <- # returns crash data, depends if a flag was selected
-  reactive({
-    if (length(get_crshflag_list()) == 0) {
-      # if no flags selected
-      return (filtered_crashes_no_flags())
-    } else {
-      # if at least 1 flag was selected
-      # returns the join with filtered_crashes
-      return(semi_join(
-        filtered_crashes_no_flags(),
-        filtered_crsh_flags(),
-        by = c("CRSHNMBR" = "CRSHNMBR")
-      ))
-    }
+  filtered_crashes <-
+    # returns crash data, depends if a flag was selected
+    reactive({
+      if (length(get_crshflag_list()) == 0) {
+        # if no flags selected
+        return (filtered_crashes_no_flags())
+      } else {
+        # if at least 1 flag was selected
+        # returns the join with filtered_crashes
+        return(semi_join(
+          filtered_crashes_no_flags(),
+          filtered_crsh_flags(),
+          by = c("CRSHNMBR" = "CRSHNMBR")
+        ))
+      }
+    })
+
+  filtered_persons <-
+    reactive({
+      if (length(get_crshflag_list()) == 0) {
+        # if no flags selected
+        return (filtered_persons_no_flags())
+      } else {
+        # if at least 1 flag was selected
+        # returns the join with filtered_crashes
+        return(semi_join(
+          filtered_persons_no_flags(),
+          filtered_crsh_flags(),
+          by = c("CRSHNMBR" = "CRSHNMBR")
+        ))
+      }
+    })
+  
+  filtered_crashes_no_flags <- reactive({
+    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+    setkeyv(all_crashes, keycols) # this is also data.table
+    yearrange <-
+      interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+    
+    # filter data table
+    filter_crashes <-
+      all_crashes[CNTYCODE %in% input$cntynum &
+                    CRSHSVR %in% crshsvr_selected() &
+                    CRSHDATE %within% yearrange]
+    filter_crashes
   })
-
-filtered_persons <-
-  reactive({
-    if (length(get_crshflag_list()) == 0) {
-      # if no flags selected
-      return (filtered_persons_no_flags())
-    } else {
-      # if at least 1 flag was selected
-      # returns the join with filtered_crashes
-      return(semi_join(
-        filtered_persons_no_flags(),
-        filtered_crsh_flags(),
-        by = c("CRSHNMBR" = "CRSHNMBR")
-      ))
-    }
+  
+  filtered_persons_no_flags <- reactive({
+    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+    setkeyv(all_persons, keycols) # this is also data.table
+    yearrange <-
+      interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
+    
+    # filter data table
+    filter_persons <-
+      all_persons[CNTYCODE %in% input$cntynum &
+                    CRSHSVR %in% crshsvr_selected() &
+                    CRSHDATE %within% yearrange]
+    filter_persons
   })
-
-filtered_crashes_no_flags <- reactive({
-  keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-  setkeyv(all_crashes, keycols) # this is also data.table
-  yearrange <-
-    interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
   
-  # filter data table
-  filter_crashes <-
-    all_crashes[CNTYCODE %in% input$cntynum &
-                  CRSHSVR %in% crshsvr_selected() & CRSHDATE %within% yearrange]
-  filter_crashes
-})
+  filtered_vehicles <-
+    reactive({
+      # joins with the already filtered_crashes
+      all_vehicles <-
+        inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
+    })
 
-filtered_persons_no_flags <- reactive({
-  keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-  setkeyv(all_persons, keycols) # this is also data.table
-  yearrange <-
-    interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
-  
-  # filter data table
-  filter_persons <-
-    all_persons[CNTYCODE %in% input$cntynum &
-                  CRSHSVR %in% crshsvr_selected() & CRSHDATE %within% yearrange]
-  filter_persons
-})
-
-filtered_vehicles <- reactive({ # joins with the already filtered_crashes
-  all_vehicles <-
-    inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match my CRSHNMBR
-})
-
-filtered_crash_lat_long <- reactive({  # get lat longs for map
-  crash_lat_long_j <-
-    filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
-})
+  filtered_crash_lat_long <- reactive({
+    # get lat longs for map
+    crash_lat_long_j <-
+      filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
+    
+    # convert to sf so we can map it!
+    st_as_sf(x = crash_lat_long_j,
+             coords = c("lng", "lat"),
+             crs = 4326)
+  })
 
 ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
@@ -734,27 +722,7 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
   # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
   
-  # observeEvent(input$my_easy_button, { #print status
-  #   if (input$my_easy_button == 'no cluster'){ # this line works
-  #     shinyjs::enable("my_easy_button", shinyjs::toggle("no cluster"))
-  #   }
-  # })
-    # str(input$my_easy_button)
-  # if ((input$my_easy_button) == 'no cluster') {
-  #   str("YAY")
-  #   leafletProxy("map1") %>% clearMarkerClusters()
-  # htmlwidgets::onRender("function(el, x) {
-  #         var clusterManager =
-  #           map.layerManager.getLayer('cluster', 'crashCluster');
-  #         clusterManager.disableClustering();}")
-  
-  # shinyjs::toggleState("decluster-markers", JS("
-  #       function(btn, map1) {
-  #         var clusterManager =
-  #           map.layerManager.getLayer('cluster', 'crashCluster');
-  #         clusterManager.disableClustering();"))
-  # }
-
+  # CRS is 4326
   output$map1 <- renderLeaflet({ #render basic map, pretty much items that do not need a reactive
       leaflet() %>% addTiles() %>%
       addPolygons(
@@ -765,38 +733,39 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
         weight = 1,
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
-      ) %>%
-      # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
-      addEasyButton(easyButton(
-        states = list(
-          easyButtonState( 
-            stateName="decluster-markers",
-            icon = tags$span(HTML('</svg><image class="cluster_on_svg" src="icons8-connect-filled.svg" />')),  #"ion-toggle-filled", # icon("artificial-intelligence", lib = "glyphicon"),
-            title="Disable Clustering",
-            onClick = JS("
-          function(btn, map) {
-            var clusterManager =
-              map.layerManager.getLayer('cluster', 'crashCluster');
-            clusterManager.disableClustering();
-            btn.state('cluster-markers');
-            Shiny.onInputChange('my_easy_button', 'no cluster');
-          }")
-          ),
-          easyButtonState(
-            stateName="cluster-markers",
-            icon=tags$span(HTML('</svg><image class="cluster_off_svg" src="icons8-connect.svg" />')),
-            title="Enable Clustering",
-            onClick = JS("
-          function(btn, map) {
-            var clusterManager =
-              map.layerManager.getLayer('cluster', 'crashCluster');
-            clusterManager.enableClustering();
-            btn.state('decluster-markers');
-            Shiny.onInputChange('my_easy_button', 'cluster');
-          }")
-          )
-        )
-      ))
+      )
+    # %>%
+    #   # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
+    #   addEasyButton(easyButton(
+    #     states = list(
+    #       easyButtonState( 
+    #         stateName="decluster-markers",
+    #         icon = tags$span(HTML('</svg><image class="cluster_on_svg" src="icons8-connect-filled.svg" />')),  #"ion-toggle-filled", # icon("artificial-intelligence", lib = "glyphicon"),
+    #         title="Disable Clustering",
+    #         onClick = JS("
+    #       function(btn, map) {
+    #         var clusterManager =
+    #           map.layerManager.getLayer('cluster', 'crashCluster');
+    #         clusterManager.disableClustering();
+    #         btn.state('cluster-markers');
+    #         Shiny.onInputChange('my_easy_button', 'no cluster');
+    #       }")
+    #       ),
+    #       easyButtonState(
+    #         stateName="cluster-markers",
+    #         icon=tags$span(HTML('</svg><image class="cluster_off_svg" src="icons8-connect.svg" />')),
+    #         title="Enable Clustering",
+    #         onClick = JS("
+    #       function(btn, map) {
+    #         var clusterManager =
+    #           map.layerManager.getLayer('cluster', 'crashCluster');
+    #         clusterManager.enableClustering();
+    #         btn.state('decluster-markers');
+    #         Shiny.onInputChange('my_easy_button', 'cluster');
+    #       }")
+    #       )
+    #     )
+    #   ))
   })
 
   ## MUST RESET TOGGLE BUTTON, observe if btn is toggled, if-else
@@ -809,43 +778,57 @@ filtered_crash_lat_long <- reactive({  # get lat longs for map
     })
  
   observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
-    filtered_crash_with_icons <- filtered_crash_lat_long() %>% # create a dataframe with a column to specify icon names
-      mutate(crash_icon = case_when( # For the crash icons
-        CRSHSVR == 'Fatal' ~ "fatal",
-        CRSHSVR == 'Injury' ~ "injury",
-        CRSHSVR == 'Property Damage' ~ "property"))
- 
-    crshIcons <- awesomeIconList( # icon list
-      fatal = makeAwesomeIcon(icon = "close-circle", library = "ion",
-                              markerColor = "red"),
-      injury = makeAwesomeIcon(icon = "person", library = "ion",
-                              markerColor = "blue"),
-      property = makeAwesomeIcon(icon = "car", library = "ion",
-                               markerColor = "green")
-    )
-    # crshIcons2 <- iconList( # icon list, dont like these
-    #   fatal = makeIcon("icons/skull.png", iconWidth = 20, iconHeight = 20),
-    #   injury = makeIcon("icons/user-injured-person.png", iconWidth = 20, iconHeight = 20),
-    #   property = makeIcon("icons/car-crash-solid.png", iconWidth = 20, iconHeight = 20)
+    # filtered_crash_with_icons <- filtered_crash_lat_long() %>% # create a dataframe with a column to specify icon names
+    #   mutate(crash_icon = case_when( # For the crash icons
+    #     CRSHSVR == 'Fatal' ~ "fatal",
+    #     CRSHSVR == 'Injury' ~ "injury",
+    #     CRSHSVR == 'Property Damage' ~ "property"))
+
+    # colors = makeColorMatrix(c("Fatal", "Injury", "Property Damage"), filtered_crash_lat_long()$CRSHSVR, c("red", "blue", "green"))
+
+    # crshIcons <- awesomeIconList( # icon list
+    #   fatal = makeAwesomeIcon(icon = "close-circle", library = "ion",
+    #                           markerColor = "red"),
+    #   injury = makeAwesomeIcon(icon = "person", library = "ion",
+    #                           markerColor = "blue"),
+    #   property = makeAwesomeIcon(icon = "car", library = "ion",
+    #                            markerColor = "green")
     # )
-    
-    # "button-state state-cluster-markers cluster-markers-active"
-    # if ("button-state state-cluster-markers cluster-markers-active")
-    
+
     # Clear map so we can add new stuff
     leafletProxy("map1") %>%
-      clearMarkers() %>% clearMarkerClusters() %>%
+      removeGlPoints(layerId = "Crashes") %>%
 
     # issue with fa icons breaking, use different icon library https://github.com/rstudio/shinydashboard/issues/339
-    # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addawesomemarkers-function-with-icons
-
-    addAwesomeMarkers(
-      clusterOptions = markerClusterOptions(maxClusterRadius = 30), clusterId = "crashCluster",
-      group = "Crashes",
-      lng = filtered_crash_with_icons$lng,
-      lat = filtered_crash_with_icons$lat,
-      icon = crshIcons[filtered_crash_with_icons$crash_icon]
-    ) %>%
+    # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addAwesomeMarkers-function-with-icons
+    # Increasing maxClusterRadius is faster, was at 30
+# TEST 1
+    # addAwesomeMarkers(
+    #   clusterOptions = markerClusterOptions(maxClusterRadius = 100), clusterId = "crashCluster",
+    #   group = "Crashes",
+    #   lng = filtered_crash_with_icons$lng,
+    #   lat = filtered_crash_with_icons$lat,
+    #   icon = crshIcons[filtered_crash_with_icons$crash_icon]
+    # ) %>%
+# TEST 2
+      # addCircleMarkers(
+      #     clusterOptions = (maxClusterRadius = 300), clusterId = "crashCluster",
+      #     group = "Crashes",
+      #     lng = filtered_crash_lat_long()$lng,
+      #     lat = filtered_crash_lat_long()$lat,
+      #     fillColor = filtered_crash_lat_long()$CRSHSVR
+      # ) %>%
+# TEST 3
+      addGlPoints(
+        data = filtered_crash_lat_long(),
+        layerId = "Crashes",
+        group = "Crashes",
+        fillColor = colors,
+        radius = 5,
+        fillOpacity = .8
+        # popup = TRUE,
+        ) %>% 
+    
       addLayersControl(
         overlayGroups = c(
           "Crashes"

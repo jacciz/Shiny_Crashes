@@ -3,6 +3,9 @@ library(dplyr)
 library(data.table)
 library(sf)
 
+# crash_sf <- st_read("data/crash_sf.gpkg")
+# crash_shp <- st_read("data/crash_sh.shp")
+
 # source("data/data_import.R") # this scripts creates data so this script imports that data for the app
 
 # Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token

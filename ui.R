@@ -286,7 +286,8 @@ body <- dashboardBody(
     )
   ),
   column(width = 6,
-         leafletOutput("map1", height = "600px") #from 680 # try this instead)
+         leafglOutput("map1", height = "600px")
+         # leafletOutput("map1", height = "600px") #from 680 # try this instead)
   ))
 
 # Put them together into a dashboardPage
