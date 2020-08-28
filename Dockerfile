@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "install.packages(c('shiny', 'rmarkdown'), repos='https://cloud.r-project.org/')"
 
 # install other R packages required 
-RUN R -e "install.packages(c('littler', 'shinydashboard','shinyWidgets', 'DT', 'plotly', 'leaflet', 'dplyr', 'ggplot2', 'lubridate', 'leaflet.extras2', 'tibble', 'data.table', 'fst', 'dashboardthemes', 'sf', 'Rmpfr'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('littler', 'shinydashboard','shinyWidgets', 'DT', 'plotly', 'leaflet', 'dplyr', 'ggplot2', 'lubridate', 'leaflet.extras2', 'tibble', 'data.table', 'fst', 'dashboardthemes', 'sf', 'Rmpfr', 'leafgl'), repos='https://cloud.r-project.org/')"
 
 # RUN R -e "devtools::install_github('nik01010/dashboardthemes')"
 # RUN installGithub.r nik01010/dashboardthemes
