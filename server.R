@@ -733,7 +733,13 @@ server <- function(input, output, session) {
         weight = 1,
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
-      )
+      ) %>% 
+    addLayersControl(
+      overlayGroups = c(
+        "Crashes"
+      ),
+      options = layersControlOptions(collapsed = FALSE)
+    )
     # %>%
     #   # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
     #   addEasyButton(easyButton(
@@ -773,8 +779,8 @@ server <- function(input, output, session) {
     county_zoom <- selected_county()
     # print(selected_county())
     leafletProxy("map1") %>%
-     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4]) # zoom to selected county
-    # update btn / toggle ??
+     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4]) %>%  # zoom to selected county
+      showGroup("Crashes")
     })
  
   observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
@@ -801,49 +807,33 @@ server <- function(input, output, session) {
 
     # issue with fa icons breaking, use different icon library https://github.com/rstudio/shinydashboard/issues/339
     # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addAwesomeMarkers-function-with-icons
-    # Increasing maxClusterRadius is faster, was at 30
-# TEST 1
-    # addAwesomeMarkers(
-    #   clusterOptions = markerClusterOptions(maxClusterRadius = 100), clusterId = "crashCluster",
-    #   group = "Crashes",
-    #   lng = filtered_crash_with_icons$lng,
-    #   lat = filtered_crash_with_icons$lat,
-    #   icon = crshIcons[filtered_crash_with_icons$crash_icon]
-    # ) %>%
-# TEST 2
-      # addCircleMarkers(
-      #     clusterOptions = (maxClusterRadius = 300), clusterId = "crashCluster",
-      #     group = "Crashes",
-      #     lng = filtered_crash_lat_long()$lng,
-      #     lat = filtered_crash_lat_long()$lat,
-      #     fillColor = filtered_crash_lat_long()$CRSHSVR
-      # ) %>%
-# TEST 3
+ 
       addGlPoints(
         data = filtered_crash_lat_long(),
         layerId = "Crashes",
         group = "Crashes",
-        fillColor = colors,
+        fillColor = "red",
+        # fillColor = makeColorMatrix(~"CRSHSVR", filtered_crash_lat_long()),
         radius = 5,
         fillOpacity = .8
         # popup = TRUE,
-        ) %>% 
-    
-      addLayersControl(
-        overlayGroups = c(
-          "Crashes"
-        ),
-        options = layersControlOptions(collapsed = FALSE)
-      )
+        )# %>% 
+      # addLayersControl(
+      #   overlayGroups = c(
+      #     "Crashes"
+      #   ),
+      #   options = layersControlOptions(collapsed = FALSE)
+      # )
   })
   
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
+        hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
-          lng = filtered_crash_lat_long()$lng,
-          lat = filtered_crash_lat_long()$lat,
+          # lng = filtered_crash_lat_long()$lng,
+          # lat = filtered_crash_lat_long()$lat,
           radius = input$hexsize,
           opacity = 0.8,
           options = hexbinOptions(
