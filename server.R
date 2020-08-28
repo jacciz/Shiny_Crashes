@@ -2,7 +2,7 @@ library(dplyr) # select, filter functions
 library(tidyr) # pivot_longer
 library(stringr) # str_wrap
 # library(ggplot2) # create pretty graphs
-library(DT)    # create pretty tables
+# library(DT)    # create pretty tables
 # library(expss) # format freq tables, tab_cells
 # library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
@@ -11,7 +11,7 @@ library(leaflet) # the map
 library(leaflet.extras2) # hexbin
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
-library(leafgl) # add points, much faster than leaflet's CircleMarkerss
+library(leafgl) # add points, much faster than leaflet's CircleMarkers
 
 # src("https://unpkg.com/ionicons@5.0.0/dist/ionicons.js") # for icons ?? didnt work
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
