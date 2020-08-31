@@ -1,0 +1,499 @@
+---
+title: "rest_api_queries"
+output: html_document
+---
+
+API Documentation: https://datahub.github.io/ccap/
+
+How to API https://www.programmableweb.com/news/how-to-access-any-restful-api-using-r-language/how-to/2017/07/21?page=2
+
+Class code list https://wscca.wicourts.gov/wcisClsCodeList.do?form=caseSearch.xsl
+
+Case Termes https://www.americanbar.org/groups/public_education/resources/law_related_education_network/how_courts_work/sentencing/
+
+This script makes a GET request using the WCCA REST API
+
+For this project:
+Yes, length of sentence for 3rd and higher, but we also want access for UWPHI study.
+I have followed up with NHTSA.  They are only interested in convictions for violation of 346.63(1)(a) and (1)(b).  None of the other BAC or drug related violations.
+
+Would the REST subscription allow you to bulk download all cases meeting a criteria (e.g., DUI 4th offense, citation/arrest during 2019) or is it a one case at a time system for inquiry about individual cases? - Paul
+
+Stephanie - got rid of our mandatory minimum - July 2019
+
+201928100001685 county 67 CASE IS SEALED
+
+^charge0 means charge # 10, it's the highest number - verify that is correct for the functions
+charge # goes from 'charge.' 'charge.1' ... 'charge1.' - this is because of flattening the JSON
+
+Some cases may have charges with multiple sentCodes or condCodes, these are not included
+
+V3 changes where sentence length is located
+
+61,952 cases were found under CM and CT. 69 of these had >12 citations, were excluded.
+
+5,666 cases with one of the OWI citations and 2,152 with 3+ offense, 1,780 had jail time
+
+IGNITION is 87 and P
+```{}
+API codes and what we will query
+
+wcisClsCode: 28100, 28150 - ask other codes, now doing caseType instead
+caseType: CT and CM - this code uses this
+
+statuteCite: 346.63(1)(a) and (1)(b)
+dates: 7/1/2019 to 6/30/2020  - dispoDate i.e. sentence date
+
+find if 3rd offender? - look at charges = descr
+length of sentence - look at condLen1 and pdCond.desc (and len1 and pd1.descr)
+Furthermore - find associated condCode (HC, A) and sentCode ("73", "74", "90"), but condCode takes precedence
+```
+
+```{r setup, include=FALSE}
+# Set working directory to where this notebook is saved
+knitr::opts_chunk$set(echo = FALSE, comment = NA, warning = FALSE, error = FALSE, message = FALSE, tidy = TRUE, fig.dim = c(7, 4), global.par = TRUE)
+knitr::opts_knit$set(root.dir = '/...')
+```
+
+```{r libraries}
+library(dplyr)
+library(data.table)
+```
+
+```{r Load the data}
+# save as csv as a backup
+cases <- readRDS( "C:/REST_API_Searches/july012019_june302020_bycaseType.rds")
+
+# There are duplicates because the case may have different jdgmtDispoDate, just under different schema, code removes them
+```
+
+```{r Functions to grab OWI cases and Offense Numbers}
+# 346.63(1)(a) and (1)(b) only want these, one could be charged with both
+
+# Select all columns with statuteCite and filters ones that match our OWI statute,
+get_OWI_cases <- function(dataframe) { # .*\\. acts as a wild card
+  dataframe %>% select(id, matches("^charges.*\\.statuteCite$")) %>%
+      filter(apply(., 1, function(thisrow) # need the \\ because of the parenthesis (regex uses ())
+        any(grepl("^346.63\\(1\\)\\(a\\)|^346.63\\(1\\)\\(b\\)", thisrow) #^ means that beginning must match
+        )))
+}
+
+# Searches for the second+ keywords, careful this could include non-OWI charges, make sure input has charges.x.descr specifically
+get_second_plus_offenders <- function(dataframe) {
+  dataframe %>% # select(id, matches("(^charges)(.descr$)")) %>%
+      filter( apply(., 1, function(thisrow)
+        any(grepl('2nd|2ND|2DN|3RD|4TH|3rd|4th|5th+|5th|6th|7th|8th|9th', thisrow) #^ means that beginning must match
+        )))
+}
+# Same but for first offenders only
+get_first_offenders <- function(dataframe) {
+  dataframe %>% # select(id, matches("(^charges)(.descr$)")) %>%
+      filter( apply(., 1, function(thisrow)
+        any(grepl('1st|1ST', thisrow) #^ means that beginning must match
+        )))
+}
+get_third_plus_offenders <- function(dataframe) {
+  dataframe %>%
+      filter( apply(., 1, function(thisrow)
+        any(grepl('3RD|4TH|3rd|4th|5th+|5th|6th|7th|8th|9th', thisrow)
+        )))
+}
+```
+
+```{r Function to get word from length abbreviations}
+# Use in conjunction with mutate to add a column to the df, for pdCode
+get_pdCode_descr <- function(df,colname) {
+  case_when(
+    colname == "DA" ~ "Days",
+    colname == "HR" ~ "Hours",
+    colname == "LF" ~ "Life",
+    colname == "MN" ~ "Minutes",
+    colname == "MO" ~ "Months",
+    colname == "WK" ~ "Weeks",
+    colname == "YR" ~ "Years",
+    colname == colname ~ colname
+  )
+}
+```
+
+```{r Function to get Sentencing by SentCode}
+get_sentence_sentCode <- function(df, chargecol) {
+  # sentCodes of State prison, Local jail and House of Correction (MKE only)
+  # sentcodes = c("73", "74", "90") # 3 codes, that's why there's 3 columns
+  codes <- # Select id and sentcode columns only
+    df %>% select_at(vars(id, grep(
+      paste0("^", chargecol, ".*\\.sentCode$"), colnames(.)
+    )))
+  # Create 3 columns that have the match, puts respected colname as the variable so we know actually where to grab sentencing info bc this is flattened JSON
+  # cant do codes == c("73", "74", "90") for some reason??
+  codes$colname1 = apply(
+    codes == "87",
+    1,
+    FUN = function(x)
+      toString(names(x)[x])
+  )
+  
+  # Remove crap so we only get the text
+  # There could be more than 2 matches, if so these will be NA, not included, not sure how else to do this
+  codes$colname1 <-
+    gsub(",", "", codes$colname1)
+  codes$colname1 <-
+    gsub("NA", "", codes$colname1)
+  codes$colname1 <- trimws(codes$colname1)
+  
+  # May accidentally match with id, remove when variable is 'id'
+  codes <- data.frame(lapply(codes, function(x) {gsub("id", "", x)})) %>% mutate(id = as.integer(id))
+  
+  # Count where there's a match - 1,322 for first charge out of 2026
+  # codes %>% filter(colname1 != "" | colname2 != "" | colname3 != "") %>% nrow()
+  
+  # Replace sentCode column name with len1 so we grab the associated column names, do this for each colname. String MUST match column name we will select.
+  codes <-
+    codes %>% mutate(len1 = gsub("sentenceCode.sentCode", "len1", colname1))
+  codes <-
+    codes %>% mutate(time_period1 = gsub("sentenceCode.sentCode", "pd1.descr", colname1))
+ 
+  # Combine back to original df
+  combine <- codes %>% select(id, starts_with("len"), starts_with("time_period")) %>% left_join(df, codes, by = "id")
+  
+  # Loops through each row and grabs sentence time/length using the len/time_period columns data as a string (i.e. the colname). Do this 3 times for each column.
+  combine$len_num1 = apply(
+    combine,
+    1,
+    FUN = function(x)
+      x[x["len1"]]
+  )
+  combine$time_period_num1 = apply(
+    combine,
+    1,
+    FUN = function(x)
+      x[x["time_period1"]]
+  )
+   # Returns only a few columns
+combine %>% select(id, starts_with("time_period_num"), starts_with("len_num"))
+  
+  # 3518 has 2 codes of 74 ??
+}
+```
+
+```{r Function to get Sentencing by condCode}
+get_sentence_condCode <- function(df, chargecol) {
+  # This is wcisCondCodes in the API condCode HC = House of Correction, A = Jail Time
+  # condCodes = c("HC","A")
+  # First, select the id and all condCode columns
+  codes <-
+    df %>% select_at(vars(id, grep(
+      paste0("^", chargecol, ".*\\.condCode$"), colnames(.)
+    )))
+  # Create 3 columns that have the match, puts respected colname as the variable
+  codes$colname1 = apply(
+    codes == "P",
+    1,
+    FUN = function(x)
+      toString(names(x)[x])
+  )
+ 
+  # Remove crap so we only get the text
+  codes$colname1 <-
+    gsub(",", "", codes$colname1)
+  codes$colname1 <-
+    gsub("NA", "", codes$colname1)
+  codes$colname1 <- trimws(codes$colname1)
+
+  # Replace sentCode column name with len1 so we grab the associated column names, do this for each colname
+  codes <-
+    codes %>% mutate(len1 = gsub("condition.condCode", "condLen1", colname1))
+  codes <-
+    codes %>% mutate(time_period1 = gsub("condition.condCode", "condPd1.pdCode", colname1))
+
+  # Combine back to original df
+  combine <- codes %>% select(id, starts_with("len"), starts_with("time_period")) %>% left_join(df, codes, by = "id")
+  
+  # Loops through each row and grabs sentence time/length using the len columns data as a variable (i.e. the colname)
+  combine$len_num1 = apply(
+    combine,
+    1,
+    FUN = function(x)
+      x[x["len1"]]
+  )
+  combine$time_period_num1 = apply(
+    combine,
+    1,
+    FUN = function(x)
+      x[x["time_period1"]]
+  )
+
+  combine %>% mutate(time_period_num1 = get_pdCode_descr(., time_period_num1)) %>% select(id, starts_with("time_period_num"), starts_with("len_num"))
+}
+```
+
+```{r Function to merge all sentences together}
+# Merge sentences - this is used inside get_second_plus_offenders()
+merge_sentence_length <- function(owi_data) {
+  # Select time column created in if_owi_citation(), merges all of those columns which should result i only 1 variable
+  sen_length <- owi_data %>% select(matches(c("^len_num\\d"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_length <- apply(sen_length, 1, function(x) x[!is.na(x)][1])
+  
+  # Same as above except for time period (Hours, Days, Months, Years)
+  sen_time <- owi_data %>% select(matches(c("^time_period_num\\d"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_time <- apply(sen_time, 1, function(x) x[!is.na(x)][1])
+  
+  owi_data %>% mutate(length = sen_length,
+                      time_length = sen_time)
+}
+
+# The last step of the analysis - make a tidy dataframe - separated by time.x and time.y for sentCode and condCode. Merges x and y, respectively
+merge_sentence_length_xy <- function(owi_data) {
+  # Select time column created in if_owi_citation(), merges all of those columns which should result i only 1 variable
+  sen_length.x <- owi_data %>% select(matches(c("^time.x"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_length.x <- apply(sen_length.x, 1, function(x) x[!is.na(x)][1])
+  
+  # Same as above except for time period (Hours, Days, Months, Years)
+  sen_time.x <- owi_data %>% select(matches(c("^time_per.x"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_time.x <- apply(sen_time.x, 1, function(x) x[!is.na(x)][1])
+  
+  sen_length.y <- owi_data %>% select(matches(c("^time.y"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_length.y <- apply(sen_length.y, 1, function(x) x[!is.na(x)][1])
+  
+  # Same as above except for time period (Hours, Days, Months, Years)
+  sen_time.y <- owi_data %>% select(matches(c("^time_per.y"))) # %>% select_if( ~ any(!is.na(.)))
+  sen_time.y <- apply(sen_time.y, 1, function(x) x[!is.na(x)][1])
+  
+  owi_data %>% mutate(length.x = sen_length.x,
+                      time_length.x = sen_time.x,
+                      length.y = sen_length.y,
+                      time_length.y = sen_time.y)
+}
+```
+
+```{r Function to find OWI, second+ offenders, and return sentence info}
+# Find if citation matches OWI and returns new columns for sentence length and time period
+# The function also filters if second+ offender - using get_second_plus_offenders()
+# regex_charge is to find columns of that citation number
+if_owi_citation <-
+  function(casedata, # data
+           charge_start, # regex for statutecitation for that particular charge no
+           chargecol, # regex for all the 'Charges' columns to find that particular charge no
+           number) {
+    # charge no, used to make a unique column name
+    
+    # special case for chargeNo 1, do this so we can select charge.descr for statuteCite
+    if (chargecol == "charges.[[:alpha:]]") {
+      chargecol_special = "charges."
+    } else {
+      chargecol_special = chargecol
+    }
+    # Statutes to look for - if OWI
+    pattern = "^346.63\\(1\\)\\(a\\)|^346.63\\(1\\)\\(b\\)"
+    
+    # Select columns that we need, not necessary
+    charge <- casedata %>% select(
+      id,
+      # caseNo, county.countyNo,
+      matches(charge_start),
+      # statuteCite
+      grep(paste0("^", chargecol, ".*\\.descr$"), names(.)),
+      # all ending in descr,
+      paste0(chargecol_special, "descr"),
+      # charge description
+      grep(paste0("^", chargecol, ".*\\.sentCode$"), names(.)),
+      # sentCode
+      grep(paste0("^", chargecol, ".*\\.condCode$"), names(.)),
+      # condCode
+      # matches("(^charges)(.descr$)"),
+      # These last 4 are for sentence length (i.e. 18) and sentence time period (i.e. Months)
+      grep(paste0("^", chargecol, ".*\\.condLen1$"), names(.)),
+      grep(paste0("^", chargecol, ".*\\.condPd1.descr$"), names(.)),
+      grep(paste0("^", chargecol, ".*\\.condPd1.pdCode$"), names(.)),
+      
+      grep(paste0("^", chargecol, ".*\\.len1$"), names(.)),
+      grep(paste0("^", chargecol, ".*\\.pd1.descr$"), names(.))
+    )
+    
+    # Find if statute is OWI statute, 
+    # This iterates through every row and finds if OWI statute is a match,
+    # returns id and statutes, descr, so must later join back with charge time
+    owi <- # 5,357 for first charge
+      charge %>% select(id,
+                        matches(charge_start),
+                        # charges.chargeModifiers.statuteCite, # same count
+                        paste0(chargecol_special, "descr")) %>%
+      filter(apply(., 1, function(.)
+        any(grepl(pattern, .))))
+    
+    # Finds if second+ offender, assume not 2+ must be 1st
+    # second <- get_second_plus_offenders(owi)
+    # first <- anti_join(owi, second, by = "id")
+    # charge_time <- inner_join(charge, first, by = "id")
+    
+    # Or search via 1st specifically
+    # first <- get_first_offenders(owi)
+    # charge_time <- inner_join(charge, first, by = "id")
+    
+    # Or search via 3rd+ specifically
+    third <- get_third_plus_offenders(owi)
+    charge_time <- inner_join(charge, third, by = "id")
+    
+    # If there is no sentCode, return NA
+    # if (length(sentcode_colname) == 0) {
+    if (nrow(charge_time) == 0) {
+      return()
+    } else {
+      # This returns a df of sentence times and lengths using sentCode
+      sentence_sentCode <-
+        get_sentence_sentCode(charge_time, chargecol)
+      
+      # Use this function to combine all columns so only 1 variable remains of each
+      sentence_sentCode_combine <-
+        merge_sentence_length(sentence_sentCode) %>% select(id, length, time_length)
+      
+      # This returns a df of sentence times and lengths using condCode
+      sentence_condCode <-
+        get_sentence_condCode(charge_time, chargecol)
+      
+      # Use this function to combine all columns so only 1 variable remains of each
+      sentence_condCode_combine <-
+        merge_sentence_length(sentence_condCode) %>% select(id, length, time_length)
+      # 1555 / 2026 have data - per codetype 1,307 (15 had multiple, were excluded) and 447 have a match
+      # Combine these 2 so we have length.x (sentCode) and length.y (condCode)
+      sentence_combine <-
+        left_join(sentence_sentCode_combine,
+                  sentence_condCode_combine,
+                  by = "id")
+      
+      # Add this data back into the df
+      charge_time <- left_join(charge_time, sentence_combine, by = "id")
+      
+      # Rename these columns so they're unique cause we'll join them later, old name, new name
+      setnames(charge_time, "length.x", paste0("time.x", number))
+      setnames(charge_time, "length.y", paste0("time.y", number))
+      setnames(charge_time,
+               "time_length.x",
+               paste0("time_per.x", number))
+      setnames(charge_time,
+               "time_length.y",
+               paste0("time_per.y", number))
+      setnames(
+        charge_time,
+        paste0(chargecol_special, "descr.x"),  # add the .x
+        paste0(chargecol_special, "descr", number)
+      )
+      charge_time
+    }
+  }
+
+```
+
+```{r Cases Analysis}
+# Check statute numbers are consistent
+cases$charges.statuteCite %>% unique() %>% sort()
+
+# Find number of empty ones because of >12 citations
+cases %>% filter(is.na(charges.statuteCite)) %>% nrow()
+
+# Find duplicates
+cases %>% group_by(county.countyNo, caseNo) %>% dplyr::summarise(x=n()) %>% filter(x>1)
+
+#Find count w/o duplicates just to make sure we get the right number
+cases %>% distinct(county.countyNo, caseNo)
+
+# Remove dupicates - MAKE SURE TO DO THIS!!!
+cases <- unique(setDT(cases), by = c("county.countyNo", "caseNo"))
+
+# Look at duplicated cases
+# cases %>% filter(caseNo == "2019CM000093")#co 22 july 8
+# get_case_data(df_row = get_casenumbers(b=baseurl, fdate = "2019-07-08", code = "28100")[18,], b = baseurl)
+```
+```{r Summarise our data}
+# Get only OWI cases and join back to data
+owi_cases <- get_OWI_cases(cases)
+owi_cases <- semi_join(cases, owi_cases, by = "id")
+
+# Look at charges descriptions. Search is grepl("3RD|3rd|4th|5th+|5th|6th|7th|8th|9th", thisrow), make sure this is right - .*\\. means wildcard
+# This filters charges that are not already in grepl() above
+owi_cases %>% select(matches(c("(^charges.*\\.descr$)"))) %>% tidyr::gather() %>% select(value) %>% unique() %>% filter(across(value, ~ !grepl('2nd|2ND|2DN|3RD|4TH|3rd|4th|5th+|5th|6th|7th|8th|9th', .)))
+```
+
+```{r Run to get all sentence lengths of second offenders }
+# Do the analysis!
+# Make sure you remove duplicate (look above)
+# Verify there are 11 total charges cases$chargex.x
+# This creates 4 new columns - timex and time_perx
+  a1 <- if_owi_citation(cases, "charges.statuteCite", "charges.[[:alpha:]]", "1")
+  a2 <- if_owi_citation(cases, "charges.2.statuteCite", "charges.2.", "2")
+  a3 <- if_owi_citation(cases, "charges.3.statuteCite", "charges.3.", "3")
+  a4 <- if_owi_citation(cases, "charges.4.statuteCite", "charges.4.", "4")
+  a5 <- if_owi_citation(cases, "charges.5.statuteCite", "charges.5.", "5")
+  a6 <- if_owi_citation(cases, "charges.6.statuteCite", "charges.6.", "6")
+  a7 <- if_owi_citation(cases, "charges.7.statuteCite", "charges.7.", "7")
+  a8 <- if_owi_citation(cases, "charges.8.statuteCite", "charges.8.", "8")
+  a9 <- if_owi_citation(cases, "charges.9.statuteCite", "charges.9.", "9")
+  a10 <- if_owi_citation(cases, "charges0.statuteCite", "charges0.", "10")
+  a11 <- if_owi_citation(cases, "charges1.statuteCite", "charges1.", "11")
+  a12 <- if_owi_citation(cases, "charges2.statuteCite", "charges2.", "12")
+# all_owi_sentence <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "id"), list(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)) %>% select_if(~sum(!is.na(.)) > 0)
+
+# Combine all non-empty df
+all_owi_sentence <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "id"), list(a1,a2,a3,a4,a5,a6,a7,a8)) %>% select_if(~sum(!is.na(.)) > 0)
+
+# Next, use this function to combine all time rows - many are NA - into a singe pretty df
+# all_lengths <- merge_sentence_length(all_owi_sentence) %>% select(id, length, time_length)
+
+# Next, make into a singe pretty df
+all_lengths <- merge_sentence_length_xy(all_owi_sentence) %>% select(id, length.x, time_length.x, length.y, time_length.y)
+
+# We are looking at both sentCode and condCode - Tyler says to use condCode first, if that is NA then use sentCode. x is sentCode and y is condCode
+all_lengths <- all_lengths %>% mutate(length_final = ifelse(is.na(length.y), length.x, length.y),
+                       time_length_final = ifelse(is.na(time_length.y), time_length.x, time_length.y))
+
+# Find how many have a sentence time
+all_lengths %>% filter(!is.na(time_length_final)) %>% nrow()
+
+# Get average jail time, adds a columns that calculates days
+all_lengths <- all_lengths %>% mutate(length_final = as.integer(length_final))
+
+# Get average jail time, adds a columns that calculates days
+all_lengths <- all_lengths %>% mutate(time_in_days = case_when(time_length_final == "Months" ~ length_final * 30.4,
+                                                time_length_final == "Hours" ~ length_final / 24,
+                                                time_length_final == "Days" ~ length_final+0,
+                                                time_length_final == "Years" ~ length_final * 365))
+
+all_lengths %>% filter(!is.na(time_in_days)) %>% summarise(mean(time_in_days), median(time_in_days), min(time_in_days), max(time_in_days))
+
+all_lengths %>% filter(!is.na(time_in_days)) %>% ggplot(aes(x = time_in_days, y = ..count..)) +geom_histogram(binwidth = 30) + stat_bin(binwidth=30, geom="text", size=3.5, vjust = -.2,
+           aes(label=..count..)) + theme_classic()
+# Number with 10 or fewer days
+all_lengths %>% filter(time_in_days < 11) %>% nrow()
+
+# Look up a case IGNITION is 87 and P. 5,666 OWIs, 2,152 are 3rd+, 336 1st only, 398 1st (search if not 2+)   1783/4691 with len time  3161 - 2nd
+cases %>% filter(id == 707) %>% select(county.countyNo, caseNo)
+# https://wccarest.wicourts.gov:443/api/v1/cases/67/2018CT001220
+```
+```{r}
+# "^",chargecol,".*\\.condPd1.descr$" "^",chargecol,".*\\.condLen1$"
+# try ends in .len1 and .pd1.descr
+# also here: nosent$charges.jdgmts.supervisions.3.pd1.descr
+# s$charges.jdgmts.timeConds.2.condPd1.descr
+
+# Cases with no sentencing
+no_sentence <- all_lengths %>% filter(is.na(length.x) & is.na(length.y)) %>% semi_join(cases, . , by = "id")
+no_sentence %>% filter(charges.plea.descr == "Guilty") %>% select(id)
+no_sentence %>% filter(charges.jdgmts.supervisions.len1 >1) %>% select(id)
+no_sentence %>% filter(charges.jdgmts.timeConds.condLen1 >1) %>% select(id)
+```
+
+```{r looking at all citations}
+statutes_list <- cases %>% select(contains("statuteCite"), -contains("chargeModifiers")) %>% as.data.frame() # %>% pivot_longer(2:11)
+# 346.63(1)(a) and (1)(b)
+  statutes_count <- table(statute = statutes_list$charges.statuteCite) %>% as.data.frame() %>% arrange(statute)
+statutes_count["^346"]
+grepl("^346", statutes_count)
+
+```
+
+
+
+
+
+
+

@@ -3,20 +3,14 @@ library(dplyr)
 library(data.table)
 library(sf)
 
-# crash_sf <- st_read("data/crash_sf.gpkg")
-# crash_shp <- st_read("data/crash_sh.shp")
+# source("data/data_import.R") # this scripts creates data so this script imports data for the app
 
-# source("data/data_import.R") # this scripts creates data so this script imports that data for the app
-
-# Sys.setenv("plotly_username" = "jacciz")   # to use plotly, this is my token
-# Sys.setenv("plotly_api_key" = "")
-
-# This script loads all data files (crash, person, vehicle) that is a FST in a single file location
+# This global.R script loads all data files (crash, person, vehicle) that is a FST
 # And combines into a single long data.table format
 # This does so by grabbing all files with 'crash' (or person/vehicle) and FST in the name
-# This script also loads crsh_flags, county_recode, and muni_recode
 
-# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard") # don't need this when uploading to server
+# This script also loads crsh_flags, county_recode, muni_recode, and county.shp
+
 # setwd("C:/W_shortcut/Shiny_Crashes_Dashboard/")
 
 # Function to import all data of type "databasetype" and is a FST and is in /data # https://gist.github.com/aammd/9ae2f5cce9afd799bafb

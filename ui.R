@@ -95,7 +95,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       strong("Location"), # strong makes it bold
       tabName = "location",
       icon = icon("map-marked-alt"),
-      # startExpanded = TRUE, # start expanded
+      startExpanded = TRUE, # start expanded
       selectInput(
         "cntynum",
         "County",
@@ -158,7 +158,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       strong("Map Settings/Analysis"),
       tabName = "map_sett",
       icon = icon("map"),
-      startExpanded = TRUE,  # start expanded
+      # startExpanded = TRUE,  # start expanded
       materialSwitch(
         "hex", 
         label = tags$span(
@@ -287,7 +287,14 @@ body <- dashboardBody(
     )
   ),
   column(width = 6,
-         leafglOutput("map1", height = "600px")
+         leafglOutput("map1", height = "600px"),
+         br(),
+         box(
+           # title = "AS",
+           width = NULL,
+             tagList(tags$span(
+               HTML("Note: Some crashes may not be mapped due to unknown coordinates."))))
+         
          # leafletOutput("map1", height = "600px") #from 680 # try this instead)
   ))
 
@@ -295,9 +302,7 @@ body <- dashboardBody(
 # adding icons on right side of header: https://stackoverflow.com/questions/31440564/adding-a-company-logo-to-shinydashboard-header
 dashboardPage( title = "WisDOT Crash Dashboard", # browser tab name
   dashboardHeader(
-    title = logo_mytheme,
+    title = logo_mytheme,  # text for page title
     titleWidth = 230
-  
-  ), # text for browser tab and page title
-  sidebar, 
-              body)
+  ),
+  sidebar, body)

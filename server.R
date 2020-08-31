@@ -1,10 +1,7 @@
 library(dplyr) # select, filter functions
 library(tidyr) # pivot_longer
-library(stringr) # str_wrap
-# library(ggplot2) # create pretty graphs
+# library(stringr) # str_wrap
 # library(DT)    # create pretty tables
-# library(expss) # format freq tables, tab_cells
-# library(forcats) # reorder freq in charts
 library(plotly) # interactive charts
 library(lubridate) # for dates
 library(leaflet) # the map
@@ -13,13 +10,13 @@ library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 library(leafgl) # add points, much faster than leaflet's CircleMarkers
 
-# src("https://unpkg.com/ionicons@5.0.0/dist/ionicons.js") # for icons ?? didnt work
-# shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
-# run this code in the console to see performance (total time is 10230, app start 2880) now 9170 & 790
-# profvis::profvis({ shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/') })
-# shinyloadtest::record_session(shiny::runApp('C:/W_shortcut/Shiny_Crashes_Dashboard/'), output_file = "C:/W_shortcut/recording.log")
-# shinyloadtest::record_session("http://127.0.0.1:3184") # run with Docker
+# assigning colors for crash severity and gender for charts/map
+color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
+color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
+
+
+# shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
 # https://rstudio.github.io/shinyloadtest/ # month.abb[month]
 
@@ -32,7 +29,7 @@ server <- function(input, output, session) {
   })
   ################### SIDEBAR OBSERVE EVENTS #######################
   updateSelectInput(session, # choose county
-                    "cntynum", # selected = 13, # default selection
+                    "cntynum",
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
 
   observeEvent(input$cntynum, { # choose municipality
@@ -40,7 +37,7 @@ server <- function(input, output, session) {
     muni_cnty_list <- muni_recode %>% filter(CntyCode %in% input$cntynum)
 
   updateSelectInput(session, "muni_names",
-                      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV) )
+                      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV))
   })
 
   min_date_selected <- reactive({ 
@@ -268,22 +265,29 @@ server <- function(input, output, session) {
     month_order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec") # rename months
     crshsvr_table$month <- month.abb[crshsvr_table$month] # abbreviate months
       # month_factor = month.name
-      
-    # assigning colors
-    color_map <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
-      
+
+    # Finds months not in df and adds those rows then replaces NA with 0
+    add <- month_order[!month_order %in% crshsvr_table$month]
+    crshsvr_table <-
+      if (length(add) != 0) {
+        crshsvr_table %>% add_row(month = add) %>% replace_na(list(n = 0, svr = "Fatal"))
+      } else{
+        crshsvr_table
+      }
+    
     plot_ly(
       crshsvr_table, 
       type = 'bar',
       x = ~ month,
       y = ~ n,
       color = ~svr,
-      colors = ~color_map[svr], # assign colors, this will give a warning 'Duplicate levels detected'
+      colors = ~color_map_svr[svr], # assign colors, this will give a warning 'Duplicate levels detected'
       hovertemplate = paste('%{x}<br>',
                             '<b>%{y: .0f} Crashes')
     ) %>% #Price: %{y:$.2f}<extra></extra>
       layout(
         title = list(text ="Crash Severity by Month", font = chart_title, y = 1, x = 0),
+        showlegend = TRUE,
         legend = list(
           x = .5,
           y = 1.2,
@@ -296,7 +300,7 @@ server <- function(input, output, session) {
         xaxis = list(
           title = "",
           tickfont = chart_axis,
-          tickangle = -45,
+          tickangle = -0,
           categoryarray = ~month_order, categoryorder = "array" # sets order
           # ticktext = ~month.abb[crshsvr_table$month],
           # automargin = TRUE,
@@ -482,20 +486,19 @@ server <- function(input, output, session) {
     
     age_sex_table <- table(age = person$age_group, sex = person$SEX) %>% as_tibble() # get counts, put in a tibble
     
-    color_map <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
-    
     plot_ly(
       age_sex_table,
       type = 'bar',
       x = ~ age,
       y = ~ n,
       color = ~ sex,
-      colors = ~color_map[sex],
+      colors = ~color_map_gender[sex],
       hovertemplate = paste('<br>Age %{x}<br>',
                             '<b>%{y: .0f} people<b>')
     ) %>%
       layout(
         title = list(text ="Age and Gender of All Persons", font = chart_title, y = 1, x = 0),
+        showlegend = TRUE,
         legend = list(x = .5, y = 1.2, orientation = 'h', font = chart_axis),
         margin = list(
           r = 0,
@@ -733,13 +736,14 @@ server <- function(input, output, session) {
         weight = 1,
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
-      ) %>% 
-    addLayersControl(
-      overlayGroups = c(
-        "Crashes"
-      ),
-      options = layersControlOptions(collapsed = FALSE)
-    )
+      )
+    # %>% 
+    # addLayersControl(
+    #   overlayGroups = c(
+    #     "Crashes"
+    #   ),
+    #   options = layersControlOptions(collapsed = FALSE)
+    # )
     # %>%
     #   # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
     #   addEasyButton(easyButton(
@@ -784,51 +788,45 @@ server <- function(input, output, session) {
     })
  
   observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
-    # filtered_crash_with_icons <- filtered_crash_lat_long() %>% # create a dataframe with a column to specify icon names
-    #   mutate(crash_icon = case_when( # For the crash icons
-    #     CRSHSVR == 'Fatal' ~ "fatal",
-    #     CRSHSVR == 'Injury' ~ "injury",
-    #     CRSHSVR == 'Property Damage' ~ "property"))
-
-    # colors = makeColorMatrix(c("Fatal", "Injury", "Property Damage"), filtered_crash_lat_long()$CRSHSVR, c("red", "blue", "green"))
-
-    # crshIcons <- awesomeIconList( # icon list
-    #   fatal = makeAwesomeIcon(icon = "close-circle", library = "ion",
-    #                           markerColor = "red"),
-    #   injury = makeAwesomeIcon(icon = "person", library = "ion",
-    #                           markerColor = "blue"),
-    #   property = makeAwesomeIcon(icon = "car", library = "ion",
-    #                            markerColor = "green")
-    # )
-
-    # Clear map so we can add new stuff
+    # if/else determines what to render (crash points or hex)
+    if (input$hex == FALSE) { #if/then to map if there's crashes
+    # Clear map so we can add new stuff   
     leafletProxy("map1") %>%
       removeGlPoints(layerId = "Crashes") %>%
-
     # issue with fa icons breaking, use different icon library https://github.com/rstudio/shinydashboard/issues/339
     # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addAwesomeMarkers-function-with-icons
  
-      addGlPoints(
+      addGlPoints( # when first loading: no non-missing arguments to min; returning Inf
         data = filtered_crash_lat_long(),
         layerId = "Crashes",
         group = "Crashes",
-        fillColor = "red",
-        # fillColor = makeColorMatrix(~"CRSHSVR", filtered_crash_lat_long()),
+        fillColor = ~color_map_svr[CRSHSVR],
         radius = 5,
-        fillOpacity = .8
-        # popup = TRUE,
-        )# %>% 
-      # addLayersControl(
-      #   overlayGroups = c(
-      #     "Crashes"
-      #   ),
-      #   options = layersControlOptions(collapsed = FALSE)
-      # )
+        fillOpacity = 1
+        # popup = "CRSHSVR"
+        # popup = TRUE
+        )
+    } else {
+      leafletProxy("map1", data = filtered_crash_lat_long()) %>%
+        removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        hideGroup("Crashes") %>% #uncheck crashes
+        clearHexbin() %>%
+        addHexbin(
+          radius = input$hexsize,
+          opacity = 0.8,
+          options = hexbinOptions(
+            colorRange = c("#b0d0f2", "#05366b"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
+            resizetoCount = TRUE,
+            radiusRange = c(input$hexsize, input$hexsize), # same size, must match radius
+            tooltip = "Crashes: "
+          ))
+    }
   })
   
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
+        removeGlPoints(layerId = "Crashes") %>% # remove crashes
         hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
@@ -844,6 +842,16 @@ server <- function(input, output, session) {
           )
         )
     } else { # remove hex if unchecked
-      leafletProxy("map1") %>% clearHexbin() }
+      leafletProxy("map1") %>% clearHexbin() %>% 
+        removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        showGroup("Crashes") %>% #check crashes
+        addGlPoints( # when first loading: no non-missing arguments to min; returning Inf
+          data = filtered_crash_lat_long(),
+          layerId = "Crashes",
+          group = "Crashes",
+          fillColor = ~color_map_svr[CRSHSVR],
+          radius = 5,
+          fillOpacity = 1)
+        }
   })
 }

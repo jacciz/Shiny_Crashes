@@ -1,0 +1,31 @@
+crshsvr_table <-
+  table(month = all_crashes$CRSHMTH, svr = all_crashes$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
+crshsvr_table$month <-
+  factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
+
+month_order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec") # order months
+crshsvr_table$month <- month.abb[crshsvr_table$month] # abbreviate months
+# month_factor = month.name
+
+# assigning colors
+color_map <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
+
+# Finds months not in df and adds those rows then replaces NA with 0
+add <- month_order[!month_order %in% crshsvr_table$month]
+crshsvr_table <-
+  if (length(add) != 0) {
+    crshsvr_table %>% add_row(month = add) %>% replace_na(list(n = 0, svr = "Fatal"))
+  } else{
+    crshsvr_table
+  }
+
+plot_ly(
+  crshsvr_table, 
+  type = 'bar',
+  x = ~ month,
+  y = ~ n,
+  color = ~svr,
+  colors = ~color_map[svr], # assign colors, this will give a warning 'Duplicate levels detected'
+  hovertemplate = paste('%{x}<br>',
+                        '<b>%{y: .0f} Crashes')
+)
