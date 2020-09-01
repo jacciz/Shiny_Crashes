@@ -1,0 +1,7 @@
+#Ignore these files
+*.Rproj
+*.git
+rsconnect
+*user
+.Rproj.user/D291311B/sources/prop/DB017C6E
+*.pper

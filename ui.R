@@ -241,7 +241,7 @@ body <- dashboardBody(
       # id = "tabset1",
       # height = "600px",
       tabPanel(
-        tagList(shiny::icon("paper-plane"), strong("Main")),
+        tagList(shiny::icon("paper-plane"), strong("Welcome")),
         
         tagList(tags$span(
           HTML(
@@ -289,15 +289,13 @@ body <- dashboardBody(
       )
     )
   ),
-  column(width = 6,
+  column(width = 6,  # Text for xx crashes are not mapped
          leafglOutput("map1", height = "600px"),
          br(),
          box(
-           # title = "AS",
            width = NULL,
              tagList(tags$span(
-               HTML("<span style=color:white;>Note: Some crashes may not be mapped due to unknown coordinates.</span>"))))
-         
+               HTML(paste0("<span style=color:white;>", textOutput("get_number_of_NA", inline = TRUE), " crashes are not mapped due to unknown coordinates.</span>")))))
          # leafletOutput("map1", height = "600px") #from 680 # try this instead)
   ))
 
@@ -309,10 +307,10 @@ dashboardPage( title = "WisDOT Crash Dashboard", # browser tab name
     titleWidth = 230
     # tags$li(class = "dropdown", style = "display:inline-block; horizontal-align: left", tags$h4(
     #   HTML(
-    #     '<i class="fa fa-car-alt" style = "color:rgb(143,155,179);"></i><span style=color:white;>Total Crashes</span>',
+    #     '<i class="fa fa-car-alt" style = "color:rgb(143,155,179);"></i><span style=color:white;> Crashes</span>',
     #     paste(
     #       "<b style=color:white;>",
-    #       textOutput("crash_count"),
+    #       textOutput("crash_count", inline = TRUE),
     #       "</b>"))))
   ),
   sidebar, body)

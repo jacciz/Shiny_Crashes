@@ -216,11 +216,24 @@ server <- function(input, output, session) {
       return(st_as_sf(
         x = crash_lat_long_j,
         coords = c("lng", "lat"),
-        crs = 4326))
-    }
-    sf_obj = st_sf(geom = st_sfc(st_point(x = c(NA, 2)))) # create fake empty data
-    sf_obj$CRSHSVR = 'Fatal'
+        crs = 4326
+      ))
+    } else { # Create fate df when nothing to map
+   sf_obj = data.table(data.frame(
+        lng = c(0, 0),
+        lat = c(0, 0),
+        CRSHSVR = c("Fatal", "Fatal")
+      ))
+      sf_obj <- st_as_sf(x = sf_obj,
+                         coords = c("lng", "lat"),
+                         crs = 4326,
+                         na.fail = FALSE)
     return(sf_obj)
+      }
+  })
+
+  output$get_number_of_NA <- renderText({ # Get number of crashes with no coordinates
+    toString(format(sum(is.na(filtered_crashes()$lng)), big.mark = ","))
   })
 
 ################### VALUE BOXES #######################
@@ -235,9 +248,9 @@ server <- function(input, output, session) {
     )
     
   })
-  # output$crash_count <- renderText({ # Try this for header?
-  #   toString(format(nrow(filtered_crashes()), big.mark = ","))
-  # })
+  output$crash_count <- renderText({ # Try this for header?
+    toString(format(nrow(filtered_crashes()), big.mark = ","))
+  })
   output$tot_inj <- renderInfoBox({
     valueBox(
       # filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
@@ -756,45 +769,6 @@ server <- function(input, output, session) {
         smoothFactor = 0.5
         # options = pathOptions(clickable = FALSE)
       )
-    # %>% 
-    # addLayersControl(
-    #   overlayGroups = c(
-    #     "Crashes"
-    #   ),
-    #   options = layersControlOptions(collapsed = FALSE)
-    # )
-    # %>%
-    #   # change in easybutton state https://stackoverflow.com/questions/60120184/shiny-leaflet-easybutton-only-fires-once
-    #   addEasyButton(easyButton(
-    #     states = list(
-    #       easyButtonState( 
-    #         stateName="decluster-markers",
-    #         icon = tags$span(HTML('</svg><image class="cluster_on_svg" src="icons8-connect-filled.svg" />')),  #"ion-toggle-filled", # icon("artificial-intelligence", lib = "glyphicon"),
-    #         title="Disable Clustering",
-    #         onClick = JS("
-    #       function(btn, map) {
-    #         var clusterManager =
-    #           map.layerManager.getLayer('cluster', 'crashCluster');
-    #         clusterManager.disableClustering();
-    #         btn.state('cluster-markers');
-    #         Shiny.onInputChange('my_easy_button', 'no cluster');
-    #       }")
-    #       ),
-    #       easyButtonState(
-    #         stateName="cluster-markers",
-    #         icon=tags$span(HTML('</svg><image class="cluster_off_svg" src="icons8-connect.svg" />')),
-    #         title="Enable Clustering",
-    #         onClick = JS("
-    #       function(btn, map) {
-    #         var clusterManager =
-    #           map.layerManager.getLayer('cluster', 'crashCluster');
-    #         clusterManager.enableClustering();
-    #         btn.state('decluster-markers');
-    #         Shiny.onInputChange('my_easy_button', 'cluster');
-    #       }")
-    #       )
-    #     )
-    #   ))
   })
 
   observeEvent(input$cntynum, { # change view if location selected changes
@@ -803,10 +777,10 @@ server <- function(input, output, session) {
     leafletProxy("map1") %>%
      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
     })
- 
+  # if (dim(filtered_crashes())[1] != 0) { 
   observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes
     # if/else determines what to render (crash points or hex)
-    if (input$hex == FALSE) {
+    if (input$hex == FALSE) { # when HEX is OFF
       #if/then to map if there's crashes
       # Clear map so we can add new stuff
       leafletProxy("map1") %>%
@@ -819,12 +793,11 @@ server <- function(input, output, session) {
           radius = 5,
           fillOpacity = 1
           # popup = "CRSHSVR"
-          # popup = TRUE
         )
-    } else {
+    } else {  # when HEX is ON
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        hideGroup("Crashes") %>% #uncheck crashes
+        # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
           radius = input$hexsize,
@@ -844,7 +817,7 @@ server <- function(input, output, session) {
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        hideGroup("Crashes") %>% #uncheck crashes
+        # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
           radius = input$hexsize,
@@ -857,9 +830,10 @@ server <- function(input, output, session) {
           )
         )
     } else { # remove hex if unchecked
-      leafletProxy("map1") %>% clearHexbin() %>% 
-        removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        showGroup("Crashes") %>% #check crashes
+      leafletProxy("map1") %>% 
+        clearHexbin() %>% 
+        # removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        # showGroup("Crashes") %>% #check crashes
         addGlPoints( # make sure this is same as above
           data = filtered_crash_lat_long(),
           layerId = "Crashes",
