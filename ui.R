@@ -17,6 +17,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
   # https://www.w3schools.com/css/ a resource for CSS
   # https://codepen.io/sosuke/pen/Pjoqqp to get FILTER colors for SVG (like hexbin) - plug in color and scroll down
   # https://icons8.com/ free icons - recolor (#8F9BB3) before download at 60pxPNG
+  # body{color: black;} this is HEXES hover font color
   includeCSS("www/widgets.css"), # this applies css to certain shinyWidgets, I basically just changed the default settings
   tags$style(type = "text/css", "
       
@@ -39,7 +40,9 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .sidebar-menu .treeview-menu {padding-left: 0px;}
       
       .h5, h5 {font-size: 14px; margin-top: 30px; margin-bottom: 0px; font-weight: bold; padding-left: 40px}
-
+      
+      body{color: black;}
+    
       .material-switch {float:right; margin-right: 25px;}
 
       .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
@@ -58,7 +61,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .fa-car {color: rgb(143,155,179)}
       
       .small-box .icon-large{top: 0px;}
-      .small-box.bg-red {height: 90px; text-align:center; background-color: rgb(34,43,69) !important; color: rgb(34,43,69) !important;}
+      .small-box.bg-red {height: 70px; text-align:center; background-color: rgb(34,43,69) !important; color: rgb(34,43,69) !important;}
       .skin-blue .wrapper {background-color: rgb(22,26,48);}
 
       .main-header .logo {font-family: Arial; font-size: 20px; font-weight: bold}
@@ -293,7 +296,7 @@ body <- dashboardBody(
            # title = "AS",
            width = NULL,
              tagList(tags$span(
-               HTML("Note: Some crashes may not be mapped due to unknown coordinates."))))
+               HTML("<span style=color:white;>Note: Some crashes may not be mapped due to unknown coordinates.</span>"))))
          
          # leafletOutput("map1", height = "600px") #from 680 # try this instead)
   ))
@@ -304,5 +307,12 @@ dashboardPage( title = "WisDOT Crash Dashboard", # browser tab name
   dashboardHeader(
     title = logo_mytheme,  # text for page title
     titleWidth = 230
+    # tags$li(class = "dropdown", style = "display:inline-block; horizontal-align: left", tags$h4(
+    #   HTML(
+    #     '<i class="fa fa-car-alt" style = "color:rgb(143,155,179);"></i><span style=color:white;>Total Crashes</span>',
+    #     paste(
+    #       "<b style=color:white;>",
+    #       textOutput("crash_count"),
+    #       "</b>"))))
   ),
   sidebar, body)

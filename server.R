@@ -211,34 +211,50 @@ server <- function(input, output, session) {
     crash_lat_long_j <-
       filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
     
-    # convert to sf so we can map it!
-    st_as_sf(x = crash_lat_long_j,
-             coords = c("lng", "lat"),
-             crs = 4326)
+    if (dim(crash_lat_long_j)[1] != 0) {
+      # convert to sf so we can map it!
+      return(st_as_sf(
+        x = crash_lat_long_j,
+        coords = c("lng", "lat"),
+        crs = 4326))
+    }
+    sf_obj = st_sf(geom = st_sfc(st_point(x = c(NA, 2)))) # create fake empty data
+    sf_obj$CRSHSVR = 'Fatal'
+    return(sf_obj)
   })
 
 ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
     valueBox(
-      format(nrow(filtered_crashes()), big.mark = ","),
-      "Total Crashes",
-      icon = icon("car-alt"),
+      # format(nrow(filtered_crashes()), big.mark = ","),
+      tags$span(HTML(paste0('<p style="font-size: 22px">',format(nrow(filtered_crashes()), big.mark = ","), '</p>'))),
+      tags$li(HTML('<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;horizontal-align:center">&ensp;Crashes</p>')),
+      # "Total Crashes",
+      # icon = icon("car-alt"),
       color = "red"
     )
+    
   })
+  # output$crash_count <- renderText({ # Try this for header?
+  #   toString(format(nrow(filtered_crashes()), big.mark = ","))
+  # })
   output$tot_inj <- renderInfoBox({
     valueBox(
-      filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
-      "Total Injuries",
-      icon = icon("first-aid"),
+      # filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
+      # "Total Injuries",
+      tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")), '</p>'))),
+      tags$li(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;display:inline-block;">&ensp;Injuries</p>')),
+      # icon = icon("first-aid"),
       color = "red"
     )
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(
-      filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
-      "Total Fatalities",
-      icon = icon("heartbeat"),
+      # filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
+      # "Total Fatalities",
+      tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTFATL), big.mark = ",")), '</p>'))),
+      tags$li(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;">&ensp;Fatalities</p>')),
+      # icon = icon("heartbeat"),
       color = "red"
     )
   })
@@ -281,7 +297,7 @@ server <- function(input, output, session) {
       x = ~ month,
       y = ~ n,
       color = ~svr,
-      colors = ~color_map_svr[svr], # assign colors, this will give a warning 'Duplicate levels detected'
+      colors = ~color_map_svr, # assign colors, this will give a warning 'Duplicate levels detected'
       hovertemplate = paste('%{x}<br>',
                             '<b>%{y: .0f} Crashes')
     ) %>% #Price: %{y:$.2f}<extra></extra>
@@ -492,7 +508,7 @@ server <- function(input, output, session) {
       x = ~ age,
       y = ~ n,
       color = ~ sex,
-      colors = ~color_map_gender[sex],
+      colors = ~color_map_gender,
       hovertemplate = paste('<br>Age %{x}<br>',
                             '<b>%{y: .0f} people<b>')
     ) %>%
@@ -602,7 +618,7 @@ server <- function(input, output, session) {
         layout(
           title = list(text ="Top Actions of Pedestrians and Cyclists", font = chart_title, x = 0),
           margin = list(
-            r = 40, # set to 30 so labels don't get cut off
+            r = 30, # set to 30 so labels don't get cut off
             l = 200, # so axis label don't get cut off
             # t = 0, # this will cut off title
             b = 0
@@ -727,7 +743,10 @@ server <- function(input, output, session) {
   
   # CRS is 4326
   output$map1 <- renderLeaflet({ #render basic map, pretty much items that do not need a reactive
-      leaflet() %>% addTiles() %>%
+      leaflet() %>%
+      # Options: http://leaflet-extras.github.io/leaflet-providers/preview/
+      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>% 
+    # addTiles(options = providerTileOptions(opacity = .5)) %>%
       addPolygons(
         data = county$geometry,
         group = "Counties",
@@ -778,33 +797,29 @@ server <- function(input, output, session) {
     #   ))
   })
 
-  ## MUST RESET TOGGLE BUTTON, observe if btn is toggled, if-else
   observeEvent(input$cntynum, { # change view if location selected changes
     county_zoom <- selected_county()
-    # print(selected_county())
+    
     leafletProxy("map1") %>%
-     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4]) %>%  # zoom to selected county
-      showGroup("Crashes")
+     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
     })
  
-  observeEvent(filtered_crashes(), { # same view, updates map data if selection changes
+  observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes
     # if/else determines what to render (crash points or hex)
-    if (input$hex == FALSE) { #if/then to map if there's crashes
-    # Clear map so we can add new stuff   
-    leafletProxy("map1") %>%
-      removeGlPoints(layerId = "Crashes") %>%
-    # issue with fa icons breaking, use different icon library https://github.com/rstudio/shinydashboard/issues/339
-    # to add legend https://stackoverflow.com/questions/47064921/leaflet-legend-for-addAwesomeMarkers-function-with-icons
- 
-      addGlPoints( # when first loading: no non-missing arguments to min; returning Inf
-        data = filtered_crash_lat_long(),
-        layerId = "Crashes",
-        group = "Crashes",
-        fillColor = ~color_map_svr[CRSHSVR],
-        radius = 5,
-        fillOpacity = 1
-        # popup = "CRSHSVR"
-        # popup = TRUE
+    if (input$hex == FALSE) {
+      #if/then to map if there's crashes
+      # Clear map so we can add new stuff
+      leafletProxy("map1") %>%
+        removeGlPoints(layerId = "Crashes") %>%
+        addGlPoints(  # when first loading: no non-missing arguments to min; returning Inf
+          data = filtered_crash_lat_long(),
+          layerId = "Crashes",
+          group = "Crashes",
+          fillColor = ~ color_map_svr[CRSHSVR],
+          radius = 5,
+          fillOpacity = 1
+          # popup = "CRSHSVR"
+          # popup = TRUE
         )
     } else {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
@@ -813,13 +828,15 @@ server <- function(input, output, session) {
         clearHexbin() %>%
         addHexbin(
           radius = input$hexsize,
-          opacity = 0.8,
+          opacity = 1,
           options = hexbinOptions(
-            colorRange = c("#b0d0f2", "#05366b"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
+            colorRange = c("#fee0d2", "#de2d26"),
+            #c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
             resizetoCount = TRUE,
-            radiusRange = c(input$hexsize, input$hexsize), # same size, must match radius
-            tooltip = "Crashes: "
-          ))
+            radiusRange = c(input$hexsize, input$hexsize),
+            # same size, must match radius
+            tooltip = "Crashes: ")
+        )
     }
   })
   
@@ -830,12 +847,10 @@ server <- function(input, output, session) {
         hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
-          # lng = filtered_crash_lat_long()$lng,
-          # lat = filtered_crash_lat_long()$lat,
           radius = input$hexsize,
-          opacity = 0.8,
+          opacity = 1,
           options = hexbinOptions(
-            colorRange = c("#b0d0f2", "#05366b"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
+            colorRange = c("#fee0d2", "#de2d26"),#c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
             resizetoCount = TRUE,
             radiusRange = c(input$hexsize, input$hexsize), # same size, must match radius
             tooltip = "Crashes: "
@@ -845,7 +860,7 @@ server <- function(input, output, session) {
       leafletProxy("map1") %>% clearHexbin() %>% 
         removeGlPoints(layerId = "Crashes") %>% # remove crashes
         showGroup("Crashes") %>% #check crashes
-        addGlPoints( # when first loading: no non-missing arguments to min; returning Inf
+        addGlPoints( # make sure this is same as above
           data = filtered_crash_lat_long(),
           layerId = "Crashes",
           group = "Crashes",
