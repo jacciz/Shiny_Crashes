@@ -3,5 +3,6 @@
 *.git
 rsconnect
 *user
-.Rproj.user/D291311B/sources/prop/DB017C6E
+*.Rproj.user
 *.pper
+crash_databases

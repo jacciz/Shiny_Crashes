@@ -5,8 +5,8 @@ account: jacciz
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2006519
-bundleId: 3567576
+bundleId: 3581005
 url: https://jacciz.shinyapps.io/Shiny_Crashes/
-when: 1598629113.67128
+when: 1598984612.88232
 asMultiple: FALSE
 asStatic: FALSE

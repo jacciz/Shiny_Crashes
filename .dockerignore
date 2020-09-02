@@ -1,0 +1,8 @@
+#Ignore these files
+*.Rproj
+*.git
+rsconnect
+*user
+*.Rproj.user
+*.pper
+crash_databases

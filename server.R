@@ -10,11 +10,9 @@ library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 library(leafgl) # add points, much faster than leaflet's CircleMarkers
 
-
 # assigning colors for crash severity and gender for charts/map
 color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
 color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
-
 
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
@@ -218,7 +216,7 @@ server <- function(input, output, session) {
         coords = c("lng", "lat"),
         crs = 4326
       ))
-    } else { # Create fate df when nothing to map
+    } else { # Create fake df when nothing to map
    sf_obj = data.table(data.frame(
         lng = c(0, 0),
         lat = c(0, 0),
@@ -241,7 +239,7 @@ server <- function(input, output, session) {
     valueBox(
       # format(nrow(filtered_crashes()), big.mark = ","),
       tags$span(HTML(paste0('<p style="font-size: 22px">',format(nrow(filtered_crashes()), big.mark = ","), '</p>'))),
-      tags$li(HTML('<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;horizontal-align:center">&ensp;Crashes</p>')),
+      tags$li(HTML('<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>')),
       # "Total Crashes",
       # icon = icon("car-alt"),
       color = "red"
@@ -256,7 +254,7 @@ server <- function(input, output, session) {
       # filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
       # "Total Injuries",
       tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")), '</p>'))),
-      tags$li(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;display:inline-block;">&ensp;Injuries</p>')),
+      tags$li(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;text-align: center;display:inline-block;padding-right:20px;">&ensp;Injuries</p>')),
       # icon = icon("first-aid"),
       color = "red"
     )
@@ -266,7 +264,7 @@ server <- function(input, output, session) {
       # filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
       # "Total Fatalities",
       tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTFATL), big.mark = ",")), '</p>'))),
-      tags$li(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;">&ensp;Fatalities</p>')),
+      tags$li(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Fatalities</p>')),
       # icon = icon("heartbeat"),
       color = "red"
     )
@@ -354,7 +352,7 @@ server <- function(input, output, session) {
     
     if (dim(filtered_crashes())[1] == 0) { # or no crashes with a time ??
       plotly_empty(type = "heatmap") %>% layout(
-        title = list(text ="Time of Day Crashes", font = chart_title, x = 0),
+        title = list(text ="Time of Day", font = chart_title, x = 0),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       )
@@ -412,7 +410,7 @@ server <- function(input, output, session) {
                             '<b>%{z:.0f} Crashes')
       ) %>% 
       layout(
-        title = list(text ="Time of Day Crashes", font = chart_title, x = 0),
+        title = list(text ="Time of Day", font = chart_title, x = 0),
         margin = list(r = 0,l = 0, b = 0
         ),
         xaxis = list(tickfont = chart_axis, tickangle = 0),
@@ -773,10 +771,10 @@ server <- function(input, output, session) {
 
   observeEvent(input$cntynum, { # change view if location selected changes
     county_zoom <- selected_county()
-    
     leafletProxy("map1") %>%
      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
-    })
+  })
+  
   # if (dim(filtered_crashes())[1] != 0) { 
   observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes
     # if/else determines what to render (crash points or hex)
@@ -784,30 +782,28 @@ server <- function(input, output, session) {
       #if/then to map if there's crashes
       # Clear map so we can add new stuff
       leafletProxy("map1") %>%
-        removeGlPoints(layerId = "Crashes") %>%
-        addGlPoints(  # when first loading: no non-missing arguments to min; returning Inf
+        # removeGlPoints(layerId = "Crashes") %>%
+        clearGlLayers() %>% 
+        addGlPoints(  # when add points, ERROR: Uncaught TypeError: Cannot read property 'getSize' of null at s._redraw (VM123 glify-browser.js:48) MAY HAVE TO DO WITH BOUNDS??
           data = filtered_crash_lat_long(),
-          layerId = "Crashes",
-          group = "Crashes",
-          fillColor = ~ color_map_svr[CRSHSVR],
+          fillColor = ~color_map_svr[CRSHSVR],
+          fillOpacity = 1,
           radius = 5,
-          fillOpacity = 1
-          # popup = "CRSHSVR"
-        )
+          layerId = "Crashes",
+          group = "Crashes")
     } else {  # when HEX is ON
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
-        removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        # removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        clearGlLayers() %>% 
         # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
           radius = input$hexsize,
           opacity = 1,
           options = hexbinOptions(
-            colorRange = c("#fee0d2", "#de2d26"),
-            #c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
+            colorRange = c("#fee0d2", "#de2d26"), #c("#fee0d2", "#de2d26"), # red #c("#b0d0f2", "#05366b"), #blue    c("#99d899", "#005100") green
             resizetoCount = TRUE,
-            radiusRange = c(input$hexsize, input$hexsize),
-            # same size, must match radius
+            radiusRange = c(input$hexsize, input$hexsize), # same size, must match radius
             tooltip = "Crashes: ")
         )
     }
@@ -816,7 +812,8 @@ server <- function(input, output, session) {
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
-        removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        # removeGlPoints(layerId = "Crashes") %>% # remove crashes
+        clearGlLayers() %>% 
         # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
@@ -833,14 +830,14 @@ server <- function(input, output, session) {
       leafletProxy("map1") %>% 
         clearHexbin() %>% 
         # removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        # showGroup("Crashes") %>% #check crashes
+        # showGroup("Crashes") %>% # check crashes
         addGlPoints( # make sure this is same as above
           data = filtered_crash_lat_long(),
-          layerId = "Crashes",
-          group = "Crashes",
           fillColor = ~color_map_svr[CRSHSVR],
+          fillOpacity = 1,
           radius = 5,
-          fillOpacity = 1)
+          layerId = "Crashes",
+          group = "Crashes")
         }
   })
 }

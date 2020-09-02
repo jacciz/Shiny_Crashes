@@ -118,7 +118,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       # )
     ),
     menuItem(
-      strong("Crash Type"),
+      strong("Crash Severity"),
       tabName = "crash_type",
       icon = icon("car-crash"),
       # startExpanded = TRUE, # start expanded
