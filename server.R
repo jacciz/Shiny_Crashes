@@ -236,38 +236,48 @@ server <- function(input, output, session) {
 
 ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
-    valueBox(
-      # format(nrow(filtered_crashes()), big.mark = ","),
-      tags$span(HTML(paste0('<p style="font-size: 22px">',format(nrow(filtered_crashes()), big.mark = ","), '</p>'))),
-      tags$li(HTML('<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>')),
-      # "Total Crashes",
-      # icon = icon("car-alt"),
-      color = "red"
-    )
-    
+    valueBox(tags$span(HTML(
+      paste0(
+        '<p style="font-size: 22px">',
+        format(nrow(filtered_crashes()), big.mark = ","),
+        '</p>')
+    )),
+    tags$li(
+      HTML(
+        '<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>'
+      )
+    ),
+    color = "red")
   })
-  output$crash_count <- renderText({ # Try this for header?
-    toString(format(nrow(filtered_crashes()), big.mark = ","))
-  })
+  
+  # output$crash_count <- renderText({ # Try this for header?
+  #   toString(format(nrow(filtered_crashes()), big.mark = ","))
+  # })
   output$tot_inj <- renderInfoBox({
-    valueBox(
-      # filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
-      # "Total Injuries",
-      tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")), '</p>'))),
-      tags$li(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;text-align: center;display:inline-block;padding-right:20px;">&ensp;Injuries</p>')),
-      # icon = icon("first-aid"),
-      color = "red"
-    )
+    valueBox(tags$span(HTML(
+      paste0(
+        '<p style="font-size: 22px">',
+        filtered_crashes() %>% summarise(x = format(sum(TOTINJ), big.mark = ",")),
+        '</p>')
+    )),
+    tags$li(
+      HTML(
+        '<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;text-align: center;display:inline-block;padding-right:20px;">&ensp;Injuries</p>'
+      )),
+    color = "red")
   })
   output$tot_fatal <- renderInfoBox({
-    valueBox(
-      # filtered_crashes() %>% summarise(x = sum(TOTFATL)) %>% format(big.mark = ","),
-      # "Total Fatalities",
-      tags$span(HTML(paste0('<p style="font-size: 22px">',filtered_crashes() %>% summarise(x = format(sum(TOTFATL), big.mark = ",")), '</p>'))),
-      tags$li(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Fatalities</p>')),
-      # icon = icon("heartbeat"),
-      color = "red"
-    )
+    valueBox(tags$span(HTML(
+      paste0(
+        '<p style="font-size: 22px">',
+        filtered_crashes() %>% summarise(x = format(sum(TOTFATL), big.mark = ",")),
+        '</p>')
+    )),
+    tags$li(
+      HTML(
+        '<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Fatalities</p>'
+      )),
+    color = "red")
   })
   
   ################### BODY - CHARTS #######################
