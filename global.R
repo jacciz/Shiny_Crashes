@@ -14,6 +14,10 @@ library(sf)
 # THEN use combine_data.R to combine all these databases of each year into a large database
 # THIS loads that large database of each type (crash,person,vehicle,crsh_flags)
 
+# Open modules
+source("modules/chart_modules_ui.R")
+source("modules/chart_modules_server.R")
+
 # Note: Creates a newtime variable - time of 0 and 999 is NA
 all_crashes <- read_fst("data/all_crash", as.data.table = TRUE)
 

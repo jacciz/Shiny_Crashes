@@ -259,33 +259,33 @@ body <- dashboardBody(
       tabPanel(
         # NOTE   br(), adds space between charts
         tagList(shiny::icon("car-crash"), strong("Crash trends")),
-        plotlyOutput("crsh_svr_mth", height = "240px"),
+        crsh_svr_mth_ui("crsh_svr_mth"),
         br(),
-        plotlyOutput("timeofday_heat", height = "240px")
+        timeofday_heat_ui("timeofday_heat")
       ),
       tabPanel(
         tagList(tags$span(HTML('<img src="icons8-car-crash-50.png" style="width:16px;height:16px;"></i>')), strong("Crash types")),
-        plotlyOutput("mnrcoll", height = "240px")
+        mnrcoll_ui("mnrcoll")
       ),
       tabPanel(
         tagList(shiny::icon("users"), strong("People involved")),
-        plotlyOutput("person_role_treemap", height = "250px"),
+        person_role_treemap_ui("person_role_treemap"),
         br(),
-        plotlyOutput("person_age_gender", height = "240px"),
+        person_age_gender_ui("person_age_gender"),
       ),
       tabPanel(
         tagList(tags$span(HTML('<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i>')), strong("Driver Behavior")),
-        plotlyOutput("drvrpc_chart", height = "240px")
+        drvrpc_chart_ui("drvrpc_chart")
         ),
       tabPanel(
         tagList(shiny::icon("bicycle"), shiny::icon("walking"), strong("Bike and Ped. Behavior")),
-        plotlyOutput("nmtact_chart", height = "240px")
+        nmtact_chart_ui("nmtact_chart"),
         # br(),
-        # plotlyOutput("nmtloc_chart", height = "240px")
+        # nmtloc_chart_ui("nmtloc_chart")
       ),
       tabPanel(
         tagList(shiny::icon("car"), strong("Vehicles involved")),
-        plotlyOutput("vehicle_treemap", height = "240px")
+        vehicle_treemap_ui("vehicle_treemap")
       )
     )
   ),
@@ -301,7 +301,7 @@ body <- dashboardBody(
 
 # Put them together into a dashboardPage
 # adding icons on right side of header: https://stackoverflow.com/questions/31440564/adding-a-company-logo-to-shinydashboard-header
-dashboardPage( title = "WisDOT Crash Dashboard", # browser tab name
+dashboardPage(title = "WisDOT Crash Dashboard", # browser tab name
   dashboardHeader(
     title = logo_mytheme,  # text for page title
     titleWidth = 230
