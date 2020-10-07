@@ -21,7 +21,7 @@ color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4D
 color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
 
 # To add a new chart - use this
-# crsh_svr_mth_server <- function(id, crash_df) {
+# crsh_svr_mth_server <- function(id, crash_df()) {
 #   # stopifnot(is.reactie(x))
 #   moduleServer(id, function(input, output, session) {
 #     plotly goes here
@@ -33,11 +33,11 @@ color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218
 crsh_svr_mth_server <- function(id, crash_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
-    # data <- reactive(crash_df[[input$var]]) # replace x with data()
+    # data <- reactive(crash_df()[[input$var]]) # replace x with data()
     
     output$crsh_svr_mth <- renderPlotly({
-      x <- crash_df %>% filter(CNTYCODE == 2) # remove THIS
-      if (dim(crash_df)[1] == 0) {
+      x <- crash_df() %>% filter(CNTYCODE == 2) # remove THIS
+      if (dim(crash_df())[1] == 0) {
         # or no crashes with a time ??
         plotly_empty(type = "bar") %>% layout(
           title = list(
@@ -51,7 +51,7 @@ crsh_svr_mth_server <- function(id, crash_df) {
         )
       } else {
         crshsvr_table <-
-          table(month = crash_df$CRSHMTH, svr = crash_df$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
+          table(month = crash_df()$CRSHMTH, svr = crash_df()$CRSHSVR) %>% as_tibble() # get counts, put in a tibble
         crshsvr_table$month <-
           factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
         
@@ -156,14 +156,14 @@ timeofday_heat_server <- function(id, crash_df)
 
 output$timeofday_heat <- renderPlotly({
   
-  if (dim(crash_df)[1] == 0) { # or no crashes with a time ??
+  if (dim(crash_df())[1] == 0) { # or no crashes with a time ??
     plotly_empty(type = "heatmap") %>% layout(
       title = list(text ="Time of Day", font = chart_title, x = 0),
       plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
       paper_bgcolor = 'rgba(0,0,0,0)'
     )
   } else {
-    day_time_data <- crash_df[ , .(.N), by = .(newtime, DAYNMBR)]
+    day_time_data <- crash_df()[ , .(.N), by = .(newtime, DAYNMBR)]
     day_time_data[DAYNMBR == "", DAYNMBR := NA] # if DAYNMBR not exist, make it NA
     day_time_data <- day_time_data %>% na.omit() # remove all NA values
     day_time_data <- dcast(day_time_data, newtime ~ DAYNMBR, # reshape to long table
@@ -234,7 +234,7 @@ mnrcoll_server <- function(id, crash_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$mnrcoll <- renderPlotly({
-      if (dim(crash_df)[1] == 0) {
+      if (dim(crash_df())[1] == 0) {
         # if no crashes, show empty plot, else make plot
         # hide("mnrcoll")
         plotly_empty(type = "bar") %>% layout(
@@ -248,7 +248,7 @@ mnrcoll_server <- function(id, crash_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        mnr_crashes <- crash_df %>%
+        mnr_crashes <- crash_df() %>%
           filter(MNRCOLL != "Unknown")
         
         mnr_crashes_table <-
@@ -306,7 +306,7 @@ person_role_treemap_server <- function(id, persons_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$person_role_treemap <- renderPlotly({
-      if (dim(persons_df)[1] == 0) {
+      if (dim(persons_df())[1] == 0) {
         # or no crashes with a time ??
         plotly_empty(type = "treemap") %>% layout(
           title = list(
@@ -320,7 +320,7 @@ person_role_treemap_server <- function(id, persons_df) {
         )
       } else {
         role_table <-
-          table(role = persons_df$ROLE) %>% as_tibble() %>% mutate(parent = "role")
+          table(role = persons_df()$ROLE) %>% as_tibble() %>% mutate(parent = "role")
         plot_ly(
           role_table,
           type = 'treemap',
@@ -363,7 +363,7 @@ person_age_gender_server <- function(id, persons_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$person_age_gender <- renderPlotly({
-      if (dim(persons_df)[1] == 0) {
+      if (dim(persons_df())[1] == 0) {
         # or no crashes with a time ??
         plotly_empty(type = "bar") %>% layout(
           title = list(
@@ -377,7 +377,7 @@ person_age_gender_server <- function(id, persons_df) {
         )
       } else {
         person <-
-          persons_df[, .(age_group, SEX)]
+          persons_df()[, .(age_group, SEX)]
         
         age_sex_table <-
           table(age = person$age_group, sex = person$SEX) %>% as_tibble() # get counts, put in a tibble
@@ -449,7 +449,7 @@ drvrpc_chart_server <- function(id, persons_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$drvrpc_chart <- renderPlotly({
-      if (dim(persons_df)[1] == 0) {
+      if (dim(persons_df())[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
             text = "No Driver Contributing Circumstances Found",
@@ -461,7 +461,7 @@ drvrpc_chart_server <- function(id, persons_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        drvrpc <- persons_df %>%
+        drvrpc <- persons_df() %>%
           select(DRVRPC01:DRVRPC24) %>% pivot_longer(DRVRPC01:DRVRPC24) %>% filter(value !=
                                                                                      '')
         # make freq table, remove variables, arrange and take top 8
@@ -525,7 +525,7 @@ nmtact_chart_server <- function(id, persons_df) {
   moduleServer(id, function(input, output, session) {
     output$nmtact_chart <- renderPlotly({
       if (dim(
-        persons_df %>% select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12)
+        persons_df() %>% select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12)
         %>% filter(value != "Unknown", value != '')
       )[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
@@ -539,7 +539,7 @@ nmtact_chart_server <- function(id, persons_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        nmtact <- persons_df %>%
+        nmtact <- persons_df() %>%
           select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12) %>% filter(value !=
                                                                                      '')
         # make freq table, remove variables, arrange and take top 8
@@ -601,7 +601,7 @@ nmtloc_chart_server <- function(id, persons_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$nmtloc_chart <- renderPlotly({
-      if (dim(persons_df %>% filter(NMTLOC != ''))[1] == 0) {
+      if (dim(persons_df() %>% filter(NMTLOC != ''))[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
             text = "No Pedestrians or Cyclists",
@@ -613,11 +613,11 @@ nmtloc_chart_server <- function(id, persons_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        # nmtloc <- persons_df %>%
+        # nmtloc <- persons_df() %>%
         # select(NMTACT01:NMTACT12) %>% pivot_longer(NMTACT01:NMTACT12) %>% filter(value !='')
         # make freq table, remove variables, arrange and take top 8
         nmtloc_table <-
-          table(nmtloc_count = persons_df$NMTLOC) %>% as_tibble() %>%
+          table(nmtloc_count = persons_df()$NMTLOC) %>% as_tibble() %>%
           filter(nmtloc_count != '') %>%
           # filter(nmtact_count != "No Improper Action",
           # nmtact_count != "Unknown") %>%
@@ -676,7 +676,7 @@ vehicle_treemap_server <- function(id, vehicles_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$vehicle_treemap <- renderPlotly({
-      if (dim(vehicles_df)[1] == 0) {
+      if (dim(vehicles_df())[1] == 0) {
         plotly_empty(type = "treemap") %>% layout(
           title = list(
             text = "All Vehicles Involved",
@@ -688,7 +688,7 @@ vehicle_treemap_server <- function(id, vehicles_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        newcar <- vehicles_df %>% # put this is data import  # vehcate
+        newcar <- vehicles_df() %>% # put this is data import  # vehcate
           mutate(
             cate = case_when(
               VEHTYPE == "Passenger Car" ~ "Passenger Vehicle",
@@ -703,7 +703,7 @@ vehicle_treemap_server <- function(id, vehicles_df) {
               VEHTYPE == VEHTYPE ~ "Other"
             )
           )
-        car_tib <- # then change newcar to vehicles_df
+        car_tib <- # then change newcar to vehicles_df()
           table(vehtype = newcar$VEHTYPE, parent = newcar$cate) %>%
           as_tibble() %>% filter(n != 0)
         

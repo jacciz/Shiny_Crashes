@@ -25,20 +25,25 @@ server <- function(input, output, session) {
     }
   })
   ################### SIDEBAR OBSERVE EVENTS #######################
-  updateSelectInput(session, # choose county
+  # drop menu to choose county
+  updateSelectInput(session,
                     "cntynum",
                     choices = setNames(county_recode$CountyCode, county_recode$CountyName))
-
-  observeEvent(input$cntynum, { # choose municipality
-
-    muni_cnty_list <- muni_recode %>% filter(CntyCode %in% input$cntynum)
-
-  updateSelectInput(session, "muni_names",
-                      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV))
+  
+  # drop menu to choose municipality
+  observeEvent(input$cntynum, {
+    muni_cnty_list <-
+      muni_recode %>% filter(CntyCode %in% input$cntynum)
+    updateSelectInput(
+      session,
+      "muni_names",
+      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV)
+    )
   })
-
+  
+  # find date range to select, returns min and max year
   min_date_selected <- reactive({ 
-    # used to find date range
+    
     if (length(input$year) > 1) {
       return (min(input$year))
     } else {
@@ -52,7 +57,9 @@ server <- function(input, output, session) {
       return (input$year)
     }
   })
-  crshsvr_selected <- reactive({ # returns list of crsh svr selected
+  
+  # returns list of crsh svr selected
+  crshsvr_selected <- reactive({
     crsh_list = list()
     if (input$fatal) {
       crsh_list <- c(crsh_list,"Fatal")
@@ -64,10 +71,10 @@ server <- function(input, output, session) {
       crsh_list <- c(crsh_list,"Property Damage")
     }
     return (crsh_list)
-})
-  
+  })
+  # returns list of crshflags selected
   get_crshflag_list <- reactive({
-    # returns list of crshflags selected
+    
     crshflag_list = as.character()
     if (input$alc) {
       crshflag_list <- c(crshflag_list, "ALCFLAG")
@@ -111,10 +118,10 @@ server <- function(input, output, session) {
     return (crshflag_list)
   })
   
+  # this decides whether to return all OR any crash flags, returns only CRSHNMBR
   filtered_crsh_flags <-
-    # this decides whether to return all or any crash flags, returns only CRSHNMBR
     reactive({
-      crshflag_list = get_crshflag_list() # the if/else determines any or all selection
+      crshflag_list = get_crshflag_list()
       if (input$any_or_all) { # default for this button is 'any'
         # selects crash flags, filter each crshflag and finds any_vars == Y
         return(
@@ -127,16 +134,18 @@ server <- function(input, output, session) {
       )
     })
   
-# portage should be 49
-  selected_county <- reactive({ # this takes the selected county and zooms to it
+  # Takes the selected county, finds bbox, so we can zoom to it
+  # portage should be 49
+  selected_county <- reactive({ 
     sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
     bbox <- st_bbox(sel_county) %>% as.vector()
     bbox
   })
+  
   ################### DATA OBSERVE EVENTS OF DATA #######################
 
+  # returns FINAL crash data, if a flag was selected it is joined with crsh_flag list
   filtered_crashes <-
-    # returns crash data, depends if a flag was selected
     reactive({
       if (length(get_crshflag_list()) == 0) {
         # if no flags selected
@@ -151,7 +160,7 @@ server <- function(input, output, session) {
         ))
       }
     })
-
+  # returns FINAL person data, if a flag was selected it is joined with crsh_flag list
   filtered_persons <-
     reactive({
       if (length(get_crshflag_list()) == 0) {
@@ -167,10 +176,10 @@ server <- function(input, output, session) {
         ))
       }
     })
-  
+  # returns filtered data based of what user selected (county, year, crash severity) 
   filtered_crashes_no_flags <- reactive({
     keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(all_crashes, keycols) # this is also data.table
+    setkeyv(all_crashes, keycols) # this is also a data.table
     yearrange <-
       interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
     
@@ -196,15 +205,14 @@ server <- function(input, output, session) {
     filter_persons
   })
   
-  filtered_vehicles <-
+  filtered_vehicles <-       # joins with the already filtered_crashes
     reactive({
-      # joins with the already filtered_crashes
       all_vehicles <-
         inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
     })
-
+  
+  # Grabs the lat, longs, and crsh_svr for mapping
   filtered_crash_lat_long <- reactive({
-    # get lat longs for map
     crash_lat_long_j <-
       filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
     
@@ -216,7 +224,7 @@ server <- function(input, output, session) {
         crs = 4326
       ))
     } else { # Create fake df when nothing to map
-   sf_obj = data.table(data.frame(
+      sf_obj = data.table(data.frame(
         lng = c(0, 0),
         lat = c(0, 0),
         CRSHSVR = c("Fatal", "Fatal")
@@ -225,11 +233,12 @@ server <- function(input, output, session) {
                          coords = c("lng", "lat"),
                          crs = 4326,
                          na.fail = FALSE)
-    return(sf_obj)
-      }
+      return(sf_obj)
+    }
   })
-
-  output$get_number_of_NA <- renderText({ # Get number of crashes with no coordinates
+  
+  # Get number of crashes with no coordinates
+  output$get_number_of_NA <- renderText({
     toString(format(sum(is.na(filtered_crashes()$lng)), big.mark = ","))
   })
 
@@ -248,10 +257,7 @@ server <- function(input, output, session) {
     ),
     color = "red")
   })
-  
-  # output$crash_count <- renderText({ # Try this for header?
-  #   toString(format(nrow(filtered_crashes()), big.mark = ","))
-  # })
+
   output$tot_inj <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
@@ -281,28 +287,28 @@ server <- function(input, output, session) {
   
   ################### BODY - CHARTS #######################
   #  Charts are in Shiny Modules in chart_modules_ui and in chart_modules_server
-  # 
-  crsh_svr_mth_server("crsh_svr_mth", filtered_crashes())
-  timeofday_heat_server("timeofday_heat", filtered_crashes())
-  mnrcoll_server("mnrcoll", filtered_crashes())
-  person_role_treemap_server("person_role_treemap", filtered_persons())
-  person_age_gender_server("person_age_gender", filtered_persons())
-  drvrpc_chart_server("drvrpc_chart", filtered_persons())
-  nmtact_chart_server("nmtact_chart", filtered_persons())
-  nmtloc_chart_server("nmtloc_chart", filtered_persons())
-  vehicle_treemap_server("vehicle_treemap", filtered_vehicles())
+
+  crsh_svr_mth_server("crsh_svr_mth", filtered_crashes)
+  timeofday_heat_server("timeofday_heat", filtered_crashes)
+  mnrcoll_server("mnrcoll", filtered_crashes)
+  person_role_treemap_server("person_role_treemap", filtered_persons)
+  person_age_gender_server("person_age_gender", filtered_persons)
+  drvrpc_chart_server("drvrpc_chart", filtered_persons)
+  nmtact_chart_server("nmtact_chart", filtered_persons)
+  nmtloc_chart_server("nmtloc_chart", filtered_persons)
+  vehicle_treemap_server("vehicle_treemap", filtered_vehicles)
  
   ################### BODY - MAP #######################
   
   # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
   # -> https://github.com/rstudio/leaflet/issues/151  https://github.com/rstudio/leaflet/issues/448
+  # Leaflet Options: http://leaflet-extras.github.io/leaflet-providers/preview/
   
-  # CRS is 4326
-  output$map1 <- renderLeaflet({ #render basic map, pretty much items that do not need a reactive
-      leaflet() %>%
-      # Options: http://leaflet-extras.github.io/leaflet-providers/preview/
+  # render basic map (CRS is 4326), i.e. items that do not need a reactive
+  output$map1 <- renderLeaflet({
+    leaflet() %>%
       addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>% 
-    # addTiles(options = providerTileOptions(opacity = .5)) %>%
+      # addTiles(options = providerTileOptions(opacity = .5)) %>%
       addPolygons(
         data = county$geometry,
         group = "Counties",
@@ -313,11 +319,12 @@ server <- function(input, output, session) {
         # options = pathOptions(clickable = FALSE)
       )
   })
-
-  observeEvent(input$cntynum, { # change view if location selected changes
+  
+  # change view based on county(ies) selected
+  observeEvent(input$cntynum, { 
     county_zoom <- selected_county()
     leafletProxy("map1") %>%
-     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
+      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
   })
   
   # if (dim(filtered_crashes())[1] != 0) { 

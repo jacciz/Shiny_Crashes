@@ -109,7 +109,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       )
       # selectInput(
       #   "muni_names",
-      #   "Municipality (not working)",
+      #   "Municipality",
       #   choices = NULL,
       #   #muni_recode$MUNICIPALITY
       #   # options = list("actions-box" = TRUE),
