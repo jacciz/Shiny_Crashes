@@ -10,7 +10,7 @@ library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 library(leafgl) # add points, much faster than leaflet's CircleMarkers
 
-# assigning colors for crash severity and gender for charts/map
+# assigning colors for crash severity for map
 color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
 
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
@@ -24,41 +24,35 @@ server <- function(input, output, session) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  ################### SIDEBAR OBSERVE EVENTS #######################
-  # drop menu to choose county
-  updateSelectInput(session,
-                    "cntynum",
-                    choices = setNames(county_recode$CountyCode, county_recode$CountyName))
+  ################### SIDEBAR Data Inputs #######################
+  # Modules are found in sidebar_userselection_modules_server.R
+  # Return inputs to filter data based on user selection. When using these variables, include ()
+  # since these are reactive expressions
+  year_input <- select_year_server("year")
+  min_year_input <- reactive(min(year_input()))
+  max_year_input <- reactive(max(year_input()))
   
-  # drop menu to choose municipality
-  observeEvent(input$cntynum, {
-    muni_cnty_list <-
-      muni_recode %>% filter(CntyCode %in% input$cntynum)
-    updateSelectInput(
-      session,
-      "muni_names",
-      choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV)
-    )
-  })
-  
+  county_input <- select_county_server("cntycode_input")
+  municode_input <- select_municode_server("municode_input", county_input)
+  output$out <- renderText(year_input()) # Print to test
+ 
   # find date range to select, returns min and max year
-  min_date_selected <- reactive({ 
-    
-    if (length(input$year) > 1) {
-      return (min(input$year))
+  min_date_selected <- reactive({
+    if (min_year_input() != max_year_input()) {
+      return (min_year_input())
     } else {
-      return (input$year) # ERROR Warning: All formats failed to parse. No formats found.
+      return (year_input()[1]) # ERROR Warning: All formats failed to parse. No formats found.
     }
   })
   max_date_selected <- reactive({
-    if (length(input$year) > 1) {
-      return (max(input$year))
+    if (min_year_input() != max_year_input()) {
+      return (max_year_input())
     } else {
-      return (input$year)
+      return (year_input()[1]) # ERROR Warning: All formats failed to parse. No formats found.
     }
   })
   
-  # returns list of crsh svr selected
+  # returns list of which crsh svr selected
   crshsvr_selected <- reactive({
     crsh_list = list()
     if (input$fatal) {
@@ -72,9 +66,9 @@ server <- function(input, output, session) {
     }
     return (crsh_list)
   })
-  # returns list of crshflags selected
+  
+  # returns list of which crshflags are selected
   get_crshflag_list <- reactive({
-    
     crshflag_list = as.character()
     if (input$alc) {
       crshflag_list <- c(crshflag_list, "ALCFLAG")
@@ -135,16 +129,15 @@ server <- function(input, output, session) {
     })
   
   # Takes the selected county, finds bbox, so we can zoom to it
-  # portage should be 49
   selected_county <- reactive({ 
-    sel_county <- county %>% filter(DNR_CNTY_C %in% input$cntynum) #COUNTY_NAM
+    sel_county <- county %>% filter(DNR_CNTY_C %in% county_input()) #COUNTY_NAM
     bbox <- st_bbox(sel_county) %>% as.vector()
     bbox
   })
   
   ################### DATA OBSERVE EVENTS OF DATA #######################
-
-  # returns FINAL crash data, if a flag was selected it is joined with crsh_flag list
+  
+  # returns FINAL crash data for charts, if a flag was selected it is joined with crsh_flag list
   filtered_crashes <-
     reactive({
       if (length(get_crshflag_list()) == 0) {
@@ -176,35 +169,30 @@ server <- function(input, output, session) {
         ))
       }
     })
+  
+  # Module that filters data for each database
   # returns filtered data based of what user selected (county, year, crash severity) 
-  filtered_crashes_no_flags <- reactive({
-    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(all_crashes, keycols) # this is also a data.table
-    yearrange <-
-      interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
-    
-    # filter data table
-    filter_crashes <-
-      all_crashes[CNTYCODE %in% input$cntynum &
-                    CRSHSVR %in% crshsvr_selected() &
-                    CRSHDATE %within% yearrange]
-    filter_crashes
-  })
-  
-  filtered_persons_no_flags <- reactive({
-    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(all_persons, keycols) # this is also data.table
-    yearrange <-
-      interval(mdy(paste0("01-01-", min_date_selected())), mdy(paste0("12-31-", max_date_selected())))
-    
-    # filter data table
-    filter_persons <-
-      all_persons[CNTYCODE %in% input$cntynum &
-                    CRSHSVR %in% crshsvr_selected() &
-                    CRSHDATE %within% yearrange]
-    filter_persons
-  })
-  
+  filtered_crashes_no_flags <-
+    filter_data(
+      "crash",
+      all_crashes,
+      min_date_selected,
+      max_date_selected,
+      county_input,
+      muni_input,
+      crshsvr_selected
+    )
+  filtered_persons_no_flags <-
+    filter_data(
+      "person",
+      all_persons,
+      min_date_selected,
+      max_date_selected,
+      county_input,
+      muni_input,
+      crshsvr_selected
+    )
+
   filtered_vehicles <-       # joins with the already filtered_crashes
     reactive({
       all_vehicles <-
@@ -285,9 +273,8 @@ server <- function(input, output, session) {
     color = "red")
   })
   
-  ################### BODY - CHARTS #######################
+  ################### BODY - CHARTS MODULES #######################
   #  Charts are in Shiny Modules in chart_modules_ui and in chart_modules_server
-
   crsh_svr_mth_server("crsh_svr_mth", filtered_crashes)
   timeofday_heat_server("timeofday_heat", filtered_crashes)
   mnrcoll_server("mnrcoll", filtered_crashes)
@@ -297,7 +284,7 @@ server <- function(input, output, session) {
   nmtact_chart_server("nmtact_chart", filtered_persons)
   nmtloc_chart_server("nmtloc_chart", filtered_persons)
   vehicle_treemap_server("vehicle_treemap", filtered_vehicles)
- 
+
   ################### BODY - MAP #######################
   
   # odd issue with asynchronous data loading, could use renderUI so map gets updated based on user inputs
@@ -321,7 +308,7 @@ server <- function(input, output, session) {
   })
   
   # change view based on county(ies) selected
-  observeEvent(input$cntynum, { 
+  observeEvent(county_input(), { 
     county_zoom <- selected_county()
     leafletProxy("map1") %>%
       fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county

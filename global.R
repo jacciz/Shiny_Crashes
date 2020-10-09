@@ -18,6 +18,8 @@ library(sf)
 # Load modules for charts
 source("modules/chart_modules_ui.R")
 source("modules/chart_modules_server.R")
+source("modules/filter_data_modules_server.R")
+source("modules/siderbar_userselection_modules_server.R")
 
 # Note: Creates a newtime variable - time of 0 and 999 is NA
 all_crashes <- read_fst("data/all_crash", as.data.table = TRUE)
@@ -39,22 +41,22 @@ muni_recode <- readRDS("data/muni_recode.rds")
 county <- st_read("map/county.shp")
 
 # Function that filters data for crash and person. Doesn't work - bad parameters.
-filter_data <-
-  function(df,
-           cnty = input$cntynum,
-           min_date = min_date_selected(),
-           max_date = max_date_selected(),
-           crsh_svr = crshsvr_selected()) {
-    keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
-    setkeyv(df, keycols) # this is also data.table
-    yearrange <-
-      interval(mdy(paste0("01-01-", min_date)), mdy(paste0("12-31-", max_date)))
-    
-    f_data <- df[CNTYCODE %in% cnty &
-                   CRSHSVR %in% crsh_svr &
-                   CRSHDATE %within% yearrange]
-    return(f_data)
-  }
+# filter_data <-
+#   function(df,
+#            cnty = input$cntynum,
+#            min_date = min_date_selected(),
+#            max_date = max_date_selected(),
+#            crsh_svr = crshsvr_selected()) {
+#     keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR") # sets keys for fast indexing, these are the fields we filter
+#     setkeyv(df, keycols) # this is also data.table
+#     yearrange <-
+#       interval(mdy(paste0("01-01-", min_date)), mdy(paste0("12-31-", max_date)))
+#     
+#     f_data <- df[CNTYCODE %in% cnty &
+#                    CRSHSVR %in% crsh_svr &
+#                    CRSHDATE %within% yearrange]
+#     return(f_data)
+#   }
 
 # For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
 # Also shiny::reactLog() for issues with reactivity

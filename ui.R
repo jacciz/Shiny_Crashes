@@ -18,7 +18,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
   # https://codepen.io/sosuke/pen/Pjoqqp to get FILTER colors for SVG (like hexbin) - plug in color and scroll down
   # https://icons8.com/ free icons - recolor (#8F9BB3) before download at 60pxPNG
   # body{color: black;} this is HEXES hover font color
-  includeCSS("www/widgets.css"), # this applies css to certain shinyWidgets, I basically just changed the default settings
+  includeCSS("www/widgets.css"), # this applies css to certain shinyWidgets, I basically just changed the default aesthetic settings
   tags$style(type = "text/css", "
       
       .irs-grid-text {font-size: 12pt;}
@@ -81,41 +81,16 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       strong("Year"),
       tabName = "year",
       icon = icon("calendar"),
-      # startExpanded = TRUE, # start expanded
-      sliderInput(
-        inputId = "year",
-        label = "Select Year",
-        # options = list("actions-box" = TRUE),
-        value = c(2017, 2019),
-        min = 2017,
-        max = 2019,
-        # multiple = TRUE, selectize = FALSE,
-        # step = 1,
-        sep = ""
-      )
+      select_year("year"), # Module
+      textOutput("out")
     ),
     menuItem(
       strong("Location"), # strong makes it bold
       tabName = "location",
       icon = icon("map-marked-alt"),
       startExpanded = TRUE, # start expanded
-      selectInput(
-        "cntynum",
-        "County",
-        choices = NULL,
-        # options = list("actions-box" = TRUE),
-        multiple = TRUE,
-        selectize = FALSE
-      )
-      # selectInput(
-      #   "muni_names",
-      #   "Municipality",
-      #   choices = NULL,
-      #   #muni_recode$MUNICIPALITY
-      #   # options = list("actions-box" = TRUE),
-      #   multiple = FALSE,
-      #   selectize = FALSE
-      # )
+      select_county_input("cntycode_input"), # Module
+      select_municode_input("municode_input") # Module
     ),
     menuItem(
       strong("Crash Severity"),
@@ -181,40 +156,6 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
         ticks = FALSE
       )
     )
-    # footer - wisdot logo is here
-    # tags$footer(
-    #   img(
-    #     src = 'zero-logo.png',
-    #     style = "width: 100px; display: block;
-    #                 margin-left: auto; margin-right: auto;"
-    #   ),
-    #   align = "center",
-    #   style = "
-    #           position:absolute;
-    #           bottom:0;
-    #           width:100%;
-    #           height:50px;   /* Height of the footer */
-    #           padding: 10px;
-    #           z-index: 1000;"
-    # )
-    
-    # tags$h5(style = "text-align:left; padding: 15px;", "Crash Flags"),
-    #  tags$table(width = "100%",
-    #    tags$tr(
-    #            tags$td(width = "50%", tags$h5(style = table_style, "Alcohol-related")),
-    #            tags$td(width = "50%", tags$h5(style = table_style, "Drug-related"))),
-    #    tags$tr(
-    #            tags$td(width = "50%",  switchInput(inputId = "DRUGFLAG", value = FALSE, size = 'mini', inline = TRUE)),
-    #            tags$td(width = "50%",  switchInput(inputId = "drugflag2", value = FALSE, size = 'mini', inline = TRUE))),
-    #
-    # tags$tr(
-    #   tags$td(width = "50%", tags$h5(style = table_style, "Distracted driving")),
-    #   tags$td(width = "50%", tags$h5(style = table_style, "Speeding"))),
-    # tags$tr(
-    #   tags$td(width = "50%",  switchInput(inputId = "drugflag3", value = FALSE, size = 'mini', inline = TRUE)),
-    #   tags$td(width = "50%",  switchInput(inputId = "drugflag4", value = FALSE, size = 'mini', inline = TRUE)))
-    #  )
-    
   )
 )
 ################### BODY #######################
@@ -289,7 +230,7 @@ body <- dashboardBody(
       )
     )
   ),
-  column(width = 6,  # Text for xx crashes are not mapped
+  column(width = 6,  # Text for 'xx crashes are not mapped'
          leafglOutput("map1", height = "600px"),
          br(),
          box(
