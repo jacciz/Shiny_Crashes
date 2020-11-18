@@ -89,8 +89,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       tabName = "location",
       icon = icon("map-marked-alt"),
       startExpanded = TRUE, # start expanded
-      select_county_input("cntycode_input"), # Module
-      select_municode_input("municode_input") # Module
+      select_county_input("cntycode_input") # Module
+      # select_municode_input("municode_input") # Module
     ),
     menuItem(
       strong("Crash Severity"),

@@ -1,11 +1,9 @@
 #' Charts modules for server-side processings
 #'
-#' This module produces all charts with the crash_df based on variables selected by the user.
+#' This module produces all charts with the crash_df/people_df/Vehicles_df based on variables selected by the user.
 #' 
 #' @param input,output,session standard \code{shiny} boilerplate
 #' @param df data frame (non-reactive) with variables necessary for charts
-#' @param plot1_vars list containing reactive x-variable name (called `xvar`) and y-variable name (called `yvar`) for plot 1
-#' @param plot2_vars list containing reactive x-variable name (called `xvar`) and y-variable name (called `yvar`) for plot 2# library(shinydashboard)
 
 # Put this in the actual app to reference these modules
 # UI: crsh_svr_mth_ui("crsh_svr_mth")
@@ -22,23 +20,17 @@ color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218
 
 # To add a new chart - use this
 # crsh_svr_mth_server <- function(id, crash_df()) {
-#   # stopifnot(is.reactie(x))
 #   moduleServer(id, function(input, output, session) {
-#     plotly goes here
+#     plotly stuff goes here
 #   })
 #   }
 
 ################### Crash Severity by Month Bar Chart #######################
 
 crsh_svr_mth_server <- function(id, crash_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
-    # data <- reactive(crash_df()[[input$var]]) # replace x with data()
-    
-    output$crsh_svr_mth <- renderPlotly({
-      x <- crash_df() %>% filter(CNTYCODE == 2) # remove THIS
-      if (dim(crash_df())[1] == 0) {
-        # or no crashes with a time ??
+   output$crsh_svr_mth <- renderPlotly({
+      if (dim(crash_df())[1] == 0) {  # or no crashes with a time ??
         plotly_empty(type = "bar") %>% layout(
           title = list(
             text = "Crash Severity by Month",
@@ -231,11 +223,9 @@ output$timeofday_heat <- renderPlotly({
 
 ################### Manner of Collision Bar Chart #######################
 mnrcoll_server <- function(id, crash_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$mnrcoll <- renderPlotly({
-      if (dim(crash_df())[1] == 0) {
-        # if no crashes, show empty plot, else make plot
+      if (dim(crash_df())[1] == 0) { # if no crashes, show empty plot, else make plot
         # hide("mnrcoll")
         plotly_empty(type = "bar") %>% layout(
           title = list(
@@ -306,8 +296,7 @@ person_role_treemap_server <- function(id, persons_df) {
   # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$person_role_treemap <- renderPlotly({
-      if (dim(persons_df())[1] == 0) {
-        # or no crashes with a time ??
+      if (dim(persons_df())[1] == 0) {  # or no crashes with a time ??
         plotly_empty(type = "treemap") %>% layout(
           title = list(
             text = "Role of All Persons",
@@ -360,11 +349,9 @@ person_role_treemap_server <- function(id, persons_df) {
 }
 ################### Age and Gender Bar Chart #######################
 person_age_gender_server <- function(id, persons_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$person_age_gender <- renderPlotly({
       if (dim(persons_df())[1] == 0) {
-        # or no crashes with a time ??
         plotly_empty(type = "bar") %>% layout(
           title = list(
             text = "Age and Gender of All Persons",
@@ -446,7 +433,6 @@ person_age_gender_server <- function(id, persons_df) {
 }
 ################### DRVRPC Bar Chart #######################
 drvrpc_chart_server <- function(id, persons_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$drvrpc_chart <- renderPlotly({
       if (dim(persons_df())[1] == 0) {
@@ -521,7 +507,6 @@ drvrpc_chart_server <- function(id, persons_df) {
 }
 ################### Bike/Ped Top Actions Bar Chart #######################
 nmtact_chart_server <- function(id, persons_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$nmtact_chart <- renderPlotly({
       if (dim(
@@ -598,7 +583,6 @@ nmtact_chart_server <- function(id, persons_df) {
 }
 ################### Bike/Ped Location Bar Chart #######################
 nmtloc_chart_server <- function(id, persons_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$nmtloc_chart <- renderPlotly({
       if (dim(persons_df() %>% filter(NMTLOC != ''))[1] == 0) {
@@ -673,7 +657,6 @@ nmtloc_chart_server <- function(id, persons_df) {
 
 ################### Vehicle Types Tree Map #######################
 vehicle_treemap_server <- function(id, vehicles_df) {
-  # stopifnot(is.reactie(x))
   moduleServer(id, function(input, output, session) {
     output$vehicle_treemap <- renderPlotly({
       if (dim(vehicles_df())[1] == 0) {

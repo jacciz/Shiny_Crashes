@@ -10,7 +10,7 @@ library(memisc)
 # This script imports data from a CSV, selects certain columns, add new columns (such as newtime and age group),
 # then exports to an FST file. Exported data must be moved to 'data/' folder. Do this for each year.
 
-setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
+# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
 # file_loc = "Data Prep for R Shiny/"
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
 file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved

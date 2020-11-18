@@ -35,7 +35,8 @@ server <- function(input, output, session) {
   county_input <- select_county_server("cntycode_input")
   municode_input <- select_municode_server("municode_input", county_input)
   output$out <- renderText(year_input()) # Print to test
- 
+
+
   # find date range to select, returns min and max year
   min_date_selected <- reactive({
     if (min_year_input() != max_year_input()) {

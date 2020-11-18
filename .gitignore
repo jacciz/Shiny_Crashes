@@ -1,5 +1,7 @@
 #Ignore these files
 *.Rproj
+.Rproj
+.Rproj*
 .git
 .Rproj.user
 rsconnect
