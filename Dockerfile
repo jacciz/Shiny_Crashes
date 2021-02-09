@@ -1,5 +1,5 @@
 
-FROM rocker/shiny:4.0.3
+FROM rocker/r-ver:4.0.3
 
 LABEL org.label-schema.license="GPL-2.0" \
       org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
@@ -10,7 +10,7 @@ ENV S6_VERSION=v1.21.7.0
 ENV SHINY_SERVER_VERSION=latest
 ENV PANDOC_VERSION=default
 
-COPY rocker_scripts/install_geospatial.sh /rocker_scripts/install_geospatial.sh
+RUN /scripts/install_geospatial.sh
 RUN /rocker_scripts/install_geospatial.sh
 
 # https://github.com/rocker-org/shiny/issues/60 # for spatial stuff
