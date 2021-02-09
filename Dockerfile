@@ -26,9 +26,9 @@ RUN apt-get update && \
 
 # copy necessary files
 ## app folder
-COPY /crash_dashboard ./app
+COPY . ./app
 ## renv.lock file
-COPY /crash_dashboard/renv.lock ./renv.lock
+COPY /renv.lock ./renv.lock
 
 # install renv & restore packages
 RUN Rscript -e 'install.packages("renv")'
