@@ -12,14 +12,13 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     unixodbc-dev \
     libcurl4-openssl-dev \
     libssl-dev \
-	libudunits2-dev \
-  libgdal-dev
+	libudunits2-dev
 	#libproj-dev\
 	#libxml2-dev \
-	#
-
-
+	#libgdal-dev
 # added last 4 because of sf, a geospatial package
+
+RUN /scripts/install_geospatial.sh
 
 ## update system libraries
 RUN apt-get update && \
