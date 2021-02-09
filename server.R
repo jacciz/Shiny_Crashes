@@ -53,7 +53,7 @@ server <- function(input, output, session) {
     }
   })
   
-  # returns list of which crsh svr selected
+  # returns list for which crsh svr are selected
   crshsvr_selected <- reactive({
     crsh_list = list()
     if (input$fatal) {
@@ -68,7 +68,7 @@ server <- function(input, output, session) {
     return (crsh_list)
   })
   
-  # returns list of which crshflags are selected
+  # returns list for which crsh flags are selected
   get_crshflag_list <- reactive({
     crshflag_list = as.character()
     if (input$alc) {
@@ -129,7 +129,7 @@ server <- function(input, output, session) {
       )
     })
   
-  # Takes the selected county, finds bbox, so we can zoom to it
+  # Takes the selected county, finds bbox so we can zoom to it
   selected_county <- reactive({ 
     sel_county <- county %>% filter(DNR_CNTY_C %in% county_input()) #COUNTY_NAM
     bbox <- st_bbox(sel_county) %>% as.vector()
@@ -138,15 +138,14 @@ server <- function(input, output, session) {
   
   ################### DATA OBSERVE EVENTS OF DATA #######################
   
-  # returns FINAL crash data for charts, if a flag was selected it is joined with crsh_flag list
+  # returns FINAL crash data for charts, if a flag was selected it is joined with crsh_flag list via crshnmbr
   filtered_crashes <-
     reactive({
       if (length(get_crshflag_list()) == 0) {
         # if no flags selected
         return (filtered_crashes_no_flags())
       } else {
-        # if at least 1 flag was selected
-        # returns the join with filtered_crashes
+        # if at least 1 flag was selected, returns the join with filtered_crashes
         return(semi_join(
           filtered_crashes_no_flags(),
           filtered_crsh_flags(),
