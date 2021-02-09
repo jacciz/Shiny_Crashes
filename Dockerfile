@@ -6,12 +6,8 @@ LABEL org.label-schema.license="GPL-2.0" \
       org.label-schema.vendor="Rocker Project" \
       maintainer="Carl Boettiger <cboettig@ropensci.org>"
 
-ENV S6_VERSION=v1.21.7.0
-ENV SHINY_SERVER_VERSION=latest
-ENV PANDOC_VERSION=default
 
-RUN /scripts/install_geospatial.sh
-# RUN /rocker_scripts/install_geospatial.sh
+RUN /rocker_scripts/install_geospatial.sh
 
 # https://github.com/rocker-org/shiny/issues/60 # for spatial stuff
 # system libraries of general use
