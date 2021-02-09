@@ -1,5 +1,5 @@
 
-FROM rocker/r-ver:4.0.3
+FROM rocker/shiny:4.0.3
 
 LABEL org.label-schema.license="GPL-2.0" \
       org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
@@ -10,11 +10,32 @@ ENV S6_VERSION=v1.21.7.0
 ENV SHINY_SERVER_VERSION=latest
 ENV PANDOC_VERSION=default
 
+COPY rocker_scripts/install_geospatial.sh /rocker_scripts/install_geospatial.sh
 RUN /rocker_scripts/install_geospatial.sh
-RUN /rocker_scripts/install_shiny_server.sh
 
 # https://github.com/rocker-org/shiny/issues/60 # for spatial stuff
 # system libraries of general use
+RUN apt-get update -qq && apt-get -y --no-install-recommends install \
+    libxml2-dev \
+    libcairo2-dev \
+    libsqlite3-dev \
+    libmariadbd-dev \
+    libpq-dev \
+    libssh2-1-dev \
+    unixodbc-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+	libudunits2-dev
+	#libproj-dev\
+	#libxml2-dev \
+	#libgdal-dev
+# added last 4 because of sf, a geospatial package
+
+
+## update system libraries
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean
 
 # copy necessary files
 ## app folder
