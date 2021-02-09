@@ -11,7 +11,7 @@ ENV SHINY_SERVER_VERSION=latest
 ENV PANDOC_VERSION=default
 
 RUN /scripts/install_geospatial.sh
-RUN /rocker_scripts/install_geospatial.sh
+# RUN /rocker_scripts/install_geospatial.sh
 
 # https://github.com/rocker-org/shiny/issues/60 # for spatial stuff
 # system libraries of general use

@@ -4,9 +4,3 @@
 .Rproj.user
 rsconnect
 crash_databases
-.*
-.Rproj.user/shared/notebooks/paths
-.Rproj.user/D291311B/sources/prop/DB017C6E
-.Rproj.user/D291311B/sources/prop/89640027
-*.pper
-*
