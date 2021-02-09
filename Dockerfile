@@ -1,5 +1,7 @@
 FROM rocker/shiny
 
+RUN /scripts/install_geospatial.sh
+
 # https://github.com/rocker-org/shiny/issues/60 # for spatial stuff
 # system libraries of general use
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -18,7 +20,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
 	#libgdal-dev
 # added last 4 because of sf, a geospatial package
 
-RUN /scripts/install_geospatial.sh
 
 ## update system libraries
 RUN apt-get update && \
