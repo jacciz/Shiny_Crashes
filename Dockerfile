@@ -11,11 +11,11 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libssh2-1-dev \
     unixodbc-dev \
     libcurl4-openssl-dev \
-    libssl-dev \
-	libudunits2-dev\
-	libproj-dev\
-	libxml2-dev \
-	libgdal-dev
+    libssl-dev
+	#libudunits2-dev\
+	#libproj-dev\
+	#libxml2-dev \
+	#libgdal-dev
 
 # added last 4 because of sf, a geospatial package
 
@@ -42,18 +42,5 @@ RUN Rscript -e 'renv::restore()'
 EXPOSE 3838
 
 # run app on container start
-# CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
-CMD ["R", "-e", "shiny::runApp('/root/crash_dashboard')"]
-
-
-
-
-# basic shiny functionality
-# RUN R -e "install.packages(c('shiny', 'rmarkdown'), repos='https://cloud.r-project.org/')"
-
-
-# copy the app to the image
-# RUN mkdir /root/crash_dashboard
-# COPY . /root/crash_dashboard
-
-# COPY Rprofile.site /usr/lib/R/etc/
+CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
+#CMD ["R", "-e", "shiny::runApp('/root/crash_dashboard')"]
