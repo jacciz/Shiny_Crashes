@@ -1,5 +1,5 @@
 
-FROM rocker/shiny:4.0.3
+FROM rocker/shiny-verse:4.0.3
 
 LABEL org.label-schema.license="GPL-2.0" \
       org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
@@ -21,7 +21,7 @@ RUN Rscript -e 'renv::consent(provided = TRUE)'
 RUN Rscript -e 'renv::restore()'
 
 # install other R packages required
-  RUN R -e "install.packages(c('littler', 'shinydashboard','shinyWidgets', 'plotly', 'leaflet', 'dplyr', 'ggplot2', 'lubridate', 'leaflet.extras2', 'tibble', 'data.table', 'fst', 'dashboardthemes', 'sf', 'Rmpfr', 'leafgl'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('shinydashboard','shinyWidgets', 'plotly', 'leaflet', 'lubridate', 'leaflet.extras2', 'data.table', 'fst', 'dashboardthemes', 'sf', 'leafgl'), repos='https://cloud.r-project.org/')"
 
 # expose port
 EXPOSE 3838
