@@ -10,9 +10,9 @@
 # Server: crsh_svr_mth_server("crsh_svr_mth", filtered_crashes())
 
 # Text parameters for charts
-chart_title = list(size = 16, color = "rgb(243,243,245)", family = "Arial")
-chart_axis = list(size = 14, color = "rgb(205,205,205)", family = "Arial")
-chart_axis_bar = list(size = 14, color = "#428BCA", family = "Arial", face = "bold")
+chart_title = list(size = 16, color = "rgb(100,100,100)", family = "Verdana")
+chart_axis = list(size = 14, color = "rgb(100,100,100)", family = "Verdana")
+chart_axis_bar = list(size = 14, color = "#428BCA", family = "Verdana", face = "bold")
 
 # assigning colors for crash severity and gender for charts/map
 color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")

@@ -53,65 +53,81 @@ server <- function(input, output, session) {
     }
   })
   
-  # returns list for which crsh svr are selected
+  # returns list for which crsh svr are selected. List must match Input IDs with field names of data
+  crshsvr_selected_inputs <-  c("Fatal", "Injury", "Property Damage")
+  # Looks at status of crshsvr buttoms and returns only the ones that are selected (i.e. == TRUE)
   crshsvr_selected <- reactive({
-    crsh_list = list()
-    if (input$fatal) {
-      crsh_list <- c(crsh_list,"Fatal")
-    }
-    if (input$injury) {
-      crsh_list <- c(crsh_list,"Injury")
-    }
-    if (input$propertydamage) {
-      crsh_list <- c(crsh_list,"Property Damage")
-    }
-    return (crsh_list)
+    data <- sapply(crshsvr_selected_inputs, function(x) input[[x]] ) # fields contains all values we want to save, gather all the values based on input
+    data <- Filter(function(x) !(all(x == FALSE)), data) # take out FALSE values
+    names(data)
   })
   
-  # returns list for which crsh flags are selected
+  crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag", "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")
+  
+  # Looks at status of crshsvr buttoms and returns only the ones that are selected (i.e. == TRUE)
   get_crshflag_list <- reactive({
-    crshflag_list = as.character()
-    if (input$alc) {
-      crshflag_list <- c(crshflag_list, "ALCFLAG")
-    }
-    if (input$drug) {
-      crshflag_list <- c(crshflag_list, "DRUGFLAG")
-    }
-    if (input$speed) {
-      crshflag_list <- c(crshflag_list, "speedflag")
-    }
-    # if (input$distract) {
-    #   crshflag_list <- c(crshflag_list,"distract_flag")
-    # }
-    if (input$teen) {
-      crshflag_list <- c(crshflag_list, "teenflag")
-    }
-    if (input$older) {
-      crshflag_list <- c(crshflag_list, "olderflag")
-    }
-    if (input$motorcycle) {
-      crshflag_list <- c(crshflag_list, "CYCLFLAG")
-    }
-    if (input$ped) {
-      crshflag_list <- c(crshflag_list, "PEDFLAG")
-    }
-    if (input$bike) {
-      crshflag_list <- c(crshflag_list, "BIKEFLAG")
-    }
-    # if (input$seatbelt) {
-    #   crshflag_list <- c(crshflag_list, "seatbeltflag")
-    # }
-    if (input$singleveh) {
-      crshflag_list <- c(crshflag_list, "singlevehflag")
-    }
-    if (input$lanedep) {
-      crshflag_list <- c(crshflag_list, "lanedepflag")
-    }
-    if (input$deer) {
-      crshflag_list <- c(crshflag_list, "deerflag")
-    }
-    return (crshflag_list)
+    data <- sapply(crshflag_selected_inputs, function(x) input[[x]] ) # fields contains all values we want to save, gather all the values based on input
+    data <- Filter(function(x) !(all(x == FALSE)), data) # take out FALSE values
+    names(data)
   })
+  # crshsvr_selected <- reactive({
+  #   crsh_list = list()
+  #   if (input$fatal) {
+  #     crsh_list <- c(crsh_list,"Fatal")
+  #   }
+  #   if (input$injury) {
+  #     crsh_list <- c(crsh_list,"Injury")
+  #   }
+  #   if (input$propertydamage) {
+  #     crsh_list <- c(crsh_list,"Property Damage")
+  #   }
+  #   return (crsh_list)
+  # })
+  # 
+  # returns list for which crsh flags are selected
+  # get_crshflag_list <- reactive({
+  #   crshflag_list = as.character()
+  #   if (input$alc) {
+  #     crshflag_list <- c(crshflag_list, "ALCFLAG")
+  #   }
+  #   if (input$drug) {
+  #     crshflag_list <- c(crshflag_list, "DRUGFLAG")
+  #   }
+  #   if (input$speed) {
+  #     crshflag_list <- c(crshflag_list, "speedflag")
+  #   }
+  #   # if (input$distract) {
+  #   #   crshflag_list <- c(crshflag_list,"distract_flag")
+  #   # }
+  #   if (input$teen) {
+  #     crshflag_list <- c(crshflag_list, "teenflag")
+  #   }
+  #   if (input$older) {
+  #     crshflag_list <- c(crshflag_list, "olderflag")
+  #   }
+  #   if (input$motorcycle) {
+  #     crshflag_list <- c(crshflag_list, "CYCLFLAG")
+  #   }
+  #   if (input$ped) {
+  #     crshflag_list <- c(crshflag_list, "PEDFLAG")
+  #   }
+  #   if (input$bike) {
+  #     crshflag_list <- c(crshflag_list, "BIKEFLAG")
+  #   }
+  #   # if (input$seatbelt) {
+  #   #   crshflag_list <- c(crshflag_list, "seatbeltflag")
+  #   # }
+  #   if (input$singleveh) {
+  #     crshflag_list <- c(crshflag_list, "singlevehflag")
+  #   }
+  #   if (input$lanedep) {
+  #     crshflag_list <- c(crshflag_list, "lanedepflag")
+  #   }
+  #   if (input$deer) {
+  #     crshflag_list <- c(crshflag_list, "deerflag")
+  #   }
+  #   return (crshflag_list)
+  # })
   
   # this decides whether to return all OR any crash flags, returns only CRSHNMBR
   filtered_crsh_flags <-
@@ -294,7 +310,7 @@ server <- function(input, output, session) {
   # render basic map (CRS is 4326), i.e. items that do not need a reactive
   output$map1 <- renderLeaflet({
     leaflet() %>%
-      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>% 
+      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>%
       # addTiles(options = providerTileOptions(opacity = .5)) %>%
       addPolygons(
         data = county$geometry,
@@ -306,15 +322,15 @@ server <- function(input, output, session) {
         # options = pathOptions(clickable = FALSE)
       )
   })
-  
+
   # change view based on county(ies) selected
-  observeEvent(county_input(), { 
+  observeEvent(county_input(), {
     county_zoom <- selected_county()
     leafletProxy("map1") %>%
       fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
   })
-  
-  # if (dim(filtered_crashes())[1] != 0) { 
+
+  # if (dim(filtered_crashes())[1] != 0) {
   observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes
     # if/else determines what to render (crash points or hex)
     if (input$hex == FALSE) { # when HEX is OFF
@@ -322,7 +338,7 @@ server <- function(input, output, session) {
       # Clear map so we can add new stuff
       leafletProxy("map1") %>%
         # removeGlPoints(layerId = "Crashes") %>%
-        clearGlLayers() %>% 
+        clearGlLayers() %>%
         addGlPoints(  # when add points, ERROR: Uncaught TypeError: Cannot read property 'getSize' of null at s._redraw (VM123 glify-browser.js:48) MAY HAVE TO DO WITH BOUNDS??
           data = filtered_crash_lat_long(),
           fillColor = ~color_map_svr[CRSHSVR],
@@ -333,7 +349,7 @@ server <- function(input, output, session) {
     } else {  # when HEX is ON
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         # removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        clearGlLayers() %>% 
+        clearGlLayers() %>%
         # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
@@ -347,12 +363,12 @@ server <- function(input, output, session) {
         )
     }
   })
-  
+
   observe({ # observe when hexsize changes or if hex is checked
     if (input$hex & input$hexsize) {
       leafletProxy("map1", data = filtered_crash_lat_long()) %>%
         # removeGlPoints(layerId = "Crashes") %>% # remove crashes
-        clearGlLayers() %>% 
+        clearGlLayers() %>%
         # hideGroup("Crashes") %>% #uncheck crashes
         clearHexbin() %>%
         addHexbin(
@@ -366,8 +382,8 @@ server <- function(input, output, session) {
           )
         )
     } else { # remove hex if unchecked
-      leafletProxy("map1") %>% 
-        clearHexbin() %>% 
+      leafletProxy("map1") %>%
+        clearHexbin() %>%
         # removeGlPoints(layerId = "Crashes") %>% # remove crashes
         # showGroup("Crashes") %>% # check crashes
         addGlPoints( # make sure this is same as above
