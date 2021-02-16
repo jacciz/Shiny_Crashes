@@ -14,6 +14,11 @@ crsh_svr_mth_ui <- function(id) {
   tagList(plotlyOutput(NS(id, "crsh_svr_mth"), height = "240px"))
 }
 
+################### Persons Injured by Year Bar Chart #######################
+wisinj_by_year_ui <- function(id) {
+  tagList(plotlyOutput(NS(id, "wisinj_by_year"), height = "240px"))
+}
+
 ################### Time of Day Heatmap #######################
 timeofday_heat_ui <- function(id) {
   tagList(plotlyOutput(NS(id, "timeofday_heat"), height = "240px"))
@@ -21,7 +26,7 @@ timeofday_heat_ui <- function(id) {
 
 ################### Manner of Collision Bar Chart #######################
 mnrcoll_ui <- function(id) {
-  tagList(plotlyOutput(NS(id, "mnrcoll"), height = "240px"))
+  tagList(plotlyOutput(NS(id, "mnrcoll"), height = "340px"))
 }
 
 ################### Person by Role Tree Map #######################
@@ -36,16 +41,16 @@ person_age_gender_ui <- function(id) {
 
 ################### DRVRPC Bar Chart #######################
 drvrpc_chart_ui <- function(id) {
-  tagList(plotlyOutput(NS(id, "drvrpc_chart"), height = "240px"))
+  tagList(plotlyOutput(NS(id, "drvrpc_chart"), height = "340px"))
 }
 ################### Bike/Ped Top Actions Bar Chart #######################
 nmtact_chart_ui <- function(id) {
-  tagList(plotlyOutput(NS(id, "nmtact_chart"), height = "240px"))
+  tagList(plotlyOutput(NS(id, "nmtact_chart"), height = "340px"))
 }
 
 ################### Bike/Ped Location Bar Chart #######################
 nmtloc_chart_ui <- function(id) {
-  tagList(plotlyOutput(NS(id, "nmtloc_chart")))
+  tagList(plotlyOutput(NS(id, "nmtloc_chart", height = "340px")))
 }
 ################### Vehicle Types Tree Map #######################
 vehicle_treemap_ui <- function(id) {

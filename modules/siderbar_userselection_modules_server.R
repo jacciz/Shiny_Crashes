@@ -10,19 +10,21 @@
 
 ################### Select County #######################
 select_county_input <- function(id) {
-  selectInput(
+  pickerInput(
     NS(id, "cntycode_input"),
     "County",
     multiple = TRUE,
-    selectize = FALSE,
-    choices = NULL
+    # selectize = FALSE,
+    choices = NULL,
+    options = pickerOptions(
+      actionsBox = TRUE, noneSelectedText = "Select County",  liveSearch = TRUE, size = 10, showContent= FALSE, liveSearchStyle = 'startsWith')
   )
 }
 select_county_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     # observeEvent(input$cntycode, {
       observe({
-      updateSelectInput(session, "cntycode_input", choices = setNames(county_recode$CountyCode, county_recode$CountyName))
+      updatePickerInput(session, "cntycode_input", choices = setNames(county_recode$CountyCode, county_recode$CountyName))
     })
     return(reactive({
       input$cntycode_input
@@ -32,12 +34,12 @@ select_county_server <- function(id) {
 
 ################### Select Municipality #######################
 select_municode_input <- function(id) {
-  selectInput(
+  pickerInput(
     NS(id, "municode_input"),
     "Municipality",
     choices = NULL,
     multiple = FALSE,
-    selectize = FALSE
+    # selectize = FALSE
   )
 }
 select_municode_server <- function(id, county_input) {
@@ -46,7 +48,7 @@ select_municode_server <- function(id, county_input) {
     # observe({
       muni_cnty_list <-
         muni_recode %>% filter(CntyCode %in% county_input())
-      updateSelectInput(
+      updatePickerInput(
         session,
         "municode_input",
         choices = setNames(muni_cnty_list$MuniCode, muni_cnty_list$Municipality_CTV)

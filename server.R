@@ -9,10 +9,16 @@ library(leaflet.extras2) # hexbin
 library(data.table) # setnames function, data format for large data
 library(tibble) # quick data frames
 library(leafgl) # add points, much faster than leaflet's CircleMarkers
+# library(VennDiagram)
+library(ggVennDiagram)
 
+# Run in viewer: rstudioapi::viewer("http://127.0.0.1:7583") 
 # assigning colors for crash severity for map
-color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
-
+# color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
+# New colors
+color_map_svr <- c("Fatal"="#DB7E65", "Injury"="#4AAECF", "Property Damage"="#44DBAE")
+crshsvr_factor_levels <- c("Property Damage", "Injury", "Fatal") # So Fatals will be on top in the map
+# wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
 # shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
 
 # https://rstudio.github.io/shinyloadtest/ # month.abb[month]
@@ -70,64 +76,6 @@ server <- function(input, output, session) {
     data <- Filter(function(x) !(all(x == FALSE)), data) # take out FALSE values
     names(data)
   })
-  # crshsvr_selected <- reactive({
-  #   crsh_list = list()
-  #   if (input$fatal) {
-  #     crsh_list <- c(crsh_list,"Fatal")
-  #   }
-  #   if (input$injury) {
-  #     crsh_list <- c(crsh_list,"Injury")
-  #   }
-  #   if (input$propertydamage) {
-  #     crsh_list <- c(crsh_list,"Property Damage")
-  #   }
-  #   return (crsh_list)
-  # })
-  # 
-  # returns list for which crsh flags are selected
-  # get_crshflag_list <- reactive({
-  #   crshflag_list = as.character()
-  #   if (input$alc) {
-  #     crshflag_list <- c(crshflag_list, "ALCFLAG")
-  #   }
-  #   if (input$drug) {
-  #     crshflag_list <- c(crshflag_list, "DRUGFLAG")
-  #   }
-  #   if (input$speed) {
-  #     crshflag_list <- c(crshflag_list, "speedflag")
-  #   }
-  #   # if (input$distract) {
-  #   #   crshflag_list <- c(crshflag_list,"distract_flag")
-  #   # }
-  #   if (input$teen) {
-  #     crshflag_list <- c(crshflag_list, "teenflag")
-  #   }
-  #   if (input$older) {
-  #     crshflag_list <- c(crshflag_list, "olderflag")
-  #   }
-  #   if (input$motorcycle) {
-  #     crshflag_list <- c(crshflag_list, "CYCLFLAG")
-  #   }
-  #   if (input$ped) {
-  #     crshflag_list <- c(crshflag_list, "PEDFLAG")
-  #   }
-  #   if (input$bike) {
-  #     crshflag_list <- c(crshflag_list, "BIKEFLAG")
-  #   }
-  #   # if (input$seatbelt) {
-  #   #   crshflag_list <- c(crshflag_list, "seatbeltflag")
-  #   # }
-  #   if (input$singleveh) {
-  #     crshflag_list <- c(crshflag_list, "singlevehflag")
-  #   }
-  #   if (input$lanedep) {
-  #     crshflag_list <- c(crshflag_list, "lanedepflag")
-  #   }
-  #   if (input$deer) {
-  #     crshflag_list <- c(crshflag_list, "deerflag")
-  #   }
-  #   return (crshflag_list)
-  # })
   
   # this decides whether to return all OR any crash flags, returns only CRSHNMBR
   filtered_crsh_flags <-
@@ -218,11 +166,12 @@ server <- function(input, output, session) {
   # Grabs the lat, longs, and crsh_svr for mapping
   filtered_crash_lat_long <- reactive({
     crash_lat_long_j <-
-      filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() # remove crashes with no lat/long
+      filtered_crashes()[, .(lng, lat, CRSHSVR)] %>% na.omit() %>% arrange(factor(CRSHSVR, levels  = crshsvr_factor_levels))# remove crashes with no lat/long
     
     if (dim(crash_lat_long_j)[1] != 0) {
       # convert to sf so we can map it!
-      return(st_as_sf(
+      return(
+        crash_lat_long_j <- st_as_sf(
         x = crash_lat_long_j,
         coords = c("lng", "lat"),
         crs = 4326
@@ -256,7 +205,7 @@ server <- function(input, output, session) {
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>'
+        '<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:16px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>'
       )
     ),
     color = "red")
@@ -271,7 +220,7 @@ server <- function(input, output, session) {
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:12px;text-align: center;display:inline-block;padding-right:20px;">&ensp;Injuries</p>'
+        '<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:16px;text-align: center;display:inline-block;padding-right:20px;">&ensp;People injured</p>'
       )),
     color = "red")
   })
@@ -284,7 +233,7 @@ server <- function(input, output, session) {
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:12px;display:inline-block;padding-right:20px;">&ensp;Fatalities</p>'
+        '<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:16px;display:inline-block;padding-right:20px;">&ensp;People killed</p>'
       )),
     color = "red")
   })
@@ -292,6 +241,7 @@ server <- function(input, output, session) {
   ################### BODY - CHARTS MODULES #######################
   #  Charts are in Shiny Modules in chart_modules_ui and in chart_modules_server
   crsh_svr_mth_server("crsh_svr_mth", filtered_crashes)
+  wisinj_by_year_server("wisinj_by_year", filtered_persons)
   timeofday_heat_server("timeofday_heat", filtered_crashes)
   mnrcoll_server("mnrcoll", filtered_crashes)
   person_role_treemap_server("person_role_treemap", filtered_persons)
@@ -395,4 +345,91 @@ server <- function(input, output, session) {
           group = "Crashes")
         }
   })
+
+  output$venn <- renderPlotly({
+    
+    if (length(get_crshflag_list()) < 2 | length(get_crshflag_list()) > 4 | dim(filtered_crashes())[1] == 0) {  # or no crashes with a time ??
+      plotly_empty(type = "scatter", mode = 'markers') %>% layout(
+        title = list(
+          text = "\nVenn is for 2 - 4 crash flags",
+          font = chart_title,
+          x = 0
+        ),
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      
+      # get df of all selected and filtered crash flags
+    filtered_flags <- left_join(filtered_crsh_flags(), all_crsh_flags, by = "CRSHNMBR") #%>%  select(CRSHNMBR, list)
+
+    # Function to select crashnmbr of a crash flag
+    get_flag_crshnmbr_list <- function(flag_name){
+      filtered_flags[get(flag_name) == "Y", CRSHNMBR] # works
+    }
+    
+    # list <-  c("teenflag","olderflag", "lanedepflag") %>% unlist() %>% as.character()
+    list <- get_crshflag_list() #%>%  as.list()
+    # crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag") # "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")# %>% as.list()
+    # Returns a list of a list of crash number by flag
+    flag_list <- as.list(sapply(list, get_flag_crshnmbr_list, USE.NAMES = TRUE))
+    
+    gg <- # , category.names = crshflag_selected_inputs
+      ggVennDiagram(x = flag_list) #+ scale_fill_gradient(low = "#fee0d2", high = "#de2d26")  #%>%
+    gg %>%  
+    ggplotly(type = 'scatter', mode = "lines+markers+text") %>% # %>% #Price: %{y:$.2f}<extra></extra>
+      # ggrepel::GeomTextRepel(both)
+      # geom_text_repel(aes(label = both))
+      # add_annotations(text= ~both) %>% add_text(text = ~both)
+      # add_annotations(text= ~count, textposition = "top right",arrowhead=.5, arrowwidth=1, font = list(size = 16, color = "#ffffff")) %>%
+      # add_text(text= ~count) %>% 
+      layout(
+        title = list(
+          text = "\nCrash Flags",
+          font = chart_title,
+          y = 1,
+          x = 0
+        ),
+        margin = list(
+          r = 0,
+          l = 0,
+          b = 0
+          # t = 45
+        ),
+        xaxis = list(
+          zeroline=F, showline=F, showgrid=F
+        ),
+        yaxis = list(
+          zeroline=F, showline=F, showgrid=F
+        ),
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      ) %>%  config(
+        toImageButtonOptions = list(
+          width = 800,
+          height = 800,
+          filename = "Crash Flags Venn Diagram",
+          scale = 2
+        )
+      )
+    }
+    # 2: 'scatter' objects don't have these attributes: Valid attributes include:
+    #   'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'ids', 'customdata', 'meta', 'selectedpoints',
+    # 'hoverinfo', 'hoverlabel', 'stream', 'transforms', 'uirevision', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'xperiod', 'yperiod', 'xperiod0',
+    # 'yperiod0', 'xperiodalignment', 'yperiodalignment', 'stackgroup', 'orientation', 'groupnorm', 'stackgaps', 'text', 'texttemplate', 'hovertext',
+    # 'mode', 'hoveron', 'hovertemplate', 'line', 'connectgaps', 'cliponaxis', 'fill', 'fillcolor', 'marker', 'selected', 'unselected', 'textposition',
+    # 'textfont', 'r', 't', 'error_x', 'error_y', 'xcalendar', 'ycalendar', 'xaxis', 'yaxis', 'idssrc', 'customdatasrc', 'metasrc', 'hoverinfosrc', 'xsrc',
+    # 'ysrc', 'textsrc', 'texttemplatesrc', 'hovertextsrc', 'hovertemplatesrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key', 'set', 'frame', 'transforms', '_isNestedKey',
+    # '_isSimpleKey', '_isGraticule', '_bbox'
+    # venn.diagram(
+    #   x = list(alc, drug),
+    #   category.names = c("Alc" , "Drug"),
+    #   filename = NULL,
+    #   output = TRUE
+    # )
+  })
+  
 }
+ 

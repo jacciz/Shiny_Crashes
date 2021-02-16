@@ -6,7 +6,7 @@ library(plotly)
 library(leaflet)
 library(shiny)
 # library(bsplus)
-# library(leafgl)
+library(leafgl)
 # library(shinythemes) # Not for dashboardSidebar
 
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
@@ -56,7 +56,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .material-switch {float:right; margin-right: 25px;}
 
       .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
-
+      
+      .fa, .fas {font-size: 20px}
       .small-box .icon-large{top: 0px;}
       .small-box.bg-red {height: 70px; text-align:center; background-color: rgb(248,248,248) !important; color: rgb(248,248,248) !important;}
       .small-box p {color: rgb(100,100,100)}
@@ -64,7 +65,9 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       .skin-blue .wrapper {background-color: #1d4f81;}
 
       .main-header .logo {font-size: 20px; font-weight: normal;}
-      .skin-blue .main-header .navbar {background: #1d4f81;}
+      .main-header .navbar-custom-menu, .main-header .navbar-right {float: right}
+      .skin-blue .main-header .navbar {background: #1d4f81; color:rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: normal; padding: 0px 40px 0px 0px; vertical-align: middle }
+
       .skin-blue .main-header .logo  {background: #1d4f81;}
        
       .skin-blue .main-header .navbar .sidebar-toggle {background: #1d4f81;}
@@ -74,6 +77,8 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
     "), # add tab margins, 'label' is labelcontrol on map, last one doesnt work
   width = "250px",  # sidebar width
   sidebarMenu(
+    # Remove the sidebar toggle element
+    tags$script(JS("document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';")),
     # div(class = "inlay", style = "height:15px;width:100%;background-color: #ecf0f5;"),
     shinydashboard::menuItem(
       strong("Year"),
@@ -83,10 +88,11 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       # textOutput("out")
     ),
     shinydashboard::menuItem(
-      strong("Location"), # strong makes it bold
+      strong("Select Location"), # strong makes it bold
       tabName = "location",
       icon = icon("map-marked-alt"),
       startExpanded = TRUE, # start expanded
+      selected = as.character("Adams"),
       select_county_input("cntycode_input") # Module
       # select_municode_input("municode_input") # Module
     ),
@@ -98,7 +104,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       # materialSwitch(inputId = "fatal", label = span("Fatal", style = "color:#D50032"), status = "danger", value = TRUE), 
       # set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
       materialSwitch(inputId = "Fatal", label = tags$span(HTML('<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="display:inline-block;">&ensp;Fatal&emsp;&emsp;&ensp;</p>')), status = "danger", value = TRUE),
-      materialSwitch(inputId = "Injury", label = tags$span(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="display:inline-block;">&ensp;Injury&emsp;&emsp;&nbsp;</p>')), status = "info", value = TRUE),
+      materialSwitch(inputId = "Injury", label = tags$span(HTML('<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="display:inline-block;">&ensp;Injury&emsp;&emsp;&nbsp;</p>')), status = "primary", value = TRUE),
       materialSwitch(inputId = "Property Damage", label = tags$span(HTML('<i class="fa fa-car" style = "color:#4DB848;"></i><p style="display:inline-block;">&ensp;Prop. Damage</p>')), status = "success", value = TRUE),
       tags$h5("")
       ),
@@ -112,26 +118,26 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
       tags$h5(switchInput(inputId = "any_or_all", value = TRUE, onLabel = "Any", offLabel = "All", onStatus = "primary", offStatus = "primary", size = "mini", inline = TRUE), style="display:inline-block; margin-top: 10px; padding: 0px;"),
       tags$h5("Driver behavior", style = "margin-top: 10px;"),
       # set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
-      materialSwitch(inputId = "ALCFLAG", label = tags$span(HTML('<i class="fa fa-glass-martini" style = "color:rgb(115,115,115);"></i> Alcohol-related&nbsp; ')), status = "info"),
-      materialSwitch(inputId = "DRUGFLAG", label = tags$span(HTML('<i class="fa fa-pills" style = "color:rgb(115,115,115);"></i> Drug-related &ensp; &nbsp;')), status = "info"),
-      materialSwitch(inputId = "speedflag", label = tags$span(HTML('<i class="fa fa-tachometer" style = "color:rgb(115,115,115);"></i> Speeding &emsp;&ensp; &nbsp;&nbsp; ')), status = "info"),
-      materialSwitch(inputId = "lanedepflag", label = tags$span(HTML('<i class="fa fa-road" style = "color:rgb(115,115,115);"></i> Lane Departure')), status = "info"),
+      materialSwitch(inputId = "ALCFLAG", label = tags$span(HTML('<i class="fa fa-glass-martini" style = "color:rgb(115,115,115);"></i> Alcohol-related&nbsp; ')), status = "primary"),
+      materialSwitch(inputId = "DRUGFLAG", label = tags$span(HTML('<i class="fa fa-pills" style = "color:rgb(115,115,115);"></i> Drug-related &ensp; &nbsp;')), status = "primary"),
+      materialSwitch(inputId = "speedflag", label = tags$span(HTML('<i class="fa fa-tachometer" style = "color:rgb(115,115,115);"></i> Speeding &emsp;&ensp; &nbsp;&nbsp; ')), status = "primary"),
+      materialSwitch(inputId = "lanedepflag", label = tags$span(HTML('<i class="fa fa-road" style = "color:rgb(115,115,115);"></i> Lane Departure')), status = "primary"),
       
       tags$h5("Driver age"),
-      materialSwitch(inputId = "teenflag", label = tags$span(HTML('<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; ')), status = "info"),
-      materialSwitch(inputId = "olderflag", label = tags$span(HTML('<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; ')), status = "info"),
+      materialSwitch(inputId = "teenflag", label = tags$span(HTML('<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; ')), status = "primary"),
+      materialSwitch(inputId = "olderflag", label = tags$span(HTML('<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; ')), status = "primary"),
       tags$h5("Who's involved"),
-      materialSwitch(inputId = "CYCLFLAG", label = tags$span(HTML('<i class="fa fa-motorcycle" style = "color:rgb(115,115,115);"></i> Motorcycle &emsp;&nbsp;&nbsp;&nbsp;')), status = "info"),
-      materialSwitch(inputId = "PEDFLAG", label = tags$span(HTML('<i class="fa fa-walking" style = "color:rgb(115,115,115);"></i> Pedestrian &emsp;&ensp;&nbsp;&nbsp;')), status = "info"),
-      materialSwitch(inputId = "BIKEFLAG", label = tags$span(HTML('<i class="fa fa-bicycle" style = "color:rgb(115,115,115);"></i> Bicycle &emsp;&emsp;&emsp;&nbsp;&nbsp;')), status = "info"),
+      materialSwitch(inputId = "CYCLFLAG", label = tags$span(HTML('<i class="fa fa-motorcycle" style = "color:rgb(115,115,115);"></i> Motorcycle &emsp;&nbsp;&nbsp;&nbsp;')), status = "primary"),
+      materialSwitch(inputId = "PEDFLAG", label = tags$span(HTML('<i class="fa fa-walking" style = "color:rgb(115,115,115);"></i> Pedestrian &emsp;&ensp;&nbsp;&nbsp;')), status = "primary"),
+      materialSwitch(inputId = "BIKEFLAG", label = tags$span(HTML('<i class="fa fa-bicycle" style = "color:rgb(115,115,115);"></i> Bicycle &emsp;&emsp;&emsp;&nbsp;&nbsp;')), status = "primary"),
       # tags$h5("Person behavior"),
-      # materialSwitch(inputId = "seatbelt", label = tags$span(HTML('<i class="fa fa-car" style = "color:rgb(115,115,115);"></i> Seat belt (NO)')), status = "info"),
+      # materialSwitch(inputId = "seatbelt", label = tags$span(HTML('<i class="fa fa-car" style = "color:rgb(115,115,115);"></i> Seat belt (NO)')), status = "primary"),
       tags$h5("Other"),
-      materialSwitch(inputId = "singlevehflag", label = tags$span(HTML('<img src="icons8-traffic-accident-50.png" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;')), status = "info"),
-      materialSwitch(inputId = "deerflag", label = tags$span(HTML('<img src="icons8-deer-52.png" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;')), status = "info")
+      materialSwitch(inputId = "singlevehflag", label = tags$span(HTML('<img src="icons8-traffic-accident-50.png" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;')), status = "primary"),
+      materialSwitch(inputId = "deerflag", label = tags$span(HTML('<img src="icons8-deer-52.png" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;')), status = "primary")
       ), # <img src="icons8-deer-52.png"">
     shinydashboard::menuItem(
-      strong("Map Settings/Analysis"),
+      strong("Map Settings"),
       tabName = "map_sett",
       icon = icon("map"),
       # startExpanded = TRUE,  # start expanded
@@ -142,7 +148,7 @@ sidebar <- dashboardSidebar( # .fa-car-band-aid {vertical-align: middle;}
             '</svg><image class="hexbin_svg" src="hexbin.svg" /> Hex Bins'
           )
         ),
-        status = "info",
+        status = "primary",
         value = FALSE #tags$span(HTML('<i class="fa fa-car" style = "color:#4DB848;"></i><p style="display:inline-block;">xx</p>'))
       ),
       sliderInput(
@@ -182,7 +188,8 @@ body <- dashboardBody(
       # height = "600px",
       tabPanel(
         tagList(shiny::icon("paper-plane"), strong("Welcome")),
-        
+        plotlyOutput("venn", height = "240px"),
+        wisinj_by_year_ui("wisinj_by_year"),
         tagList(tags$span(
           HTML(
             "<h3>Welcome to the WisDOT Interactive Crash Statistics Dashboard.</h3>
@@ -198,17 +205,17 @@ body <- dashboardBody(
       ),
       tabPanel(
         # NOTE   br(), adds space between charts
-        tagList(shiny::icon("car-crash"), strong("Crash trends")),
+        tagList(shiny::icon("car-crash"), strong("Crash Trends")),
         crsh_svr_mth_ui("crsh_svr_mth"),
         br(),
         timeofday_heat_ui("timeofday_heat")
       ),
       tabPanel(
-        tagList(tags$span(HTML('<img src="icons8-car-crash-50.png" style="width:16px;height:16px;"></i>')), strong("Crash types")),
+        tagList(tags$span(HTML('<img src="icons8-car-crash-50.png" style="width:16px;height:16px;"></i>')), strong("Crash Types")),
         mnrcoll_ui("mnrcoll")
       ),
       tabPanel(
-        tagList(shiny::icon("users"), strong("People involved")),
+        tagList(shiny::icon("users"), strong("People Involved")),
         person_role_treemap_ui("person_role_treemap"),
         br(),
         person_age_gender_ui("person_age_gender"),
@@ -224,13 +231,13 @@ body <- dashboardBody(
         # nmtloc_chart_ui("nmtloc_chart")
       ),
       tabPanel(
-        tagList(shiny::icon("car"), strong("Vehicles involved")),
+        tagList(shiny::icon("car"), strong("Vehicles Involved")),
         vehicle_treemap_ui("vehicle_treemap")
       )
     )
   ),
   column(width = 6,  # Text for 'xx crashes are not mapped'
-         leafletOutput("map1", height = "600px"),
+         leafglOutput("map1", height = "600px"),
          br(),
          box(
            width = NULL,
@@ -249,15 +256,10 @@ dashboardPage(title = "WisDOT Crash Dashboard", # browser tab name
     tags$li(class = "dropdown",
             tags$style(".main-header {max-height: 50px}"),
             tags$style(".main-header .logo {height: 50px}")
-    )
-    
-    # tags$li(class = "dropdown", style = "display:inline-block; horizontal-align: left", tags$h4(
-    #   HTML(
-    #     '<i class="fa fa-car-alt" style = "color:rgb(115,115,115);"></i><span style=color:white;> Crashes</span>',
-    #     paste(
-    #       "<b style=color:white;>",
-    #       textOutput("crash_count", inline = TRUE),
-    #       "</b>"))))
+    ), #horizontal-align: left;
+    tags$li(class = "dropdown", style = "", tags$div(
+      HTML(
+        '<span><a href=mailto:CrashDataAnalysis@dot.wi.gov>Questions about this page: CrashDataAnalysis@dot.wi.gov</a></span>')))
   ),
   sidebar, body
   )

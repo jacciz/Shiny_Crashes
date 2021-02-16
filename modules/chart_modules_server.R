@@ -9,21 +9,37 @@
 # UI: crsh_svr_mth_ui("crsh_svr_mth")
 # Server: crsh_svr_mth_server("crsh_svr_mth", filtered_crashes())
 
-# Text parameters for charts
-chart_title = list(size = 16, color = "rgb(100,100,100)", family = "Verdana")
-chart_axis = list(size = 14, color = "rgb(100,100,100)", family = "Verdana")
-chart_axis_bar = list(size = 14, color = "#428BCA", family = "Verdana", face = "bold")
-
-# assigning colors for crash severity and gender for charts/map
-color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
-color_map_gender <- c("Female"="#D50032", "Male"="#428BCA", "Unknown" = "#F9C218")
-
 # To add a new chart - use this
 # crsh_svr_mth_server <- function(id, crash_df()) {
 #   moduleServer(id, function(input, output, session) {
 #     plotly stuff goes here
 #   })
 #   }
+
+################### Text Parameters for Charts #######################
+
+# Text parameters for charts
+chart_title = list(size = 16, color = "rgb(100,100,100)", family = "Verdana")
+chart_axis = list(size = 14, color = "rgb(100,100,100)", family = "Verdana")
+# chart_axis_bar = list(size = 14, color = "#38839C", family = "Verdana", face = "bold")
+# New color - Text parameters for charts. Also replaced #428BCA with #4fb9db
+chart_axis_bar = list(size = 14, color = "#4fb9db", family = "Verdana", face = "bold")
+
+################### Colors and Factors #######################
+# assigning colors for crash severity and gender for charts/map
+# color_map_svr <- c("Fatal"="#D50032", "Injury"="#38839C", "Property Damage"="#4DB848")
+# color_map_gender <- c("Female"="#D50032", "Male"="#38839C", "Unknown" = "#F9C218")
+# color_map_wisinj <- c("Suspected Minor Injury" ="#4DB848", "Possible Injury" = "#38839C","Suspected Serious Injury" ="#7f42ca", "Fatal Injury" = "#D50032")
+
+# New colors
+color_map_svr <- c("Fatal"="#DB7E65", "Injury"="#4AAECF", "Property Damage"="#44DBAE")
+color_map_gender <- c("Female"="#Db7e65", "Male"="#4fb9db", "Unknown" = "#dbb039")
+color_map_wisinj <- c("Suspected Minor Injury" ="#4AAECF", "Possible Injury" = "#58CEF5","Suspected Serious Injury" ="#3D8DA8", "Fatal Injury" = "#265869")
+
+# Factor levels
+wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
+
+# TRY THIS: ~ stringr::str_wrap(reorder(drvrpc_count, n), width = 20),
 
 ################### Crash Severity by Month Bar Chart #######################
 
@@ -33,7 +49,7 @@ crsh_svr_mth_server <- function(id, crash_df) {
       if (dim(crash_df())[1] == 0) {  # or no crashes with a time ??
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "Crash Severity by Month",
+            text = "\nCrash Severity by Month",
             font = chart_title,
             x = 0
           ),
@@ -88,7 +104,7 @@ crsh_svr_mth_server <- function(id, crash_df) {
         ) %>% #Price: %{y:$.2f}<extra></extra>
           layout(
             title = list(
-              text = "Crash Severity by Month",
+              text = "\nCrash Severity by Month",
               font = chart_title,
               y = 1,
               x = 0
@@ -119,6 +135,7 @@ crsh_svr_mth_server <- function(id, crash_df) {
             ),
             yaxis = list(
               showgrid = FALSE,
+              zerolinecolor = "white",
               tickfont = chart_axis,
               title = ""
             ),
@@ -140,7 +157,97 @@ crsh_svr_mth_server <- function(id, crash_df) {
     })
   })
 }
+################### Persons Injured by Year Bar Chart #######################
 
+wisinj_by_year_server <- function(id, person_df) {
+  moduleServer(id, function(input, output, session) {
+    output$wisinj_by_year <- renderPlotly({
+      if (dim(person_df())[1] == 0) {  # or no crashes with a time ??
+        plotly_empty(type = "bar") %>% layout(
+          title = list(
+            text = "\nPersons Injured each Year",
+            font = chart_title,
+            x = 0
+          ),
+          plot_bgcolor = 'rgba(0,0,0,0)',
+          # make transparent background
+          paper_bgcolor = 'rgba(0,0,0,0)'
+        )
+      } else {
+        wisinj_table <-  
+          table(year = year(person_df()$CRSHDATE), inj = factor(person_df()$WISINJ, levels = wisinj_factor_levels)) %>% as_tibble() %>% filter(inj != "No Apparent Injury")# get counts, put in a tibble
+        # crshsvr_table$month <-
+          # factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
+
+        plot_ly(
+          wisinj_table,
+          type = 'bar',
+          x = ~ year,
+          y = ~ n,
+          color = ~ factor(inj, levels = wisinj_factor_levels),
+          colors = ~ color_map_wisinj,
+          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
+          # bar end number
+          textfont = list(size = 14, color = color_map_wisinj[wisinj_table$inj], family = "Verdana", face = "bold"),
+          textposition = 'outside',
+          cliponaxis = FALSE,
+          # assign colors, this will give a warning 'Duplicate levels detected'
+          hovertemplate = paste('%{x}<br>',
+                                '<b>%{y: .0f} Persons')
+        ) %>% #Price: %{y:$.2f}<extra></extra>
+          layout(
+            title = list(
+              text = "\nPersons Injured each Year",
+              font = chart_title,
+              y = 1,
+              x = 0
+            ),
+            showlegend = TRUE,
+            legend = list(
+              x = .5,
+              y = 1.2,
+              orientation = 'h',
+              font = chart_axis,
+              traceorder = "normal" # alphabetical legend order
+            ),
+            margin = list(
+              r = 0,
+              l = 0,
+              b = 0,
+              t = 45
+            ),
+            xaxis = list(
+              title = "",
+              tickfont = chart_axis,
+              tickangle = -0,
+              # categoryarray = ~ month_order,
+              categoryorder = "array" # sets order
+              # ticktext = ~month.abb[crshsvr_table$month],
+              # automargin = TRUE,
+              # dtick = 5 # every 5 months are labeled
+            ),
+            yaxis = list(
+              showgrid = FALSE,
+              zerolinecolor = "white",
+              tickfont = chart_axis,
+              title = ""
+            ),
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            # make transparent background
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            barmode = 'group'
+          ) %>%  config(
+            toImageButtonOptions = list(
+              width = 800,
+              height = 800,
+              filename = "Persons Injured each Year",
+              scale = 2
+            )
+          )
+      }
+    })
+  })
+}
 ################### Time of Day Heatmap #######################
 
 timeofday_heat_server <- function(id, crash_df) 
@@ -211,8 +318,8 @@ output$timeofday_heat <- renderPlotly({
         title = list(text ="Time of Day", font = chart_title, x = 0),
         margin = list(r = 0,l = 0, b = 0
         ),
-        xaxis = list(tickfont = chart_axis, tickangle = 0),
-        yaxis = list(tickfont = chart_axis),
+        xaxis = list(tickfont = chart_axis, tickangle = 0, tickcolor = "white"),
+        yaxis = list(tickfont = chart_axis, tickcolor = "white"),
         plot_bgcolor = 'rgba(0,0,0,0)', # make transparent background
         paper_bgcolor = 'rgba(0,0,0,0)'
       ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Time of Day Crashes", scale = 2)
@@ -229,7 +336,7 @@ mnrcoll_server <- function(id, crash_df) {
         # hide("mnrcoll")
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "Manner of Collision",
+            text = "\nManner of Collision",
             font = chart_title,
             x = 0
           ),
@@ -249,12 +356,13 @@ mnrcoll_server <- function(id, crash_df) {
           type = 'bar',
           orientation = 'h',
           x = ~ n,
-          y = ~ reorder(mnrcoll, n),
+          # y = ~ reorder(mnrcoll, n),
+          y = ~ reorder(stringr::str_wrap(mnrcoll, width = 30), n), 
           # reorder from big to small values
-          marker = list(color = "#428BCA"),
+          marker = list(color = "#4fb9db"),
           # blue!
           hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
-          text = ~ format(n, big.mark = ","),
+          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
           # bar end number
           textfont = chart_axis_bar,
           textposition = 'outside',
@@ -262,16 +370,19 @@ mnrcoll_server <- function(id, crash_df) {
         ) %>%
           layout(
             title = list(
-              text = "Manner of Collision",
+              text = "\nManner of Collision",
               font = chart_title,
-              x = 0
+              x = 0,
+              y = .99
             ),
             margin = list(r = 40, # set to 40 so labels don't get cut off
                           l = 200, # so axis label don't get cut off
-                          # t = 0, # this will cut off title
+                          t = 40,
+                          pad = 5, # axis label to bar padding
                           b = 0),
             xaxis = list(
               title = "",
+              zerolinecolor = "white",
               showgrid = FALSE,
               showticklabels = FALSE # remove axis labels
             ),
@@ -279,7 +390,7 @@ mnrcoll_server <- function(id, crash_df) {
             plot_bgcolor = 'rgba(0,0,0,0)',
             # make transparent background
             paper_bgcolor = 'rgba(0,0,0,0)'
-          ) %>%  config(
+          ) %>% config(
             toImageButtonOptions = list(
               width = 800,
               height = 800,
@@ -299,7 +410,7 @@ person_role_treemap_server <- function(id, persons_df) {
       if (dim(persons_df())[1] == 0) {  # or no crashes with a time ??
         plotly_empty(type = "treemap") %>% layout(
           title = list(
-            text = "Role of All Persons",
+            text = "\nRole of All Persons",
             font = chart_title,
             x = 0
           ),
@@ -313,15 +424,19 @@ person_role_treemap_server <- function(id, persons_df) {
         plot_ly(
           role_table,
           type = 'treemap',
-          textfont = list(size = 14, family = "Cambria"),
+          textfont = list(size = 14, family = "Verdana"),
+          outsidetextfont = list(color = "rgba(0,0,0,0)"), # transparent title
           labels = ~ role,
           parents = ~ parent,
           values = ~ n,
-          textinfo = "label+value+percent parent+percent"
+          hoverlabel = list(font=list(size = 16, family = "Verdana")),
+          hoverinfo = "label+value+percent root",
+          textinfo = "label+value+percent root"
         ) %>%
-          layout(
+          layout(colorway=c("#5a77db", "#F9C218", "#4DB848","#D50032","#4fb9db"),
+                 uniformtext=list(minsize=14),
             title = list(
-              text = "Role of All Persons",
+              text = "\nRole of All Persons",
               font = chart_title,
               y = 1,
               x = 0
@@ -354,7 +469,7 @@ person_age_gender_server <- function(id, persons_df) {
       if (dim(persons_df())[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "Age and Gender of All Persons",
+            text = "\nAge and Gender of All Persons",
             font = chart_title,
             x = 0
           ),
@@ -381,7 +496,7 @@ person_age_gender_server <- function(id, persons_df) {
         ) %>%
           layout(
             title = list(
-              text = "Age and Gender of All Persons",
+              text = "\nAge and Gender of All Persons",
               font = chart_title,
               y = 1,
               x = 0
@@ -409,7 +524,8 @@ person_age_gender_server <- function(id, persons_df) {
             yaxis = list(
               title = "",
               showgrid = FALSE,
-              tickfont = chart_axis
+              tickfont = chart_axis,
+              zerolinecolor = "white"
             ),
             plot_bgcolor = 'rgba(0,0,0,0)',
             # make transparent background
@@ -438,7 +554,7 @@ drvrpc_chart_server <- function(id, persons_df) {
       if (dim(persons_df())[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "No Driver Contributing Circumstances Found",
+            text = "\nNo Driver Contributing Circumstances Found",
             font = chart_title,
             x = 0
           ),
@@ -463,12 +579,13 @@ drvrpc_chart_server <- function(id, persons_df) {
           type = 'bar',
           orientation = 'h',
           x = ~ n,
-          y = ~ reorder(drvrpc_count, n),
+          # y = ~ reorder(drvrpc_count, n),
+          y = ~ reorder(stringr::str_wrap(drvrpc_count, width = 30), n), # Break line after every 20 characters
           # reorder from big to small values, also wrap text
-          marker = list(color = "#428BCA"),
+          marker = list(color = "#4fb9db"),
           # blue!
           hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
-          text = ~ format(n, big.mark = ","),
+          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
           # bar end number
           textfont = chart_axis_bar,
           textposition = 'outside',
@@ -476,20 +593,23 @@ drvrpc_chart_server <- function(id, persons_df) {
         ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
           layout(
             title = list(
-              text = "Top Driver Contributing Circumstance",
+              text = "\nTop Driver Contributing Circumstance",
               font = chart_title,
-              x = 0
+              x = 0,
+              y = .99
             ),
             margin = list(r = 35, # set to 30 so labels don't get cut off
                           l = 200, # so axis label don't get cut off
-                          # t = 0, # this will cut off title
+                          t = 40,
+                          pad = 5, # axis label to bar padding
                           b = 0),
             xaxis = list(
               title = "",
               showgrid = FALSE,
+              zerolinecolor = "white",
               showticklabels = FALSE # remove axis labels
             ),
-            yaxis = list(title = "", tickfont = chart_axis),
+            yaxis = list(title = "", tickfont = chart_axis, tickson = "labels"), # make sure labels are in the center of the bar
             plot_bgcolor = 'rgba(0,0,0,0)',
             # make transparent background
             paper_bgcolor = 'rgba(0,0,0,0)'
@@ -515,7 +635,7 @@ nmtact_chart_server <- function(id, persons_df) {
       )[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "No Pedestrians or Cyclists",
+            text = "\nNo Pedestrians or Cyclists",
             font = chart_title,
             x = 0
           ),
@@ -539,12 +659,13 @@ nmtact_chart_server <- function(id, persons_df) {
           type = 'bar',
           orientation = 'h',
           x = ~ n,
-          y = ~ reorder(nmtact_count, n),
+          # y = ~ reorder(nmtact_count, n),
+          y = ~ reorder(stringr::str_wrap(nmtact_count, width = 30), n), 
           # reorder from big to small values, also wrap text
-          marker = list(color = "#428BCA"),
+          marker = list(color = "#4fb9db"),
           # blue!
           hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
-          text = ~ format(n, big.mark = ","),
+          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
           # bar end number
           textfont = chart_axis_bar,
           textposition = 'outside',
@@ -552,17 +673,20 @@ nmtact_chart_server <- function(id, persons_df) {
         ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
           layout(
             title = list(
-              text = "Top Actions of Pedestrians and Cyclists",
+              text = "\nTop Actions of Pedestrians and Cyclists",
               font = chart_title,
-              x = 0
+              x = 0,
+              y = .99
             ),
             margin = list(r = 30, # set to 30 so labels don't get cut off
                           l = 200, # so axis label don't get cut off
-                          # t = 0, # this will cut off title
+                          t = 40,
+                          pad = 5, # axis label to bar padding
                           b = 0),
             xaxis = list(
               title = "",
               showgrid = FALSE,
+              zerolinecolor = "white",
               showticklabels = FALSE # remove axis labels
             ),
             yaxis = list(title = "", tickfont = chart_axis),
@@ -588,7 +712,7 @@ nmtloc_chart_server <- function(id, persons_df) {
       if (dim(persons_df() %>% filter(NMTLOC != ''))[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
           title = list(
-            text = "No Pedestrians or Cyclists",
+            text = "\nNo Pedestrians or Cyclists",
             font = chart_title,
             x = 0
           ),
@@ -612,12 +736,13 @@ nmtloc_chart_server <- function(id, persons_df) {
           type = 'bar',
           orientation = 'h',
           x = ~ n,
-          y = ~ reorder(nmtloc_count, n),
+          # y = ~ reorder(nmtloc_count, n),
+          y = ~ reorder(stringr::str_wrap(nmtloc_count, width = 30), n), 
           # reorder from big to small values, also wrap text
-          marker = list(color = "#428BCA"),
+          marker = list(color = "#4fb9db"),
           # blue!
           hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
-          text = ~ format(n, big.mark = ","),
+          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
           # bar end number
           textfont = chart_axis_bar,
           textposition = 'outside',
@@ -625,7 +750,7 @@ nmtloc_chart_server <- function(id, persons_df) {
         ) %>% #labels = function(x) str_wrap(drvrpc_count, width = 15)
           layout(
             title = list(
-              text = "Top Locations of Pedestrians and Cyclists",
+              text = "\nTop Locations of Pedestrians and Cyclists",
               font = chart_title,
               x = 0
             ),
@@ -662,7 +787,7 @@ vehicle_treemap_server <- function(id, vehicles_df) {
       if (dim(vehicles_df())[1] == 0) {
         plotly_empty(type = "treemap") %>% layout(
           title = list(
-            text = "All Vehicles Involved",
+            text = "\nAll Vehicles Involved",
             font = chart_title,
             x = 0
           ),
@@ -702,18 +827,21 @@ vehicle_treemap_server <- function(id, vehicles_df) {
           car_tib,
           type = 'treemap',
           branchvalues = "total",
-          textfont = list(size = 14, family = "Cambria"),
-          # insidetextfont = list(size = 14, family = "Cambria"),
+          textfont = list(size = 14, family = "Verdana"),
+          outsidetextfont = list(color = "rgba(0,0,0,0)"), # transparent title
           tiling = list(packing = "ratio"),
           ids = ~ vehtype,
           labels = ~ vehtype,
           parents = ~ parent,
           values = ~ n,
-          textinfo = "label+value+percent parent+percent"
+          hoverlabel = list(font=list(size = 16, family = "Verdana")), # NEW
+          hoverinfo = "label+value+percent root", # NEW
+          textinfo = "label+value+percent root" # NEW
         ) %>%
-          layout(
+          layout(colorway=c("#5a77db", "#F9C218", "#4DB848","#D50032"),
+                 uniformtext=list(minsize=14),
             title = list(
-              text = "All Vehicles Involved",
+              text = "\nAll Vehicles Involved",
               font = chart_title,
               y = 1,
               x = 0

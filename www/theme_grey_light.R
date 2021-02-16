@@ -18,14 +18,14 @@ theme_grey_light <- shinyDashboardThemeDIY(
   ,bodyBackColor = "rgb(240,240,240)"
   
   ### header
-  ,logoBackColor = "rgb(120,120,120)"
+  ,logoBackColor = "##1d4f81" # "rgb(120,120,120)"
   
-  ,headerButtonBackColor = "rgb(120,120,120)"
+  ,headerButtonBackColor = "#1d4f81" # "rgb(120,120,120)"
   ,headerButtonIconColor = "rgb(220,220,220)"
-  ,headerButtonBackColorHover = "rgb(100,100,100)"
-  ,headerButtonIconColorHover = "rgb(60,60,60)"
+  ,headerButtonBackColorHover = "#1d4f81" #"rgb(100,100,100)"
+  ,headerButtonIconColorHover = "white"
   
-  ,headerBackColor = "rgb(120,120,120)"
+  ,headerBackColor = "##1d4f81" # "rgb(120,120,120)"
   ,headerBoxShadowColor = "#dfdfdf"
   ,headerBoxShadowSize = "3px 5px 5px"
   
@@ -56,10 +56,10 @@ theme_grey_light <- shinyDashboardThemeDIY(
   ,sidebarTabTextColorSelected = "rgb(0,0,0)"
   ,sidebarTabRadiusSelected = "0px"
   
-  ,sidebarTabBackColorHover = "rgb(245,245,245)"
+  ,sidebarTabBackColorHover = "rgb(230,230,230)" #"rgb(245,245,245)"
   ,sidebarTabTextColorHover = "rgb(0,0,0)"
   ,sidebarTabBorderStyleHover = "none solid none none"
-  ,sidebarTabBorderColorHover = "rgb(200,200,200)"
+  ,sidebarTabBorderColorHover = "rgb(220,220,220)" #"rgb(200,200,200)"
   ,sidebarTabBorderWidthHover = 4
   ,sidebarTabRadiusHover = "0px"
   
@@ -69,7 +69,7 @@ theme_grey_light <- shinyDashboardThemeDIY(
   ,boxShadowColor = ""
   ,boxTitleSize = 18
   ,boxDefaultColor = "rgb(34,43,69)"#"rgb(52,62,72)"
-  ,boxPrimaryColor = "#428BCA"
+  ,boxPrimaryColor = "#1d4f81" #1d4f81
   ,boxInfoColor = "#428BCA"
   ,boxSuccessColor = "#4DB848"
   ,boxWarningColor = "rgb(240,80,210)"
@@ -142,5 +142,12 @@ theme_grey_light <- shinyDashboardThemeDIY(
 #   red = "#D50032",
 #   yellow = "#F9C218"
   # Background blue - #1d4f81
+  
+  # Theme colors (same as WisDOT, more subtle)
+  #   purple-blue = "#5a77db",
+  #   blue = "#4fb9db",
+  #   green = "#44dbae",
+  #   red = "#Db7e65",
+  #   yellow = "#dbb039"
 
 # img(src = 'zero-logo.png',  style = "width: 100px; display: block; margin-left: auto; margin-right: auto;")

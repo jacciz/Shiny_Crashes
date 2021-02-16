@@ -5,8 +5,9 @@ account: jacciz
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2006519
-bundleId: 3581005
+bundleId: 4211075
 url: https://jacciz.shinyapps.io/Shiny_Crashes/
-when: 1598984612.88232
+when: 1613065459.7838
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: stacks/core-4.0.3.json|stacks/geospatial-4.0.3.json|stacks/shiny-4.0.3.json|crash_databases|scripts
