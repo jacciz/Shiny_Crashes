@@ -347,7 +347,6 @@ server <- function(input, output, session) {
   })
 
   output$venn <- renderPlotly({
-    
     if (length(get_crshflag_list()) < 2 | length(get_crshflag_list()) > 4 | dim(filtered_crashes())[1] == 0) {  # or no crashes with a time ??
       plotly_empty(type = "scatter", mode = 'markers') %>% layout(
         title = list(
@@ -415,20 +414,6 @@ server <- function(input, output, session) {
         )
       )
     }
-    # 2: 'scatter' objects don't have these attributes: Valid attributes include:
-    #   'type', 'visible', 'showlegend', 'legendgroup', 'opacity', 'name', 'uid', 'ids', 'customdata', 'meta', 'selectedpoints',
-    # 'hoverinfo', 'hoverlabel', 'stream', 'transforms', 'uirevision', 'x', 'x0', 'dx', 'y', 'y0', 'dy', 'xperiod', 'yperiod', 'xperiod0',
-    # 'yperiod0', 'xperiodalignment', 'yperiodalignment', 'stackgroup', 'orientation', 'groupnorm', 'stackgaps', 'text', 'texttemplate', 'hovertext',
-    # 'mode', 'hoveron', 'hovertemplate', 'line', 'connectgaps', 'cliponaxis', 'fill', 'fillcolor', 'marker', 'selected', 'unselected', 'textposition',
-    # 'textfont', 'r', 't', 'error_x', 'error_y', 'xcalendar', 'ycalendar', 'xaxis', 'yaxis', 'idssrc', 'customdatasrc', 'metasrc', 'hoverinfosrc', 'xsrc',
-    # 'ysrc', 'textsrc', 'texttemplatesrc', 'hovertextsrc', 'hovertemplatesrc', 'textpositionsrc', 'rsrc', 'tsrc', 'key', 'set', 'frame', 'transforms', '_isNestedKey',
-    # '_isSimpleKey', '_isGraticule', '_bbox'
-    # venn.diagram(
-    #   x = list(alc, drug),
-    #   category.names = c("Alc" , "Drug"),
-    #   filename = NULL,
-    #   output = TRUE
-    # )
   })
   
 }
