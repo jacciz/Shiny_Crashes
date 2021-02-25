@@ -57,6 +57,9 @@ usethis::use_appveyor()
 # go to dev/03_deploy.R
 rstudioapi::navigateToFile("dev/03_deploy.R")
 
+# Shiny extensions
+# https://awesomeopensource.com/project/nanxstats/awesome-shiny-extensions
+
 # TESTING / DEBUGGING
 
 # Run in viewer: rstudioapi::viewer("http://127.0.0.1:7583")
@@ -84,3 +87,11 @@ rstudioapi::navigateToFile("dev/03_deploy.R")
 # Testing: https://mastering-shiny.org/scaling-testing.html
 # more testing https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem?slide=130
 # Performance: https://mastering-shiny.org/performance.html
+
+# CSS AND ICONS
+# https://www.w3schools.com/css/ a resource for CSS
+# https://codepen.io/sosuke/pen/Pjoqqp to get FILTER colors for SVG (like hexbin) - plug in color and scroll down
+# https://icons8.com/ free icons - recolor (#8F9BB3) before download at 60pxPNG
+
+
+

@@ -5,7 +5,7 @@
 #' @return Object produced by shinyDashboardThemeDIY
 #' @seealso \code{\link{shinyDashboardThemeDIY}}
 #' @export
-theme_grey_light <- shinyDashboardThemeDIY(
+theme_grey_light <- dashboardthemes::shinyDashboardThemeDIY(
   
   ### general
   appFontFamily = "Verdana"
@@ -47,7 +47,7 @@ theme_grey_light <- shinyDashboardThemeDIY(
   ,sidebarSearchBorderColor = "rgb(220,220,220)"
   
   ,sidebarTabTextColor = "rgb(100,100,100)"
-  ,sidebarTabTextSize = 16
+  ,sidebarTabTextSize = 14
   ,sidebarTabBorderStyle = "none"
   ,sidebarTabBorderColor = "none"
   ,sidebarTabBorderWidth = 0

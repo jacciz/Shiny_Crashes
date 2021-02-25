@@ -10,7 +10,7 @@
 # layout is Bootstrap (i,e, row widths must add up to 12), helpful to know a little CSS, HTML
 # source("www/theme_grey_dark.R")  # adds a cool theme
 
-# source("www/theme_grey_light.R")  # adds a cool theme
+# source("theme_grey_light.R")  # adds a cool theme
 
 app_ui <- function(request) {
   tagList(
@@ -22,7 +22,7 @@ app_ui <- function(request) {
       title = "WisDOT Crash Dashboard",
       # browser tab name
       dashboardHeader(
-        # title = logo_grey_light, # THIS
+        title = logo_grey_light,
         # text for page title
         titleWidth = 330,
         # Set height of dashboardHeader
@@ -42,70 +42,7 @@ app_ui <- function(request) {
         # .fa-car-band-aid {vertical-align: middle;}
         # Adjust the sidebar
         # tags$style(".left-side, .main-sidebar {padding-top: 20px}"),
-        # tags$head( # Let's use a theme!
-        #   tags$link(rel = "stylesheet", type = "text/css", href = "lux.css")
-        # ),
-        # changes sliderInput,  materialSwitch, fa is icon,   font size (right click and inspect element to find tag) # fa color: rgb(115,115,115) ??  .fa-car.fa-inverse::before {font-size: 6px;}
-        # https://www.w3schools.com/css/ a resource for CSS
-        # https://codepen.io/sosuke/pen/Pjoqqp to get FILTER colors for SVG (like hexbin) - plug in color and scroll down
-        # https://icons8.com/ free icons - recolor (#8F9BB3) before download at 60pxPNG
-        # body{color: black;} this is HEXES hover font color
-        includeCSS("www/widgets.css"),
-        # this applies css to certain shinyWidgets, I basically just changed the default aesthetic settings
-        tags$style(
-          type = "text/css",
-          "
-
-      .irs-grid-text {font-size: 12pt;}
-      .irs-min {font-size: 12pt;}
-      .irs-max {font-size: 12pt;}
-
-      .hexbin_svg {display: inline-block; width: 15px; height: 15px; background-size: cover;
-      filter: invert(80%) sepia(84%) saturate(3572%) hue-rotate(177deg) brightness(102%) contrast(92%);}
-
-      .cluster_on_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
-      filter: invert(71%) sepia(82%) saturate(941%) hue-rotate(323deg) brightness(97%) contrast(96%);}
-
-      .cluster_off_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
-      filter: invert(48%) sepia(65%) saturate(0%) hue-rotate(167deg) brightness(92%) contrast(92%);}
-
-      .Plotly.toImage(gd,{format:'png',height:800,width:800});
-      .shiny-input-container {font-size: 12pt;}
-
-      .sidebar-menu .treeview-menu {padding-left: 0px;}
-
-      .h5, h5 {font-size: 14px; margin-top: 30px; margin-bottom: 0px; font-weight: bold; padding-left: 40px}
-
-      body{color: black;}
-
-      .sidebar{color: rgb(100,100,100)}
-
-      .material-switch {float:right; margin-right: 25px;}
-
-      .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
-
-      .fa, .fas {font-size: 20px}
-      .small-box .icon-large{top: 0px;}
-      .small-box.bg-red {height: 70px; text-align:center; background-color: rgb(248,248,248) !important; color: rgb(248,248,248) !important;}
-      .small-box p {color: rgb(100,100,100)}
-
-      .skin-blue .wrapper {background-color: #1d4f81;}
-
-      .main-header .logo {font-size: 20px; font-weight: normal;}
-      .main-header .navbar-custom-menu, .main-header .navbar-right {float: right}
-      .skin-blue .main-header .navbar {background: #1d4f81; color:rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: normal; padding: 0px 40px 0px 0px; vertical-align: middle }
-
-      .skin-blue .main-header .logo  {background: #1d4f81;}
-
-      .skin-blue .main-header .navbar .sidebar-toggle {background: #1d4f81;}
-
-      .leaflet-control-layers-expanded{background-color: rgb(120,120,120)}
-
-    "
-        ),
-        # add tab margins, 'label' is labelcontrol on map, last one doesnt work
-        width = "250px",
-        # sidebar width
+        width = "250px",    # sidebar width
         
         sidebarMenu(
           # Remove the sidebar toggle element
@@ -237,7 +174,7 @@ app_ui <- function(request) {
               inputId = "teenflag",
               label = tags$span(
                 HTML(
-                  '<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; '
+                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -246,7 +183,7 @@ app_ui <- function(request) {
               inputId = "olderflag",
               label = tags$span(
                 HTML(
-                  '<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
+                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -286,7 +223,7 @@ app_ui <- function(request) {
               inputId = "singlevehflag",
               label = tags$span(
                 HTML(
-                  '<img src="icons8-traffic-accident-50.png" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;'
+                  '<img src="app/www/icons8-traffic-accident-50.png" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;'
                 )
               ),
               status = "primary"
@@ -295,13 +232,13 @@ app_ui <- function(request) {
               inputId = "deerflag",
               label = tags$span(
                 HTML(
-                  '<img src="icons8-deer-52.png" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
+                  '<img src="app/www/icons8-deer-52.png" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
                 )
               ),
               status = "primary"
             )
           ),
-          # <img src="icons8-deer-52.png"">
+          # <img src="app/www/icons8-deer-52.png"">
           menuItem(
             strong("Map Settings"),
             tabName = "map_sett",
@@ -311,7 +248,7 @@ app_ui <- function(request) {
               "hex",
               label = tags$span(
                 HTML(
-                  '</svg><image class="hexbin_svg" src="hexbin.svg" /> Hex Bins'
+                  '</svg><image class="hexbin_svg" src="app/www/hexbin.svg"/> Hex Bins'
                 )
               ),
               status = "primary",
@@ -329,13 +266,8 @@ app_ui <- function(request) {
         )
       ),
       dashboardBody(
-        ### changing theme
-        # theme_grey_light,
         # the awesome theme
-        
-        # This disables scrollbar inside app, or does it?
-        # tags$head(tags$style(HTML(".sidebar { height: 90vh; overflow-y: auto; }" ))),
-        
+        theme_grey_light,
         column(
           # # for column, width = NULL
           width = 6,
@@ -362,8 +294,8 @@ app_ui <- function(request) {
           click to isolate a variable.</h6>
 
           <h6 style=font-size:14px;> For a data request email BOTSTS at <a href=mailto:CrashDataAnalysis@dot.wi.gov>CrashDataAnalysis@dot.wi.gov</a> </h6>
-            <img src=tops-lab-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248)>
-            <img src=zero-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248);>"
+            <img src=app/www/tops-lab-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248)>
+            <img src=app/www/zero-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248);>"
                 )
               ))
             ),
@@ -377,7 +309,7 @@ app_ui <- function(request) {
             tabPanel(tagList(
               tags$span(
                 HTML(
-                  '<img src="icons8-car-crash-50.png" style="width:16px;height:16px;"></i>'
+                  '<img src="app/www/icons8-car-crash-50.png" style="width:16px;height:16px;"></i>'
                 )
               ), strong("Crash Types")
             ),
@@ -391,7 +323,7 @@ app_ui <- function(request) {
             tabPanel(
               tagList(tags$span(
                 HTML(
-                  '<img src="icons8-driver-60.png" style="width:16px;height:16px;"></i>'
+                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i>'
                 )
               ), strong("Driver Behavior")),
               mod_chart_drvrpc_ui("drvrpc_chart")
@@ -425,7 +357,6 @@ app_ui <- function(request) {
                   " crashes are not mapped due to unknown coordinates.</span>"
                 )
               ))))
-          # leafletOutput("map1", height = "600px") #from 680 # try this instead)
         )
       )
     )

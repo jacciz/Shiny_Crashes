@@ -3,4 +3,6 @@
 .git
 .Rproj.user
 rsconnect
-crash_databases
+data-raw
+vignettes
+tests

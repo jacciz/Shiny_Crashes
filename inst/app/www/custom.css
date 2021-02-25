@@ -1,0 +1,73 @@
+.material-switch > label::before {
+    background: rgb(0, 0, 0);
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    content: '';
+    height: 16px;
+    margin-top: -8px;
+    position:absolute;
+    opacity: 0.3;
+    transition: all 0.4s ease-in-out;
+    width: 30px;
+}
+
+.material-switch > label::after {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    content: '';
+    height: 16px;
+    left: -4px;
+    margin-top: -4px;
+    position: absolute;
+    top: -4px;
+    transition: all 0.3s ease-in-out;
+    width: 16px;
+}
+
+.nav-tabs-custom>.nav-tabs>li>a:hover {color:rgb(0,0,0);}
+
+.irs-grid-text {font-size: 12pt;}
+      .irs-min {font-size: 12pt;}
+      .irs-max {font-size: 12pt;}
+
+      .hexbin_svg {display: inline-block; width: 15px; height: 15px; background-size: cover;
+      filter: invert(80%) sepia(84%) saturate(3572%) hue-rotate(177deg) brightness(102%) contrast(92%);}
+
+      .cluster_on_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
+      filter: invert(71%) sepia(82%) saturate(941%) hue-rotate(323deg) brightness(97%) contrast(96%);}
+
+      .cluster_off_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
+      filter: invert(48%) sepia(65%) saturate(0%) hue-rotate(167deg) brightness(92%) contrast(92%);}
+
+      .Plotly.toImage(gd,{format:'png',height:600,width:600});
+      .shiny-input-container {font-size: 12pt;}
+
+      .sidebar-menu .treeview-menu {padding-left: 0px;}
+
+      .h5, h5 {font-size: 14px; margin-top: 30px; margin-bottom: 0px; font-weight: bold; padding-left: 40px}
+
+      body{color: black;}
+
+      .sidebar{color: rgb(100,100,100)}
+
+      .material-switch {float:right; margin-right: 25px;}
+
+      .btn.checkbtn.btn-primary {font-size: 12pt; text-align: left; padding-top:5px; padding-bottom:5px; float:right;}
+
+      .fa, .fas {font-size: 20px}
+      .small-box .icon-large{top: 0px;}
+      .small-box.bg-red {height: 70px; text-align:center; background-color: rgb(248,248,248) !important; color: rgb(248,248,248) !important;}
+      .small-box p {color: rgb(100,100,100)}
+
+      .skin-blue .wrapper {background-color: #1d4f81;}
+
+      .main-header .logo {font-size: 20px; font-weight: normal;}
+      .main-header .navbar-custom-menu, .main-header .navbar-right {float: right}
+      .skin-blue .main-header .navbar {background: #1d4f81; color:rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: normal; padding: 0px 40px 0px 0px; vertical-align: middle }
+
+      .skin-blue .main-header .logo  {background: #1d4f81;}
+
+      .skin-blue .main-header .navbar .sidebar-toggle {background: #1d4f81;}
+
+      .leaflet-control-layers-expanded{background-color: rgb(120,120,120)}
