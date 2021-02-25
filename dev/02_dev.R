@@ -15,11 +15,11 @@
 
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
-usethis::use_package( "thinkr" )
+usethis::use_package("fread")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "name_of_module1" ) # Name of the module
+golem::add_module( name = "siderbar_select_year" ) # Name of the module
 golem::add_module( name = "name_of_module2" ) # Name of the module
 
 ## Add helper functions ----
@@ -57,3 +57,30 @@ usethis::use_appveyor()
 # go to dev/03_deploy.R
 rstudioapi::navigateToFile("dev/03_deploy.R")
 
+# TESTING / DEBUGGING
+
+# Run in viewer: rstudioapi::viewer("http://127.0.0.1:7583")
+# shinytest::recordTest("C:/W_shortcut/Shiny_Crashes_Dashboard/") test for bugs
+# https://rstudio.github.io/shinyloadtest/ # month.abb[month]
+
+# For debugging, try shinyjs::runcodeUI() and shinyjs::runcodeServer()
+# Also shiny::reactlog() for issues with reactivity
+# options(shiny.reactlog = TRUE) then ctrl-f3 in browser
+
+
+
+# library(shinyFeedback) # https://github.com/merlinoa/shinyFeedback and https://mastering-shiny.org/action-feedback.html, good for a single input, validate() is for output
+
+# filter(.data[[input$var]] > .env$input$min)) or diamonds %>% filter(.data[[var]] > .env$min)
+
+# create dynamic and multiple dropwdowns: https://mastering-shiny.org/action-dynamic.html
+# ctrl shift enter
+# jobs in C:\Users\dotjaz\Documents\RStudio\background-jobs view: rstudioapi::viewer("http://127.0.0.1:5101")
+# traceback() to find error location, add browser() in code to launch debugger
+# breakpoints - debugger tool - press n,c,q
+# use message() glue::glue() str()
+# selectVarServer("var", reactive(input$x)))
+# ctrl .  to find function
+# Testing: https://mastering-shiny.org/scaling-testing.html
+# more testing https://speakerdeck.com/colinfay/workshop-building-successful-shiny-apps-with-golem?slide=130
+# Performance: https://mastering-shiny.org/performance.html

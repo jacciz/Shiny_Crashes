@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(data.table)
+library(DT)
+# crashes <- fst::read.fst("C:/W_shortcut/Shiny_Crashes_Dashboard/data-raw/18crash.fst") %>% as.data.table()
+
+library(ggVennDiagram)
+output$venn <- renderPlotly({
+    if (length(get_crshflag_list()) < 2 | length(get_crshflag_list()) > 4 | dim(filtered_crashes())[1] == 0) {  # or no crashes with a time ??
+      plotly_empty(type = "scatter", mode = 'markers') %>% layout(
+        title = list(
+          text = "\nVenn is for 2 - 4 crash flags",
+          font = chart_title,
+          x = 0
+        ),
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      )
+    } else {
+      
+      # get df of all selected and filtered crash flags
+    filtered_flags <- left_join(filtered_crsh_flags(), all_crsh_flags, by = "CRSHNMBR") #%>%  select(CRSHNMBR, list)
+
+    # Function to select crashnmbr of a crash flag
+    get_flag_crshnmbr_list <- function(flag_name){
+      filtered_flags[get(flag_name) == "Y", CRSHNMBR] # works
+    }
+    
+    # list <-  c("teenflag","olderflag", "lanedepflag") %>% unlist() %>% as.character()
+    list <- get_crshflag_list() #%>%  as.list()
+    # crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag") # "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")# %>% as.list()
+    # Returns a list of a list of crash number by flag
+    flag_list <- as.list(sapply(list, get_flag_crshnmbr_list, USE.NAMES = TRUE))
+    
+    gg <- # , category.names = crshflag_selected_inputs
+      ggVennDiagram(x = flag_list) #+ scale_fill_gradient(low = "#fee0d2", high = "#de2d26")  #%>%
+    gg %>%  
+    ggplotly(type = 'scatter', mode = "lines+markers+text") %>% # %>% #Price: %{y:$.2f}<extra></extra>
+      # ggrepel::GeomTextRepel(both)
+      # geom_text_repel(aes(label = both))
+      # add_annotations(text= ~both) %>% add_text(text = ~both)
+      # add_annotations(text= ~count, textposition = "top right",arrowhead=.5, arrowwidth=1, font = list(size = 16, color = "#ffffff")) %>%
+      # add_text(text= ~count) %>% 
+      layout(
+        title = list(
+          text = "\nCrash Flags",
+          font = chart_title,
+          y = 1,
+          x = 0
+        ),
+        margin = list(
+          r = 0,
+          l = 0,
+          b = 0
+          # t = 45
+        ),
+        xaxis = list(
+          zeroline=F, showline=F, showgrid=F
+        ),
+        yaxis = list(
+          zeroline=F, showline=F, showgrid=F
+        ),
+        plot_bgcolor = 'rgba(0,0,0,0)',
+        # make transparent background
+        paper_bgcolor = 'rgba(0,0,0,0)'
+      ) %>%  config(
+        toImageButtonOptions = list(
+          width = 800,
+          height = 800,
+          filename = "Crash Flags Venn Diagram",
+          scale = 2
+        )
+      )
+    }
+  })
+```
+
+

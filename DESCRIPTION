@@ -1,17 +1,41 @@
 Package: WisDOTcrashdashboard
-Title: An Amazing Shiny App
+Title: WisDOTcrashdashboard
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
+Authors@R: person('Jacci', 'Ziebert', email = 'jaclyn.ziebert@dot.wi.gov', role = c('cre', 'aut'))
+Description: An interactive crash statistics dashboard that shows Wisconsin counties.
 License: What license is it under?
 Imports: 
+    attempt,
     config,
+    dashboardthemes,
+    data.table,
+    dplyr,
+    DT,
+    glue,
     golem,
-    shiny
+    htmltools,
+    htmlwidgets,
+    leaflet,
+    leaflet.extras2,
+    lubridate,
+    leafgl,
+    plotly,
+    sf,
+    shiny,
+    shinydashboard,
+    shinyWidgets,
+    stats,
+    stringr,
+    tibble,
+    tidyr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
+Suggests: 
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3
+VignetteBuilder: knitr
