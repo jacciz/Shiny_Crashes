@@ -37,7 +37,7 @@ mod_chart_nmtloc_server <- function(id, persons_df) {
           dplyr::filter(nmtloc_count != '') %>%
           # filter(nmtact_count != "No Improper Action",
           # nmtact_count != "Unknown") %>%
-          dplyr::arrange(desc(n)) %>% head(., 8)
+          dplyr::arrange(dplyr::desc(n)) %>% utils::head(., 8)
         #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
         plot_ly(
           nmtloc_table,

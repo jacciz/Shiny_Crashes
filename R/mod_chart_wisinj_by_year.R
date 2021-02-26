@@ -30,7 +30,9 @@ mod_chart_wisinj_by_year_server <- function(id, person_df) {
         )
       } else {
         wisinj_table <-  
-          table(year = lubridate::year(person_df()$CRSHDATE), inj = factor(person_df()$WISINJ, levels = wisinj_factor_levels)) %>% tibble::as_tibble() %>% dplyr::filter(inj != "No Apparent Injury")# get counts, put in a tibble
+          table(year = lubridate::year(person_df()$CRSHDATE), inj = factor(person_df()$WISINJ, levels = wisinj_factor_levels)) %>%
+          tibble::as_tibble() %>%
+          dplyr::filter(.data$inj != "No Apparent Injury")# get counts, put in a tibble
         # crshsvr_table$month <-
         # factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
         
@@ -38,10 +40,10 @@ mod_chart_wisinj_by_year_server <- function(id, person_df) {
           wisinj_table,
           type = 'bar',
           x = ~ year,
-          y = ~ n,
+          y = ~ .data$n,
           color = ~ factor(inj, levels = wisinj_factor_levels),
           colors = ~ color_map_wisinj,
-          text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
+          text = ~sprintf("<b>%s</b>", format(.data$n, big.mark = ",")),
           # bar end number
           textfont = list(size = 14, color = color_map_wisinj[wisinj_table$inj], family = "Verdana", face = "bold"),
           textposition = 'outside',

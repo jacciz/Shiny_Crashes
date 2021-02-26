@@ -1,7 +1,4 @@
 #Ignore these files
-*.Rproj
-.git
-.Rproj.user
 rsconnect
 *.fst
 inst/doc

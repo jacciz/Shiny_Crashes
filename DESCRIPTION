@@ -3,7 +3,7 @@ Title: WisDOTcrashdashboard
 Version: 0.0.0.9000
 Authors@R: person('Jacci', 'Ziebert', email = 'jaclyn.ziebert@dot.wi.gov', role = c('cre', 'aut'))
 Description: An interactive crash statistics dashboard that shows Wisconsin counties.
-License: What license is it under?
+License: MIT + file LICENSE
 Imports: 
     attempt,
     config,

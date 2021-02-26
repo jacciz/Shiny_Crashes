@@ -1,0 +1,6 @@
+"0","persons_new %>% filter(ROLE == 'Driver') %>% get_counts_of_PMD_crash_drivers(., fields_to_summarise = c(""age_group_10yr"")) %>% filter(age_group_10yr != ""Unknown"") %>% "
+"0","  arrange(factor(age_group_10yr, levels  = age_group_10yr_factor_level)) %>% get_data_of_percents_and_ratios_for_table(., fields_that_were_summarised = c(""age_group_10yr"")) %>% get_column_colors() %>% make_summarized_data_table(name_of_fields_that_were_summarised = c(""Age group""), caption = ""Table 2. Share of travel, driver, and crashes by age group"")"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"

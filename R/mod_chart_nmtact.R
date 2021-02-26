@@ -18,7 +18,7 @@ mod_chart_nmtact_server <- function(id, persons_df) {
   shiny::moduleServer(id, function(input, output, session) {
     output$nmtact_chart <- renderPlotly({
       if (dim(
-        persons_df() %>% dplyr::select(NMTACT01:NMTACT12) %>% tidyr::pivot_longer(NMTACT01:NMTACT12)
+        persons_df() %>% dplyr::select(dplyr::starts_with("NMTACT")) %>% tidyr::pivot_longer(NMTACT01:NMTACT12)
         %>% filter(value != "Unknown", value != '')
       )[1] == 0) {
         plotly_empty(type = "bar") %>% layout(
@@ -33,14 +33,15 @@ mod_chart_nmtact_server <- function(id, persons_df) {
         )
       } else {
         nmtact <- persons_df() %>%
-          dplyr::select(NMTACT01:NMTACT12) %>% tidyr::pivot_longer(NMTACT01:NMTACT12) %>% filter(value !=
-                                                                                     '')
+          dplyr::select(dplyr::starts_with("NMTACT")) %>%
+          tidyr::pivot_longer(NMTACT01:NMTACT12) %>%
+          dplyr::filter(value != '')
         # make freq table, remove variables, arrange and take top 8
         nmtact_table <-
           table(nmtact_count = nmtact$value) %>% tibble::as_tibble() %>%
           dplyr::filter(# nmtact_count != "No Improper Action",
             nmtact_count != "Unknown") %>%
-          dplyr::arrange(desc(n)) %>% head(., 8)
+          dplyr::arrange(dplyr::desc(n)) %>% utils::head(., 8)
         #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
         plot_ly(
           nmtact_table,

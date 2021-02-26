@@ -25,11 +25,11 @@ mod_siderbar_select_muni_server <- function(id, county_input) {
     observeEvent(county_input(), {
       # observe({
       muni_cnty_list <-
-        muni_recode %>% dplyr::filter(CntyCode %in% county_input())
+        muni_recode %>% dplyr::filter(.data$CntyCode %in% county_input())
       shinyWidgets::updatePickerInput(
         session,
         "municode_input",
-        choices = setNames(
+        choices = stats::setNames(
           muni_cnty_list$MuniCode,
           muni_cnty_list$Municipality_CTV
         )

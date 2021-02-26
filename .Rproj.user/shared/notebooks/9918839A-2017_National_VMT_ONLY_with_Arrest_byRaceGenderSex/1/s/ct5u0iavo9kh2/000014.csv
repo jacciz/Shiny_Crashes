@@ -1,0 +1,6 @@
+"0","persons_new %>% filter(ROLE == 'Driver') %>% get_counts_of_PMD_crash_drivers(., fields_to_summarise = c(""R_SEX"", ""R_RACE"")) %>% filter(R_SEX != ""Unknown"") %>% "
+"0","  arrange(factor(R_RACE, levels  = race_factor_level)) %>% get_data_of_percents_and_ratios_for_table(., fields_that_were_summarised = c(""R_SEX"", ""R_RACE"")) %>% get_column_colors() %>% make_summarized_data_table(name_of_fields_that_were_summarised = c(""Sex"", ""Race""), caption = ""Table 4. Share of travel, driver, and crashes by sex and race"")"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"
+"2","NAs introduced by coercion"

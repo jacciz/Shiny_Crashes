@@ -1,4 +1,4 @@
-﻿About the Project
+About the Project
 -
 This is an interactive crash dashboard made by the Wisconsin Department of Transportation.
 This app uses R Shiny, Leaflet and Plotly. Data can be selected by location, year, crash type, crash flag and features a hexbin analysis to show crash densities.
@@ -20,3 +20,7 @@ Jacci Ziebert - Highway Safety Analyst at WisDOT (jaclyn.ziebert@dot.wi.gov)
 Acknowledgments
 -
 Thanos Tsiaras's [crash dashboard](https://github.com/TheDataLabScotland/Data_Team_Blog_Posts/tree/master/TrafficAccidents) is what initially inspired me to make this dashboard.
+
+Code of Conduct
+-
+Please note that the WisDOTcrashdashboard project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

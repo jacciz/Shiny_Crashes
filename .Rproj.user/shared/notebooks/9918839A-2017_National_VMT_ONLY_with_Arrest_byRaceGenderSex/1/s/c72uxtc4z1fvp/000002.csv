@@ -1,0 +1,3 @@
+"0","# pmd_byage <- persons_new %>% filter(ROLE == ""Driver"") %>% person_summarise_crash_count(fields_to_summarise = c(""age_group_10yr"")) %>% na.omit() %>% filter(age_group_10yr %in% c(""<18"", ""30-39""))"
+"0",""
+"0","# poi <- nhts_summarise_pmd(nhts_person, fields_to_summarise = ""age_group_10yr"") %>% left_join(., pmd_byage, by = ""age_group_10yr"") %>% mutate(adult = ifelse(age_group_10yr %in%c(""<18""), ""N"", ""Y"")) %>% group_by(adult) %>% na.omit() %>% count(sum_crash = sum(crash_count), pmd = sum(PMD))"

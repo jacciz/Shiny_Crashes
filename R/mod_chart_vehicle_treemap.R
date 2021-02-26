@@ -46,7 +46,7 @@ mod_chart_vehicle_treemap_server <- function(id, vehicles_df) {
           )
         car_tib <- # then change newcar to vehicles_df()
           table(vehtype = newcar$VEHTYPE, parent = newcar$cate) %>%
-          tibble::as_tibble() %>% dplyr::filter(n != 0)
+          tibble::as_tibble() %>% dplyr::filter(.data$n != 0)
         
         parent_tib <-
           stats::xtabs(car_tib$n ~ car_tib$parent) %>% tibble::as_tibble()# then rbind
@@ -66,7 +66,7 @@ mod_chart_vehicle_treemap_server <- function(id, vehicles_df) {
           ids = ~ vehtype,
           labels = ~ vehtype,
           parents = ~ parent,
-          values = ~ n,
+          values = ~ .data$n,
           hoverlabel = list(font=list(size = 16, family = "Verdana")), # NEW
           hoverinfo = "label+value+percent root", # NEW
           textinfo = "label+value+percent root" # NEW

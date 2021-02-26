@@ -30,16 +30,19 @@ mod_chart_drvrpc_server <- function(id, persons_df) {
         )
       } else {
         drvrpc <- persons_df() %>%
-          dplyr::select(DRVRPC01:DRVRPC24) %>% tidyr::pivot_longer(DRVRPC01:DRVRPC24) %>% dplyr::filter(value !=
+          dplyr::select(dplyr::starts_with("DRVRPC")) %>%
+        tidyr::pivot_longer(DRVRPC01:DRVRPC24) %>%
+          dplyr::filter(value !=
                                                                                      '')
         # make freq table, remove variables, arrange and take top 8
         drvrpc_table <-
           table(drvrpc_count = drvrpc$value) %>% tibble::as_tibble() %>%
           dplyr::filter(drvrpc_count != "No Contributing Action",
-                 drvrpc_count != "Unknown") %>% dplyr::arrange(desc(n)) %>% head(., 8)
+                        drvrpc_count != "Unknown") %>%
+          dplyr::arrange(dplyr::desc(n)) %>% utils::head(., 8)
         #  reorder(drvrpc_count, n)   str_wrap(drvrpc_count, width = 15)
         drvrpc_table$drvrpc_count <-
-          reorder(drvrpc_table$drvrpc_count, drvrpc_table$n)  # reorder from big to small values
+          stats::reorder(drvrpc_table$drvrpc_count, drvrpc_table$n)  # reorder from big to small values
         plot_ly(
           drvrpc_table,
           type = 'bar',

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<table class="table table-striped table-hover table-condensed lightable-classic" style="margin-left: auto; margin-right: auto; font-family: Cambria; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>Table 6. Share of travel, driver, and crashes by age group and sex</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Age group </th>
+   <th style="text-align:left;"> Sex </th>
+   <th style="text-align:right;"> Sample size (n)<sup>1</sup> </th>
+   <th style="text-align:right;"> Drivers<sup>1</sup> </th>
+   <th style="text-align:left;"> Average PMD<sup>1</sup> </th>
+   <th style="text-align:right;"> Drivers in a crash<sup>2</sup> </th>
+   <th style="text-align:right;"> Average annual OWI arrests<sup>3</sup> </th>
+   <th style="text-align:right;"> Population<sup>4</sup> </th>
+   <th style="text-align:right;"> Annual VMT (100 million) </th>
+   <th style="text-align:right;"> Share of drivers in a crash </th>
+   <th style="text-align:right;"> Share of drivers </th>
+   <th style="text-align:right;"> Share of VMT </th>
+   <th style="text-align:right;"> Share of arrests </th>
+   <th style="text-align:right;"> Share of population </th>
+   <th style="text-align:left;"> Ratio of crash to drivers </th>
+   <th style="text-align:left;"> Ratio of crash to VMT </th>
+   <th style="text-align:left;"> Ratio of arrests to drivers </th>
+   <th style="text-align:left;"> Ratio of arrests to VMT </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> &lt;16 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:right;"> 5,285 </td>
+   <td style="text-align:left;"> 1,658 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 554,908 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.07 </td>
+   <td style="text-align:right;"> 0.13 </td>
+   <td style="text-align:right;"> 0.02 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> 9.61 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3e5f3">0.59</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b6d6ea">4.41 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #deebf7">0.03</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e7f5">0.25</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> &lt;16 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 3,733 </td>
+   <td style="text-align:left;"> 1,528 </td>
+   <td style="text-align:right;"> 71 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 581,254 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.14 </td>
+   <td style="text-align:right;"> 0.09 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 0.01 </td>
+   <td style="text-align:right;"> 10.07 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7bb6d6">1.53</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #63aacf">12.48</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e7f5">0.16</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afd2e7">1.33</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16-25 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 737 </td>
+   <td style="text-align:right;"> 319,237 </td>
+   <td style="text-align:left;"> 9,349 </td>
+   <td style="text-align:right;"> 6,130 </td>
+   <td style="text-align:right;"> 1,594 </td>
+   <td style="text-align:right;"> 386,255 </td>
+   <td style="text-align:right;"> 2.98 </td>
+   <td style="text-align:right;"> 11.75 </td>
+   <td style="text-align:right;"> 7.60 </td>
+   <td style="text-align:right;"> 5.70 </td>
+   <td style="text-align:right;"> 6.58 </td>
+   <td style="text-align:right;"> 6.69 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7ab6d6">1.54</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cfe3f2">2.06 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b8d7ea">0.87</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b6d5e9">1.15</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 16-25 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 706 </td>
+   <td style="text-align:right;"> 322,506 </td>
+   <td style="text-align:left;"> 9,188 </td>
+   <td style="text-align:right;"> 7,167 </td>
+   <td style="text-align:right;"> 4,562 </td>
+   <td style="text-align:right;"> 401,640 </td>
+   <td style="text-align:right;"> 2.96 </td>
+   <td style="text-align:right;"> 13.73 </td>
+   <td style="text-align:right;"> 7.68 </td>
+   <td style="text-align:right;"> 5.66 </td>
+   <td style="text-align:right;"> 18.84 </td>
+   <td style="text-align:right;"> 6.96 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #63aacf">1.79</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbe1f1">2.42 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #72b2d4">2.45</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #63aacf">3.33</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 26-35 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 1,334 </td>
+   <td style="text-align:right;"> 335,343 </td>
+   <td style="text-align:left;"> 12,613 </td>
+   <td style="text-align:right;"> 4,912 </td>
+   <td style="text-align:right;"> 2,047 </td>
+   <td style="text-align:right;"> 355,463 </td>
+   <td style="text-align:right;"> 4.23 </td>
+   <td style="text-align:right;"> 9.41 </td>
+   <td style="text-align:right;"> 7.99 </td>
+   <td style="text-align:right;"> 8.08 </td>
+   <td style="text-align:right;"> 8.46 </td>
+   <td style="text-align:right;"> 6.16 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9cc8e1">1.18</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e8f5">1.16 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b0d2e8">1.06</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b9d7eb">1.05</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 26-35 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 1,217 </td>
+   <td style="text-align:right;"> 346,975 </td>
+   <td style="text-align:left;"> 15,362 </td>
+   <td style="text-align:right;"> 5,938 </td>
+   <td style="text-align:right;"> 5,618 </td>
+   <td style="text-align:right;"> 370,498 </td>
+   <td style="text-align:right;"> 5.33 </td>
+   <td style="text-align:right;"> 11.38 </td>
+   <td style="text-align:right;"> 8.26 </td>
+   <td style="text-align:right;"> 10.19 </td>
+   <td style="text-align:right;"> 23.21 </td>
+   <td style="text-align:right;"> 6.42 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #89bedb">1.38</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9e8f5">1.12 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #63aacf">2.81</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8abfdc">2.28</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 36-45 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 1,214 </td>
+   <td style="text-align:right;"> 321,794 </td>
+   <td style="text-align:left;"> 13,306 </td>
+   <td style="text-align:right;"> 3,686 </td>
+   <td style="text-align:right;"> 1,286 </td>
+   <td style="text-align:right;"> 339,729 </td>
+   <td style="text-align:right;"> 4.28 </td>
+   <td style="text-align:right;"> 7.06 </td>
+   <td style="text-align:right;"> 7.66 </td>
+   <td style="text-align:right;"> 8.18 </td>
+   <td style="text-align:right;"> 5.31 </td>
+   <td style="text-align:right;"> 5.88 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b4d5e9">0.92</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbe9f6">0.86 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c0dbed">0.69</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c9dff0">0.65</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 36-45 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 1,212 </td>
+   <td style="text-align:right;"> 344,707 </td>
+   <td style="text-align:left;"> 16,553 </td>
+   <td style="text-align:right;"> 4,412 </td>
+   <td style="text-align:right;"> 3,119 </td>
+   <td style="text-align:right;"> 347,507 </td>
+   <td style="text-align:right;"> 5.71 </td>
+   <td style="text-align:right;"> 8.46 </td>
+   <td style="text-align:right;"> 8.21 </td>
+   <td style="text-align:right;"> 10.91 </td>
+   <td style="text-align:right;"> 12.89 </td>
+   <td style="text-align:right;"> 6.02 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #aacfe6">1.03</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dceaf6">0.78 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99c6e0">1.57</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b4d5e9">1.18</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 46-55 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 1,813 </td>
+   <td style="text-align:right;"> 353,307 </td>
+   <td style="text-align:left;"> 12,360 </td>
+   <td style="text-align:right;"> 3,270 </td>
+   <td style="text-align:right;"> 939 </td>
+   <td style="text-align:right;"> 397,198 </td>
+   <td style="text-align:right;"> 4.37 </td>
+   <td style="text-align:right;"> 6.27 </td>
+   <td style="text-align:right;"> 8.42 </td>
+   <td style="text-align:right;"> 8.35 </td>
+   <td style="text-align:right;"> 3.88 </td>
+   <td style="text-align:right;"> 6.88 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c5deef">0.74</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ddeaf6">0.75 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cae0f0">0.46</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0e3f2">0.46</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 46-55 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 1,697 </td>
+   <td style="text-align:right;"> 369,612 </td>
+   <td style="text-align:left;"> 17,846 </td>
+   <td style="text-align:right;"> 4,450 </td>
+   <td style="text-align:right;"> 2,240 </td>
+   <td style="text-align:right;"> 396,513 </td>
+   <td style="text-align:right;"> 6.60 </td>
+   <td style="text-align:right;"> 8.53 </td>
+   <td style="text-align:right;"> 8.80 </td>
+   <td style="text-align:right;"> 12.61 </td>
+   <td style="text-align:right;"> 9.25 </td>
+   <td style="text-align:right;"> 6.87 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afd2e8">0.97</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ddeaf6">0.68 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b0d3e8">1.05</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c6deef">0.73</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 56-65 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 2,636 </td>
+   <td style="text-align:right;"> 392,958 </td>
+   <td style="text-align:left;"> 9,809 </td>
+   <td style="text-align:right;"> 2,646 </td>
+   <td style="text-align:right;"> 516 </td>
+   <td style="text-align:right;"> 396,916 </td>
+   <td style="text-align:right;"> 3.85 </td>
+   <td style="text-align:right;"> 5.07 </td>
+   <td style="text-align:right;"> 9.36 </td>
+   <td style="text-align:right;"> 7.37 </td>
+   <td style="text-align:right;"> 2.13 </td>
+   <td style="text-align:right;"> 6.88 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e8f5">0.54</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ddeaf6">0.69 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5e6f4">0.23</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6e7f4">0.29</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 56-65 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 2,428 </td>
+   <td style="text-align:right;"> 372,531 </td>
+   <td style="text-align:left;"> 15,842 </td>
+   <td style="text-align:right;"> 3,914 </td>
+   <td style="text-align:right;"> 1,590 </td>
+   <td style="text-align:right;"> 389,684 </td>
+   <td style="text-align:right;"> 5.90 </td>
+   <td style="text-align:right;"> 7.50 </td>
+   <td style="text-align:right;"> 8.87 </td>
+   <td style="text-align:right;"> 11.28 </td>
+   <td style="text-align:right;"> 6.57 </td>
+   <td style="text-align:right;"> 6.75 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bbd8eb">0.85</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #deebf7">0.66 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bedaec">0.74</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbe1f1">0.58</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 66-75 </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 2,019 </td>
+   <td style="text-align:right;"> 246,734 </td>
+   <td style="text-align:left;"> 7,083 </td>
+   <td style="text-align:right;"> 1,474 </td>
+   <td style="text-align:right;"> 122 </td>
+   <td style="text-align:right;"> 257,369 </td>
+   <td style="text-align:right;"> 1.75 </td>
+   <td style="text-align:right;"> 2.82 </td>
+   <td style="text-align:right;"> 5.88 </td>
+   <td style="text-align:right;"> 3.34 </td>
+   <td style="text-align:right;"> 0.50 </td>
+   <td style="text-align:right;"> 4.46 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #deebf7">0.48</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dce9f6">0.85 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbe9f6">0.09</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dce9f6">0.15</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 66-75 </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 2,072 </td>
+   <td style="text-align:right;"> 224,345 </td>
+   <td style="text-align:left;"> 12,140 </td>
+   <td style="text-align:right;"> 2,063 </td>
+   <td style="text-align:right;"> 454 </td>
+   <td style="text-align:right;"> 238,410 </td>
+   <td style="text-align:right;"> 2.72 </td>
+   <td style="text-align:right;"> 3.95 </td>
+   <td style="text-align:right;"> 5.34 </td>
+   <td style="text-align:right;"> 5.21 </td>
+   <td style="text-align:right;"> 1.87 </td>
+   <td style="text-align:right;"> 4.13 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c5deef">0.74</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dceaf6">0.76 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cfe3f2">0.35</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d4e5f3">0.36</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 76+ </td>
+   <td style="text-align:left;"> Female </td>
+   <td style="text-align:right;"> 985 </td>
+   <td style="text-align:right;"> 123,166 </td>
+   <td style="text-align:left;"> 4,488 </td>
+   <td style="text-align:right;"> 868 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 214,063 </td>
+   <td style="text-align:right;"> 0.55 </td>
+   <td style="text-align:right;"> 1.66 </td>
+   <td style="text-align:right;"> 2.93 </td>
+   <td style="text-align:right;"> 1.06 </td>
+   <td style="text-align:right;"> 0.11 </td>
+   <td style="text-align:right;"> 3.71 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5e6f4">0.57</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d4e5f3">1.57 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ddeaf6">0.04</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #deebf7">0.1 </span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 76+ </td>
+   <td style="text-align:left;"> Male </td>
+   <td style="text-align:right;"> 1,087 </td>
+   <td style="text-align:right;"> 116,120 </td>
+   <td style="text-align:left;"> 9,200 </td>
+   <td style="text-align:right;"> 1,149 </td>
+   <td style="text-align:right;"> 90 </td>
+   <td style="text-align:right;"> 145,510 </td>
+   <td style="text-align:right;"> 1.07 </td>
+   <td style="text-align:right;"> 2.20 </td>
+   <td style="text-align:right;"> 2.77 </td>
+   <td style="text-align:right;"> 2.04 </td>
+   <td style="text-align:right;"> 0.37 </td>
+   <td style="text-align:right;"> 2.52 </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bfdbed">0.8 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9e8f5">1.08 </span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9e8f5">0.13</span> </td>
+   <td style="text-align:left;"> <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dae9f6">0.18</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Total </td>
+   <td style="text-align:left;font-weight: bold;"> - </td>
+   <td style="text-align:right;font-weight: bold;"> 21,213 </td>
+   <td style="text-align:right;font-weight: bold;"> 4,198,353 </td>
+   <td style="text-align:left;font-weight: bold;"> - </td>
+   <td style="text-align:right;font-weight: bold;"> 52,188 </td>
+   <td style="text-align:right;font-weight: bold;"> 24,208 </td>
+   <td style="text-align:right;font-weight: bold;"> 5,772,917 </td>
+   <td style="text-align:right;font-weight: bold;"> 52.32 </td>
+   <td style="text-align:right;font-weight: bold;"> 100.00 </td>
+   <td style="text-align:right;font-weight: bold;"> 99.99 </td>
+   <td style="text-align:right;font-weight: bold;"> 100.01 </td>
+   <td style="text-align:right;font-weight: bold;"> 99.98 </td>
+   <td style="text-align:right;font-weight: bold;"> 100.01 </td>
+   <td style="text-align:left;font-weight: bold;"> <span style="display: block; padding: 0 4px; border-radius: 4px">-   </span> </td>
+   <td style="text-align:left;font-weight: bold;"> <span style="display: block; padding: 0 4px; border-radius: 4px">-    </span> </td>
+   <td style="text-align:left;font-weight: bold;"> <span style="display: block; padding: 0 4px; border-radius: 4px">-   </span> </td>
+   <td style="text-align:left;font-weight: bold;"> <span style="display: block; padding: 0 4px; border-radius: 4px">-   </span> </td>
+  </tr>
+</tbody>
+<tfoot>
+<tr><td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span> <sup></sup> Average PMD is derived by taking driving data in four neighboring states (IA, IL, MI, MN, WI). VMT is derived by multplying PMD by total drivers.</td></tr>
+<tr><td style="padding: 0; " colspan="100%">
+<sup>1</sup> Source: 2017 National Household Travel Survey<br> <sup>2</sup> Source: 2017 and 2018 Crash Database from TOPS Lab<br> <sup>3</sup> Source: 2017 and 2018 Arrest data from Wisconsin Department of Justice<br> <sup>4</sup> Source: 2017 Census Bureau Population Estimates Program<br>
+</td></tr>
+</tfoot>
+</table> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

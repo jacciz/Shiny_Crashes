@@ -32,7 +32,7 @@ mod_chart_mnrcoll_server <- function(id, crash_df) {
         )
       } else {
         mnr_crashes <- crash_df() %>%
-          dplyr::filter(MNRCOLL != "Unknown")
+          dplyr::filter(.data$MNRCOLL != "Unknown")
         
         mnr_crashes_table <-
           table(mnrcoll = mnr_crashes$MNRCOLL) %>% tibble::as_tibble()

@@ -8,9 +8,62 @@
 #' All crash data
 #'
 #' A dataset containing crash data from WisDOT.
-#'
 #' @format A data frame with of crash data:
 #' \describe{
 #' }
 #' @source \url{http://www.diamondse.info/}
 "all_crashes"
+
+#' All vehicle data
+#'
+#' A dataset containing crash data from WisDOT.
+#' @format A data frame with of crash data:
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+ "all_vehicles"
+
+
+#' All person data
+#'
+#' A dataset containing crash data from WisDOT.
+#' @format A data frame with of crash data:
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+"all_persons"
+
+
+#' All crash flag data
+#'
+#' A dataset containing crash data from WisDOT.
+#'
+#' @format A data frame with of crash data:
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+"all_crsh_flags"
+
+
+#' county shapefile#
+#' @format shp
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+"county"
+
+#' county recode
+#'
+#' @format shp
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+"county_recode"
+
+#' muni recode
+#'
+#' @format shp
+#' \describe{
+#' }
+#' @source \url{http://www.diamondse.info/}
+"muni_recode"

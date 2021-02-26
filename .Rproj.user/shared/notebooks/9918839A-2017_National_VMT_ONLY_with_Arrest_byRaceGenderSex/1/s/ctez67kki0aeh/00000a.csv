@@ -1,0 +1,5 @@
+"0",""
+"0",""
+"0","# Get drivers in injury/death crashes "
+"0","persons_drivers %>% filter(CRSHSVR != ""Property Damage"", age_group_10yr != ""Unknown"") %>% "
+"0","person_summarise_crash_count(., fields_to_summarise = ""age_group_10yr"") %>% left_join(. , license_count, by = ""age_group_10yr"") %>% mutate(percent_of_crashes = crash_count * 100 / sum(crash_count, na.rm = TRUE))# %>% count(sum(crash_count))"

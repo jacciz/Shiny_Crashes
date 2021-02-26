@@ -1,0 +1,2 @@
+"0","persons_drivers  %>% get_alcohol_impaired_driver_flag() %>% filter(alcohol_impaireddriver_flag == ""Y"", CRSHSVR != ""Property Damage"") %>% "
+"0","person_summarise_crash_count(., fields_to_summarise = ""R_RACE"") %>% mutate(percent_of_crashes = crash_count * 100 / sum(crash_count, na.rm = TRUE)) "

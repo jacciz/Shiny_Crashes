@@ -1,0 +1,43 @@
+"0","# This is to use package functions"
+"0","# nhts_data <- read_data(""2017"", ""C:/NHTS/"")"
+"0",""
+"0","# These csvs are to do our own analysis w/o using package functions"
+"0","nhts_person <- read_csv(""C:/NHTS/csv/2017/person.csv"") %>% as.data.table() %>% mutate(HOUSEID = as.character(HOUSEID))"
+"2","
+[36m--[39m [1m[1mColumn specification[1m[22m [36m----------------------------------------------------------------------------------------------------------[39m
+cols(
+  .default = col_character(),
+  HOUSEID = [32mcol_double()[39m,
+  R_AGE = [32mcol_double()[39m,
+  NWALKTRP = [32mcol_double()[39m,
+  WALK4EX = [32mcol_double()[39m,
+  NBIKETRP = [32mcol_double()[39m,
+  BIKE4EX = [32mcol_double()[39m,
+  BIKESHARE = [32mcol_double()[39m,
+  PTUSED = [32mcol_double()[39m,
+  MCUSED = [32mcol_double()[39m,
+  CARSHARE = [32mcol_double()[39m,
+  RIDESHARE = [32mcol_double()[39m,
+  CARRODE = [32mcol_double()[39m,
+  TIMETOWK = [32mcol_double()[39m,
+  NOCONG = [32mcol_double()[39m,
+  PUBTIME = [32mcol_double()[39m,
+  WKFMHMXX = [32mcol_double()[39m,
+  DELIVER = [32mcol_double()[39m,
+  VPACT = [32mcol_double()[39m,
+  LPACT = [32mcol_double()[39m,
+  YRTOUS = [32mcol_double()[39m
+  # ... with 22 more columns
+)
+[36mi[39m Use [38;5;251m[48;5;235m[38;5;251m[48;5;235m`spec()`[48;5;235m[38;5;251m[49m[39m for the full column specifications.
+
+"
+"0","# Then we need to relabel variables"
+"0","nhts_person <- nhts_person %>% nhts_relabel_race() %>% nhts_relabel_race_if_hispanic() %>% nhts_relabel_sex() %>% nhts_relabel_hispanic() %>% nhts_combine_unknown_race() %>% get_age_groups_10yr(., nhts_person$R_AGE) # %>% mutate(R_RACE = factor(R_RACE, levels = race_factor_level), age_group_10yr = factor(age_group_10yr, levels = age_group_10yr_factor_level))"
+"0",""
+"0","# Misc code"
+"0","# list(R_AGE,R_RACE,R_SEX,R_HISP)  HHSTATE %in% c(""WI"")"
+"0","# filter(E != ""NaN"") %>% hablar::convert(hablar::int(R_AGE)) %>% mutate(R_AGE = replace_na(R_AGE, ""N""))"
+"0",""
+"0","# nhts_person %>% nhts_relabel_race() %>% "
+"0","#     mutate(R_RACE = ifelse(R_HISP %in% c(""01"", ""Yes, Hispanic or Latino""), ""Hispanic"", R_RACE)) %>% nhts_combine_unknown_race()  #nhts_relabel_race_integ()"

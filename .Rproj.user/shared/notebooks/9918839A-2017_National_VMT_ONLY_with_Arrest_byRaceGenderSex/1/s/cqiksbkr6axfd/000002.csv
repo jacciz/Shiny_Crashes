@@ -1,0 +1,7 @@
+"0","# d1 <- nhts_summarise_total_drivers(nhts_person, fields_to_summarise = ""R_AGE"")"
+"0","# p1 <- census_summarise_pop_count(census17, fields_to_summarise = ""R_AGE"")"
+"0","# left_join(d1, p1, by = ""R_AGE"") %>% pivot_longer("
+"0","#   cols = c(""total_drivers"", ""total_population""),"
+"0","#   names_to = ""type"","
+"0","#   values_to = ""total"""
+"0","# ) %>% filter(R_AGE >= 0 & R_AGE < 85) %>% ggplot(aes(x = R_AGE, y = total, color = type)) + geom_point() + theme(legend.position = ""top"") + scale_x_continuous(breaks = seq(0, 90, 5))"

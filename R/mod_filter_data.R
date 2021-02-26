@@ -33,12 +33,12 @@ mod_filter_data_server <-
            min_year,
            max_year,
            county,
-           muni,
+           # muni,
            crsh_svr) {
     shiny::moduleServer(id, function(input, output, session) {
-      
       # Make into data table. Can then use keys, indexing, .
-      data_input = data.table::as.data.table(data_input)
+      data_input = data.table::data.table(data_input)
+      
       # Set keys for fast indexing
       keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR")
       data.table::setkeyv(data_input, keycols)
@@ -55,8 +55,7 @@ mod_filter_data_server <-
       reactive(data_input[CNTYCODE %in% county() &
                             CRSHSVR %in% crsh_svr() &
                             CRSHDATE %within% yearrange()])
-    }
-    )
+    })
   }
     
 ## To be copied in the UI
