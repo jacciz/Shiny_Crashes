@@ -20,3 +20,10 @@ color_map_wisinj <- c("Suspected Minor Injury" ="#4AAECF", "Possible Injury" = "
 
 # Factor levels
 wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
+
+# assigning colors for crash severity for map
+# color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
+# New colors
+crshsvr_factor_levels <- c("Property Damage", "Injury", "Fatal") # So Fatals will be on top in the map
+# wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
+

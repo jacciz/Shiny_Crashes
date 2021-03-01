@@ -1,11 +1,3 @@
-# assigning colors for crash severity for map
-# color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
-# New colors
-color_map_svr <- c("Fatal"="#DB7E65", "Injury"="#4AAECF", "Property Damage"="#44DBAE")
-crshsvr_factor_levels <- c("Property Damage", "Injury", "Fatal") # So Fatals will be on top in the map
-# wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
-
-
 #' Inverted versions of in, is.null and is.na
 #' 
 #' @noRd

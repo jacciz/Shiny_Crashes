@@ -1,3 +1,5 @@
+# https://convertio.co/png-svg/  ### convert to svg
+
 #' The application User-Interface
 #' 
 #' @param request Internal parameter for `{shiny}`. 
@@ -53,7 +55,7 @@ app_ui <- function(request) {
           ),
           # div(class = "inlay", style = "height:15px;width:100%;background-color: #ecf0f5;"),
           menuItem(
-            strong("Year"),
+            strong(" Year"),
             tabName = "year",
             icon = icon("calendar"),
             mod_siderbar_select_year_ui("year") # Module
@@ -71,7 +73,7 @@ app_ui <- function(request) {
             # mod_siderbar_select_muni_ui("municode_input") # Module
           ),
           menuItem(
-            strong("Crash Severity"),
+            strong(" Crash Severity"),
             tabName = "crash_type",
             icon = icon("car-crash"),
             # startExpanded = TRUE, # start expanded
@@ -110,7 +112,7 @@ app_ui <- function(request) {
             tags$h5("")
           ),
           menuItem(
-            strong("Flags"),
+            strong(" Flags"),
             tabName = "crash_flags",
             icon = icon("flag"),
             startExpanded = FALSE,
@@ -130,7 +132,7 @@ app_ui <- function(request) {
               ),
               style = "display:inline-block; margin-top: 10px; padding: 0px;"
             ),
-            tags$h5("Driver behavior", style = "margin-top: 10px;"),
+            tags$h5(" Driver behavior", style = "margin-top: 10px;"),
             # set to each have 15 characters to fake left align: 1 space - &nbsp;  2 - &ensp; 4 - &emsp;
             materialSwitch(
               inputId = "ALCFLAG",
@@ -174,7 +176,7 @@ app_ui <- function(request) {
               inputId = "teenflag",
               label = tags$span(
                 HTML(
-                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; '
+                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -183,7 +185,7 @@ app_ui <- function(request) {
               inputId = "olderflag",
               label = tags$span(
                 HTML(
-                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
+                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -223,7 +225,7 @@ app_ui <- function(request) {
               inputId = "singlevehflag",
               label = tags$span(
                 HTML(
-                  '<img src="app/www/icons8-traffic-accident-50.png" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;'
+                  '<img src="www/icons8-traffic-accident-50.svg" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;'
                 )
               ),
               status = "primary"
@@ -232,15 +234,15 @@ app_ui <- function(request) {
               inputId = "deerflag",
               label = tags$span(
                 HTML(
-                  '<img src="app/www/icons8-deer-52.png" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
+                  '<img src="www/icons8-deer-52.svg" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
                 )
               ),
               status = "primary"
             )
           ),
-          # <img src="app/www/icons8-deer-52.png"">
+          # <img src="www/icons8-deer-52.svg"">
           menuItem(
-            strong("Map Settings"),
+            strong(" Map Settings"),
             tabName = "map_sett",
             icon = icon("map"),
             # startExpanded = TRUE,  # start expanded
@@ -248,7 +250,7 @@ app_ui <- function(request) {
               "hex",
               label = tags$span(
                 HTML(
-                  '</svg><image class="hexbin_svg" src="app/www/hexbin.svg"/> Hex Bins'
+                  '</svg><image class="hexbin_svg" src="www/hexbin.svg"/> Hex Bins'
                 )
               ),
               status = "primary",
@@ -285,7 +287,6 @@ app_ui <- function(request) {
             # height = "600px",
             tabPanel(
               tagList(shiny::icon("paper-plane"), strong("Welcome")),
-              mod_chart_wisinj_by_year_ui("wisinj_by_year"), # module ?
               tagList(tags$span(
                 HTML(
                   "<h3>Welcome to the WisDOT Interactive Crash Statistics Dashboard.</h3>
@@ -294,8 +295,8 @@ app_ui <- function(request) {
           click to isolate a variable.</h6>
 
           <h6 style=font-size:14px;> For a data request email BOTSTS at <a href=mailto:CrashDataAnalysis@dot.wi.gov>CrashDataAnalysis@dot.wi.gov</a> </h6>
-            <img src=app/www/tops-lab-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248)>
-            <img src=app/www/zero-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248);>"
+            <img src=www/tops-lab-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248)>
+            <img src=www/zero-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248);>"
                 )
               ))
             ),
@@ -304,12 +305,14 @@ app_ui <- function(request) {
               tagList(shiny::icon("car-crash"), strong("Crash Trends")),
               mod_chart_crsh_svr_mth_ui("crsh_svr_mth"),
               br(),
-              mod_chart_timeofday_heat_ui("timeofday_heat")
+              mod_chart_timeofday_heat_ui("timeofday_heat"),
+              br(),
+              mod_chart_wisinj_by_year_ui("wisinj_by_year")
             ),
             tabPanel(tagList(
               tags$span(
                 HTML(
-                  '<img src="app/www/icons8-car-crash-50.png" style="width:16px;height:16px;"></i>'
+                  '<img src="www/icons8-car-crash-50.svg" style="width:16px;height:16px;"></i>'
                 )
               ), strong("Crash Types")
             ),
@@ -323,7 +326,7 @@ app_ui <- function(request) {
             tabPanel(
               tagList(tags$span(
                 HTML(
-                  '<img src="app/www/icons8-driver-60.png" style="width:16px;height:16px;"></i>'
+                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i>'
                 )
               ), strong("Driver Behavior")),
               mod_chart_drvrpc_ui("drvrpc_chart")
@@ -376,7 +379,7 @@ golem_add_external_resources <- function(){
   add_resource_path(
     'www', app_sys('app/www')
   )
- 
+  # tags$img(src = "www/icons8-driver-60.svg")
   tags$head(
     favicon(),
     bundle_resources(

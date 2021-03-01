@@ -25,7 +25,7 @@
     width: 16px;
 }
 
-.nav-tabs-custom>.nav-tabs>li>a:hover {color:rgb(0,0,0);}
+.nav-tabs-custom>.nav-tabs>li>a:hover {color:#4fb9db;}
 
 .irs-grid-text {font-size: 12pt;}
       .irs-min {font-size: 12pt;}
@@ -46,8 +46,7 @@
       .sidebar-menu .treeview-menu {padding-left: 0px;}
 
       .h5, h5 {font-size: 14px; margin-top: 30px; margin-bottom: 0px; font-weight: bold; padding-left: 40px}
-
-      body{color: black;}
+      
 
       .sidebar{color: rgb(100,100,100)}
 
@@ -58,9 +57,9 @@
       .fa, .fas {font-size: 20px}
       .small-box .icon-large{top: 0px;}
       .small-box.bg-red {height: 70px; text-align:center; background-color: rgb(248,248,248) !important; color: rgb(248,248,248) !important;}
-      .small-box p {color: rgb(100,100,100)}
-
-      .skin-blue .wrapper {background-color: #1d4f81;}
+      /*.small-box p {color: rgb(100,100,100)} */ 
+      
+      .skin-blue .wrapper {background-color: rgb(240,240,240)}  /* background color */
 
       .main-header .logo {font-size: 20px; font-weight: normal;}
       .main-header .navbar-custom-menu, .main-header .navbar-right {float: right}

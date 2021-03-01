@@ -193,13 +193,13 @@ app_server <- function( input, output, session ) {
   output$tot_crash <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size: 22px">',
+        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
         format(nrow(filtered_crashes()), big.mark = ","),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-car-crash" style = "color:grey;"></i><p style="font-size:16px;display:inline-block;padding-right:20px;">&ensp;Crashes</p>'
+        '<i class="fa fa-car-crash" style = "color:grey;font-size: 2vmin;"></i><p style="font-size:1vmin;display:inline-block;padding-right:20px;color:rgb(15,15,15);">&ensp;Crashes</p>'
       )
     ),
     color = "red")
@@ -208,26 +208,26 @@ app_server <- function( input, output, session ) {
   output$tot_inj <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size: 22px">',
+        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
         filtered_crashes() %>% summarise(x = format(sum(.data$TOTINJ), big.mark = ",")),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-first-aid" style = "color:#428BCA;"></i><p style="font-size:16px;text-align: center;display:inline-block;padding-right:20px;">&ensp;People injured</p>'
+        '<i class="fa fa-first-aid" style = "color:#428BCA;font-size: 2vmin;"></i><p style="font-size: 1vmin;color:rgb(15,15,15);text-align:center;display:inline-block;padding-right:20px;">&ensp;People injured</p>'
       )),
     color = "red")
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size: 22px">',
+        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
         filtered_crashes() %>% summarise(x = format(sum(.data$TOTFATL), big.mark = ",")),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-heartbeat" style = "color:#D50032;"></i><p style="font-size:16px;display:inline-block;padding-right:20px;">&ensp;People killed</p>'
+        '<i class="fa fa-heartbeat" style = "color:#D50032;font-size: 2vmin;"></i><p style="font-size:1vmin;color:rgb(15,15,15);display:inline-block;padding-right:20px;">&ensp;People killed</p>'
       )),
     color = "red")
   })

@@ -1,5 +1,0 @@
-"0","persons <- import_db_data(file_loc, ""person"", columns = persons_columns, years = ""21"")
-"
-"2","Error in fst::read_fst(file_name, to = 1) : 
-  Error opening fst file for reading, please check access rights and file availability
-"
