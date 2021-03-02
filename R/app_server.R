@@ -24,8 +24,6 @@ app_server <- function( input, output, session ) {
   
   county_input <- mod_siderbar_select_county_server("cntycode_input")
   municode_input <- mod_siderbar_select_muni_server("municode_input", county_input)
-  output$out <- renderText(year_input()) # Print to test
-  
   
   # find date range to select, returns min and max year
   min_date_selected <- reactive({
@@ -44,7 +42,7 @@ app_server <- function( input, output, session ) {
   })
   
   # returns list for which crsh svr are selected. List must match Input IDs with field names of data
-  crshsvr_selected_inputs <-  c("Fatal", "Injury", "Property Damage")
+  crshsvr_selected_inputs <-c("Fatal", "Injury", "Property Damage")
   # Looks at status of crshsvr buttoms and returns only the ones that are selected (i.e. == TRUE)
   crshsvr_selected <- reactive({
     data <- sapply(crshsvr_selected_inputs, function(x) input[[x]] ) # fields contains all values we want to save, gather all the values based on input
@@ -84,14 +82,14 @@ app_server <- function( input, output, session ) {
     })
   
   # Takes the selected county, finds bbox so we can zoom to it
-  selected_county <- reactive({ 
-    sel_county <- county %>%
-      filter(.data$DNR_CNTY_C %in% county_input()) #COUNTY_NAM
-    bbox <- sf::st_bbox(sel_county) %>%
-      as.vector()
-    bbox
-  })
-  
+  # selected_county <- reactive({ 
+  #   sel_county <- county %>%
+  #     filter(.data$DNR_CNTY_C %in% county_input()) #COUNTY_NAM
+  #   bbox <- sf::st_bbox(sel_county) %>%
+  #     as.vector()
+  #   bbox
+  # })
+  # 
   ################### DATA OBSERVE EVENTS OF DATA #######################
   
   # returns FINAL crash data for charts, if a flag was selected it is joined with crsh_flag list via crshnmbr
@@ -126,50 +124,46 @@ app_server <- function( input, output, session ) {
       }
     })
   
-  # Module that filters data for each database
-  # returns filtered data based of what user selected (county, year, crash severity) 
-  filtered_crashes_no_flags <-
-    mod_filter_data_server(
-      "crash",
-      all_crashes,
-      min_date_selected,
-      max_date_selected,
-      county_input,
-      # muni_input,
-      crshsvr_selected
-    )
+  filtered_crashes_no_flags <- 
+    reactive({
+      # mod_filter_data_server("crash", "crash")
+      mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)
+    })
+  
+  # TEST SQL
+  # filtered_crashes_no_flags <-DBI::dbReadTable(pool, "17crash")
   filtered_persons_no_flags <-
-    mod_filter_data_server(
-      "person",
-      all_persons,
-      min_date_selected,
-      max_date_selected,
-      county_input,
-      # muni_input,
-      crshsvr_selected
-    )
+    reactive({
+    mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)
+    })
+  
+  
+  all_vehicles <-
+    DBI::dbReadTable(pool, "2017vehicle")
+  
+  all_crsh_flags <-
+    DBI::dbReadTable(pool, "2017crsh_flags")
   
   filtered_vehicles <-       # joins with the already filtered_crashes
     reactive({
       all_vehicles <-
-        dplyr::inner_join(all_vehicles, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
+        dplyr::inner_join(veh, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
     })
   
   # Grabs the lat, longs, and crsh_svr for mapping
   filtered_crash_lat_long <- reactive({
     crash_lat_long_j <-
-      filtered_crashes()[, .(lng, lat, CRSHSVR)] %>%
+      filtered_crashes() %>% select(lng, lat, CRSHSVR) %>% # [, .(lng, lat, CRSHSVR)] %>%
       stats::na.omit() %>%
       arrange(factor(CRSHSVR, levels  = crshsvr_factor_levels))# remove crashes with no lat/long
-    
     if (dim(crash_lat_long_j)[1] != 0) {
       # convert to sf so we can map it!
-      return(
         crash_lat_long_j <- sf::st_as_sf(
           x = crash_lat_long_j,
           coords = c("lng", "lat"),
           crs = 4326
-        ))
+        )
+      return(sf::st_transform(crash_lat_long_j, "+proj=longlat +datum=WGS84"))
     } else { # Create fake df when nothing to map
       sf_obj = data.table::data.table(data.frame(
         lng = c(0, 0),
@@ -183,12 +177,13 @@ app_server <- function( input, output, session ) {
       return(sf_obj)
     }
   })
-  
+
   # Get number of crashes with no coordinates
   output$get_number_of_NA <- renderText({
     toString(format(sum(is.na(filtered_crashes()$lng)), big.mark = ","))
   })
-  
+ 
+
   ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
     valueBox(tags$span(HTML(
@@ -254,25 +249,26 @@ app_server <- function( input, output, session ) {
   # render basic map (CRS is 4326), i.e. items that do not need a reactive
   output$map1 <- renderLeaflet({
     leaflet() %>%
-      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>%
+      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) #%>%
       # addTiles(options = providerTileOptions(opacity = .5)) %>%
-      addPolygons(
-        data = county$geometry,
-        group = "Counties",
-        color = "#444444",
-        fillOpacity = 0,
-        weight = 1,
-        smoothFactor = 0.5
-        # options = pathOptions(clickable = FALSE)
-      )
+    
+      # addPolygons(
+      #   data = county$geometry,
+      #   group = "Counties",
+      #   color = "#444444",
+      #   fillOpacity = 0,
+      #   weight = 1,
+      #   smoothFactor = 0.5
+      #   # options = pathOptions(clickable = FALSE)
+      # )
   })
   
   # change view based on county(ies) selected
-  observeEvent(county_input(), {
-    county_zoom <- selected_county()
-    leafletProxy("map1") %>%
-      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
-  })
+  # observeEvent(county_input(), {
+  #   county_zoom <- selected_county()
+  #   leafletProxy("map1") %>%
+  #     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
+  # })
   
   # if (dim(filtered_crashes())[1] != 0) {
   observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes

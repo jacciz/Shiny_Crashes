@@ -5,9 +5,9 @@ library(memisc)
 library(gdata)
 library(fst)
 
+year = "17"
 # This script return a dataframe with a list of crshnmbr with flags for each year. The script finds crashes with a certain flag (i.e. older driver, speed),
-# adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe and saves as an FST. 
-# Exported data must be put in 'data/' file. Do this for each year.
+# adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe to save to SQLite db.
 
 # setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny")  # set WD
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/" # where CSVs are saved
@@ -24,10 +24,12 @@ import_all_crashes <- function(csv_name, file_loc = file) {
       select = c(
         "CRSHNMBR",
         "CRSHTYPE",
+        "CRSHSVR",
+        "CRSHDATE",
+        "CNTYCODE",
         paste0("ANMLTY", c("01","02","03","04","05","06","07")),
         "MNRCOLL",
         "TOTUNIT",
-        "CRSHDATE",
         "ALCFLAG",
         "DRUGFLAG",
         "BIKEFLAG",
@@ -41,7 +43,8 @@ import_all_crashes <- function(csv_name, file_loc = file) {
     ALCFLAG = case_when(ALCFLAG == "Yes" ~ "Y",
                         ALCFLAG == "No" ~ "N"),
     DRUGFLAG = case_when(DRUGFLAG == "Yes" ~ "Y",
-                         DRUGFLAG == "No" ~ "N")
+                         DRUGFLAG == "No" ~ "N"),
+    CRSHDATE = as.character(CRSHDATE)
   )
 }
 import_all_persons <- function(csv_name, file_loc = file) {
@@ -67,8 +70,8 @@ import_all_persons <- function(csv_name, file_loc = file) {
 }
 
 # Import the data from 'file', select the crash year CSV. Must do each year separately.
-all_crashes <- import_all_crashes(csv_name = "17crash")
-all_persons <- import_all_persons(csv_name = "17person")
+all_crashes <- import_all_crashes(csv_name = paste0(year,"crash"))
+all_persons <- import_all_persons(csv_name = paste0(year,"person"))
 
 # Functions to find flags, returns flag column and crshnmbr. By list I mean a long df.
 get_list_speedflags     <- function(persons_df) {
@@ -121,7 +124,7 @@ get_list_distractedflags     <- function(persons_df) {
   
   distractflags <-
     left_join(persons_df, combine, by = c("CRSHNMBR", "UNITNMBR", "ROLE")) %>%
-    mutate(distracted_flag = replace_na(distracted_flag, "N")) %>%
+    mutate(distracted_flag = tidyr::replace_na(distracted_flag, "N")) %>%
     dplyr::select(CRSHNMBR, distracted_flag) # %>% group_by(CRSHNMBR)
   
   distractflags <- unique(distractflags[])
@@ -189,6 +192,7 @@ allcrashflag_crshes <- get_list_crashflags(all_crashes)
 all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"),
                     list(speedflag_crshes, distractflag_crshes, teenflag_crshes, olderflag_crshes,
                          singleveh_crshes, lanedep_crshes, deer_crshes, allcrashflag_crshes)) # combine to one df
+all_flags_com = all_crashes %>% dplyr::select(CRSHNMBR, CRSHDATE, CNTYCODE, CRSHSVR) %>% left_join(all_flags, ., by = "CRSHNMBR")
 
 # Save crash flags as an RDS or FST, no compression so they open faster and are larger in size
 # saveRDS(all_flags, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/crsh_flags17.rds") # save final crash flags df into rds, CHANGE YEAR
@@ -198,3 +202,9 @@ all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"),
 # write_fst(all_flags, path = "C:/W_shortcut/Shiny_Crashes_Dashboard/crash_databases/17crsh_flags.fst", compress = 0) # save final crash flags df into rds, CHANGE YEAR
 
 # saveRDS(all_persons, file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Shiny_Crashes_Dashboard/data/all_persons_crsh_flags.rds") # save this once, just in case
+
+#### SAVE TO SQLITE
+fname = paste0("20",year,"crsh_flags")
+pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
+DBI::dbWriteTable(pool, fname, all_flags_com)
+# make CRSHNMBR primary key

@@ -5,45 +5,6 @@
 # THIS script loads that large database of each type (crash,person,vehicle,crsh_flags)
 
 
-#' All crash data
-#'
-#' A dataset containing crash data from WisDOT.
-#' @format A data frame with of crash data:
-#' \describe{
-#' }
-#' @source \url{http://www.diamondse.info/}
-"all_crashes"
-
-#' All vehicle data
-#'
-#' A dataset containing crash data from WisDOT.
-#' @format A data frame with of crash data:
-#' \describe{
-#' }
-#' @source \url{http://www.diamondse.info/}
- "all_vehicles"
-
-
-#' All person data
-#'
-#' A dataset containing crash data from WisDOT.
-#' @format A data frame with of crash data:
-#' \describe{
-#' }
-#' @source \url{http://www.diamondse.info/}
-"all_persons"
-
-
-#' All crash flag data
-#'
-#' A dataset containing crash data from WisDOT.
-#'
-#' @format A data frame with of crash data:
-#' \describe{
-#' }
-#' @source \url{http://www.diamondse.info/}
-"all_crsh_flags"
-
 
 #' county shapefile#
 #' @format shp

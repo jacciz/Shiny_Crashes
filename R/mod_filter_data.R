@@ -29,32 +29,50 @@ mod_filter_data_ui <- function(id){
 #' @noRd 
 mod_filter_data_server <-
   function(id,
-           data_input,
-           min_year,
-           max_year,
+           db_type,
            county,
-           # muni,
-           crsh_svr) {
+           crsh_svr,
+           years
+           # muni
+           ) {
     shiny::moduleServer(id, function(input, output, session) {
-      # Make into data table. Can then use keys, indexing, .
-      data_input = data.table::data.table(data_input)
+      min = "2017" # min(years())
+      max =  "2017" # max(years())
+      # Get all years from min to max and adds db type - i.e. char list of "2017crash
+      get_all_years_to_select <- paste0(seq(min,max, by = 1), db_type, sep = "")
+     
+      read_db_tables <- function(db_name){
+        DBI::dbReadTable(pool, db_name) %>% filter(CNTYCODE %in% county(), CRSHSVR %in% crsh_svr())
+      }
       
-      # Set keys for fast indexing
-      keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR")
-      data.table::setkeyv(data_input, keycols)
+      # Iterates each year/db type and returns a combined df
+      do.call(dplyr::bind_rows, lapply(get_all_years_to_select, read_db_tables))
       
-      # Get range of dates
-      yearrange <-
-        reactive(lubridate::interval(lubridate::mdy(paste0(
-          "01-01-", min_year()
-        )), lubridate::mdy(paste0(
-          "12-31-", max_year()
-        ))))
-      # reactive(data_input)
-      # %>% filter(.data[[CNTYCODE]] %in% county() )
-      reactive(data_input[CNTYCODE %in% county() &
-                            CRSHSVR %in% crsh_svr() &
-                            CRSHDATE %within% yearrange()])
+      
+      
+      ## OLD WAY
+      
+      # # Make into data table. Can then use keys, indexing, .
+      # data_input = data.table::data.table(data_input)
+      # 
+      # # Set keys for fast indexing
+      # keycols = c("CNTYCODE", "CRSHDATE", "CRSHSVR")
+      # data.table::setkeyv(data_input, keycols)
+      # 
+      # # Get range of dates
+      # yearrange <-
+      #   reactive(lubridate::interval(lubridate::mdy(paste0(
+      #     "01-01-", min_year()
+      #   )), lubridate::mdy(paste0(
+      #     "12-31-", max_year()
+      #   ))))
+      # # reactive(data_input)
+      # # %>% filter(.data[[CNTYCODE]] %in% county() )
+      # reactive(data_input[CNTYCODE %in% county() &
+      #                       CRSHSVR %in% crsh_svr()# &
+      #                       # CRSHDATE %within% yearrange()
+      #                     ]) #lubridate::mdy(crash$CRSHDATE)
+
     })
   }
     

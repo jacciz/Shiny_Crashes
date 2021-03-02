@@ -312,7 +312,7 @@ app_ui <- function(request) {
             tabPanel(tagList(
               tags$span(
                 HTML(
-                  '<img src="www/icons8-car-crash-50.svg" style="width:16px;height:16px;"></i>'
+                  '<img src="www/icons8-car-crash-50.svg" style="width:24px;height:24px;"></i>'
                 )
               ), strong("Crash Types")
             ),
@@ -326,7 +326,7 @@ app_ui <- function(request) {
             tabPanel(
               tagList(tags$span(
                 HTML(
-                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i>'
+                  '<img src="www/icons8-driver-60.svg" style="width:24px;height:24px;"></i>'
                 )
               ), strong("Driver Behavior")),
               mod_chart_drvrpc_ui("drvrpc_chart")
@@ -335,7 +335,7 @@ app_ui <- function(request) {
               tagList(
                 shiny::icon("bicycle"),
                 shiny::icon("walking"),
-                strong("Bike and Ped. Behavior")
+                strong("Bike/Ped. Behavior")
               ),
               mod_chart_nmtact_ui("nmtact_chart"),
               # br(),
@@ -376,6 +376,7 @@ app_ui <- function(request) {
 #' @noRd
 golem_add_external_resources <- function(){
   
+  # fst::read.fst(system.file("www/all_crash.fst"))
   add_resource_path(
     'www', app_sys('app/www')
   )

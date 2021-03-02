@@ -4,13 +4,13 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-# This script basically readies the data for the dashboard and is exported into an uncompressed FST
-# so data will be loaded in the app in global.R
+# SQLite - dates must be in character
 
-# This script imports data from a CSV, selects certain columns, add new columns (such as newtime and age group),
-# then exports to an FST file. Exported data must be moved to 'data/' folder. Do this for each year.
+# This script basically readies the data for the dashboard and is exported into teh SQLite database.
 
-# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny") # data to be saved here
+# This script imports data from a CSV, selects certain columns, add new columns (such as newtime and age group)
+
+
 # file_loc = "Data Prep for R Shiny/"
 # file = "W:/HSSA/Keep/Jaclyn Ziebert/R/Data Prep for R Shiny/"
 file = "C:/CSV/csv_from_sas/from_sas_csv/" # this is where the raw CSVs are and where data will be saved
@@ -22,7 +22,7 @@ import_all_crashes <- function(csv_name, file_loc = file) {
                      "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL", "LATDECDG", "LONDECDG")
           ) #  "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG"
   all_crashes <-
-    all_crashes %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
+    all_crashes %>% mutate(CRSHDATE = as.character(CRSHDATE)) # convert to date type
   all_crashes <- all_crashes %>% mutate(newtime = cut(  # this finds crash time by hour
     CRSHTIME,
     c(
@@ -85,7 +85,7 @@ import_all_crashes <- function(csv_name, file_loc = file) {
   setnames(all_crashes, "LATDECDG", "lat")
   
  # saveRDS(all_crashes, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
- write_fst(all_crashes, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
+ # write_fst(all_crashes, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
 import_all_persons <- function(csv_name, file_loc = file) {
@@ -113,7 +113,7 @@ import_all_persons <- function(csv_name, file_loc = file) {
       )
     )
   all_persons <-
-    all_persons %>% mutate(CRSHDATE = mdy(CRSHDATE)) # convert to date type
+    all_persons %>% mutate(CRSHDATE = as.character(CRSHDATE)) # convert to date type
   all_persons <- all_persons %>% mutate(age_group = cut( # add age_group column, 5 year intervals
     AGE,
     c(0,
@@ -168,10 +168,11 @@ import_all_persons <- function(csv_name, file_loc = file) {
   )
   all_persons <- all_persons %>% mutate(SEX = case_when(SEX == "F" ~ "Female", # relabel SEX
                                                         SEX == "M" ~ "Male",
-                                                        SEX == "U" ~ "Unknown"))
+                                                        SEX == "U" ~ "Unknown")) %>% 
+    mutate_at(vars(starts_with(c("DRVRPC","NMTACT"))), as.character)
 
   # saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
-  write_fst(all_persons, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
+  # write_fst(all_persons, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
 import_all_vehicles <- function(csv_name, file_loc = file) {
@@ -181,7 +182,7 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
     )
   all_vehicles <-
     all_vehicles %>% mutate(
-      CRSHDATE = mdy(CRSHDATE),
+      CRSHDATE = as.character(CRSHDATE),
       vehcate = case_when(
         VEHTYPE == "Passenger Car" ~ "Passenger Veh.",
         VEHTYPE == "(Sport) Utility Vehicle" ~ "Passenger Veh.",
@@ -196,17 +197,17 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
       )
     ) # convert to date type
   # saveRDS(all_vehicles, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
-  write_fst(all_vehicles, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
+  # write_fst(all_vehicles, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
 }
 
 # input is name of csv, just change year
-all_crashes <- import_all_crashes("19crash")
+all_crashes <- import_all_crashes("17crash")
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 #
-all_persons <- import_all_persons("19person")
+all_persons <- import_all_persons("17person")
 # Note: Creates a age_group field, relabels ROLE, SEX
 
-all_vehicles <- import_all_vehicles("19vehicle")
+all_vehicles <- import_all_vehicles("17vehicle")
 
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
@@ -214,3 +215,12 @@ all_vehicles <- import_all_vehicles("19vehicle")
 #
 # saveRDS(county_recode, file = "Shiny_Crashes_Dashboard/data/county_recode.rds")
 # saveRDS(muni_recode, file = "Shiny_Crashes_Dashboard/data/muni_recode.rds")
+
+
+#### SAVE TO SQLITE
+pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
+
+DBI::dbWriteTable(pool, "2017crash", all_crashes)
+DBI::dbWriteTable(pool, "2017person", all_persons)
+DBI::dbWriteTable(pool, "2017vehicle", all_vehicles)
+# make CRSHNMBR primary key

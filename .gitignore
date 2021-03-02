@@ -3,3 +3,4 @@ rsconnect
 *.fst
 inst/doc
 .Rproj.user
+crash_db.db

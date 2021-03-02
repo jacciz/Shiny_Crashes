@@ -1,1 +1,31 @@
-utils::globalVariables(c(".data", "."))
+# Note on globals https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
+
+utils::globalVariables(
+  c(
+    ".data",
+    ".",
+    "all_crashes",
+    "all_persons",
+    "all_crsh_flags",
+    "county",
+    "lng",
+    "lat",
+    "CRSHSVR",
+    "DRVRPC01",
+    "DRVRPC24",
+    "value",
+    "n",
+    "NMTACT01",
+    "NMTACT12",
+    "nmtact_count",
+    "nmtloc_count",
+    "age_group",
+    "SEX",
+    "newtime",
+    "DAYNMBR",
+    "CNTYCODE",
+    "CRSHDATE",
+    "muni_recode",
+    "county_recode"
+  )
+)

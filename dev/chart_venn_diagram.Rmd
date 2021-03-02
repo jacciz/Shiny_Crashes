@@ -7,6 +7,7 @@ library(data.table)
 library(DT)
 # crashes <- fst::read.fst("C:/W_shortcut/Shiny_Crashes_Dashboard/data-raw/18crash.fst") %>% as.data.table()
 
+
 library(ggVennDiagram)
 output$venn <- renderPlotly({
     if (length(get_crshflag_list()) < 2 | length(get_crshflag_list()) > 4 | dim(filtered_crashes())[1] == 0) {  # or no crashes with a time ??
@@ -77,6 +78,9 @@ output$venn <- renderPlotly({
       )
     }
   })
+
+crashes[, .(lng, lat, CRSHSVR)]
+crashes[[, .("lng", "lat")]]
 ```
 
 

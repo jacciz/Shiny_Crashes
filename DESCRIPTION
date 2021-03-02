@@ -9,6 +9,7 @@ Imports:
     config,
     dashboardthemes,
     data.table,
+    DBI,
     dplyr,
     DT,
     glue,
@@ -20,6 +21,7 @@ Imports:
     lubridate,
     leafgl,
     plotly,
+    RSQLite,
     sf,
     shiny,
     shinydashboard,
@@ -28,7 +30,9 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    processx
+    pool,
+    processx,
+    pkgload
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
