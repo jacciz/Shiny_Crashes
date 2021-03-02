@@ -14,6 +14,9 @@ app_server <- function( input, output, session ) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
+  # read shapefile for county
+  g = app_sys("inst/app/www/county.shp")
+  county_geom <- sf::st_read(g)
   # List the first level callModules here
   ################### SIDEBAR Data Inputs #######################
   # Return inputs to filter data based on user selection. When using these variables, include ()
@@ -66,7 +69,7 @@ app_server <- function( input, output, session ) {
       if (input$any_or_all) { # default for this button is 'any'
         # selects crash flags, filter each crshflag and finds any_vars == Y
         return(
-          all_crsh_flags %>%
+          imported_crsh_flags() %>%
             select(.data$CRSHNMBR, all_of(crshflag_list)) %>%
             filter_at(vars(all_of(crshflag_list)), any_vars(. == "Y")) %>%
             select(.data$CRSHNMBR)
@@ -74,7 +77,7 @@ app_server <- function( input, output, session ) {
       }
       # Same, but find all_vars == Y
       return(
-        all_crsh_flags %>%
+        imported_crsh_flags() %>%
           select(.data$CRSHNMBR, all_of(crshflag_list)) %>%
           filter_at(vars(all_of(crshflag_list)), all_vars(. == "Y")) %>%
           select(.data$CRSHNMBR)
@@ -82,13 +85,13 @@ app_server <- function( input, output, session ) {
     })
   
   # Takes the selected county, finds bbox so we can zoom to it
-  # selected_county <- reactive({ 
-  #   sel_county <- county %>%
-  #     filter(.data$DNR_CNTY_C %in% county_input()) #COUNTY_NAM
-  #   bbox <- sf::st_bbox(sel_county) %>%
-  #     as.vector()
-  #   bbox
-  # })
+  selected_county <- reactive({
+    sel_county <- county_geom %>%
+      filter(.data$DNR_CNTY_C %in% county_input()) #COUNTY_NAM
+    bbox <- sf::st_bbox(sel_county) %>%
+      as.vector()
+    bbox
+  })
   # 
   ################### DATA OBSERVE EVENTS OF DATA #######################
   
@@ -123,33 +126,32 @@ app_server <- function( input, output, session ) {
         ))
       }
     })
-  
+
+  ############# IMPORT DATA FROM SQLITE ##################
   filtered_crashes_no_flags <- 
     reactive({
       # mod_filter_data_server("crash", "crash")
       mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)
     })
-  
-  # TEST SQL
-  # filtered_crashes_no_flags <-DBI::dbReadTable(pool, "17crash")
+
   filtered_persons_no_flags <-
     reactive({
     mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)
     })
-  
-  
-  all_vehicles <-
-    DBI::dbReadTable(pool, "2017vehicle")
-  
-  all_crsh_flags <-
-    DBI::dbReadTable(pool, "2017crsh_flags")
-  
-  filtered_vehicles <-       # joins with the already filtered_crashes
+
+  # read vehicles and join with filtered crashes that may have flags
+  filtered_vehicles <-
     reactive({
-      all_vehicles <-
-        dplyr::inner_join(veh, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
+      veh = mod_filter_data_server("vehicle", "vehicle", county = county_input, crsh_svr = crshsvr_selected, year_input)
+      dplyr::inner_join(veh, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
     })
   
+  imported_crsh_flags <-
+    reactive({
+      mod_filter_data_server("crsh_flags", "crsh_flags", county = county_input, crsh_svr = crshsvr_selected, year_input)
+    })
+  
+  ############# IMPORT DATA FROM SQLITE #######################
   # Grabs the lat, longs, and crsh_svr for mapping
   filtered_crash_lat_long <- reactive({
     crash_lat_long_j <-
@@ -249,26 +251,25 @@ app_server <- function( input, output, session ) {
   # render basic map (CRS is 4326), i.e. items that do not need a reactive
   output$map1 <- renderLeaflet({
     leaflet() %>%
-      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) #%>%
+      addProviderTiles(providers$CartoDB.Voyager, options = providerTileOptions(opacity = .5)) %>%
       # addTiles(options = providerTileOptions(opacity = .5)) %>%
-    
-      # addPolygons(
-      #   data = county$geometry,
-      #   group = "Counties",
-      #   color = "#444444",
-      #   fillOpacity = 0,
-      #   weight = 1,
-      #   smoothFactor = 0.5
-      #   # options = pathOptions(clickable = FALSE)
-      # )
+      addPolygons(
+        data = county_geom$geometry,
+        group = "Counties",
+        color = "#444444",
+        fillOpacity = 0,
+        weight = 1,
+        smoothFactor = 0.5
+        # options = pathOptions(clickable = FALSE)
+      )
   })
   
   # change view based on county(ies) selected
-  # observeEvent(county_input(), {
-  #   county_zoom <- selected_county()
-  #   leafletProxy("map1") %>%
-  #     fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
-  # })
+  observeEvent(county_input(), {
+    county_zoom <- selected_county()
+    leafletProxy("map1") %>%
+      fitBounds(county_zoom[1], county_zoom[2], county_zoom[3], county_zoom[4])  # zoom to selected county
+  })
   
   # if (dim(filtered_crashes())[1] != 0) {
   observeEvent(filtered_crashes(), {  # same view, updates map data if selection crashes changes

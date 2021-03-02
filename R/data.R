@@ -4,15 +4,6 @@
 
 # THIS script loads that large database of each type (crash,person,vehicle,crsh_flags)
 
-
-
-#' county shapefile#
-#' @format shp
-#' \describe{
-#' }
-#' @source \url{http://www.diamondse.info/}
-"county"
-
 #' county recode
 #'
 #' @format shp

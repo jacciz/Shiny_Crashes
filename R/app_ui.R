@@ -365,6 +365,8 @@ app_ui <- function(request) {
     )
   )
 }
+# Read shapefiles for map
+# ctv <- st_read("map/ctv.shp")
 
 #' Add external Resources to the Application
 #' 
@@ -375,8 +377,9 @@ app_ui <- function(request) {
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function(){
-  
+  # 'img', system.file('app/img', package = 'golex')
   # fst::read.fst(system.file("www/all_crash.fst"))
+  
   add_resource_path(
     'www', app_sys('app/www')
   )

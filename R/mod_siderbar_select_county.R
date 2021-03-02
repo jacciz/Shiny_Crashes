@@ -15,7 +15,7 @@ mod_siderbar_select_county_ui <- function(id) {
     # selectize = FALSE,
     choices = NULL,#stats::setNames(county_recode$CountyCode, county_recode$CountyName),
     options = shinyWidgets::pickerOptions(
-      actionsBox = TRUE, noneSelectedText = "Select County",  liveSearch = TRUE, size = 10, showContent= FALSE, liveSearchStyle = 'startsWith')
+      actionsBox = FALSE, noneSelectedText = "Select County",  liveSearch = TRUE, size = 10, showContent= FALSE, liveSearchStyle = 'startsWith')
   )
 }
 

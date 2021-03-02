@@ -19,12 +19,10 @@ mod_filter_data_ui <- function(id){
 #' Filters data based on user input
 #' @importFrom lubridate %within%
 #' @param id Internal parameters for {shiny}.
-#' @param data_input crash, vehicle, or person data
-#' @param min_year min year selected
-#' @param max_year max year selected
-#' @param county county selected
-#' @param muni municipality selected (not used)
+#' @param db_type crash, vehicle, or person data
+#' @param county county selected#'
 #' @param crsh_svr crash severity selected
+#' @param years min year selected
 #'
 #' @noRd 
 mod_filter_data_server <-
@@ -48,7 +46,7 @@ mod_filter_data_server <-
       # Iterates each year/db type and returns a combined df
       do.call(dplyr::bind_rows, lapply(get_all_years_to_select, read_db_tables))
       
-      
+      # DBI::dbDisconnect(pool)
       
       ## OLD WAY
       

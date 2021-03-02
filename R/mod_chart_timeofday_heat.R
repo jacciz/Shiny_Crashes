@@ -26,7 +26,8 @@ mod_chart_timeofday_heat_server <- function(id, crash_df)
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        day_time_data <- crash_df()[ , .(.N), by = .(newtime, DAYNMBR)]
+        df <- crash_df() %>% as.data.table()
+        day_time_data <- df[ , .(.N), by = .(newtime, DAYNMBR)]
         day_time_data[DAYNMBR == "", DAYNMBR := NA] # if DAYNMBR not exist, make it NA
         day_time_data <- day_time_data %>% stats::na.omit() # remove all NA values
         day_time_data <- data.table::dcast(day_time_data, newtime ~ DAYNMBR, # reshape to long table

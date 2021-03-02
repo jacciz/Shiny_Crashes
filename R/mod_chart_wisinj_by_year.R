@@ -29,8 +29,9 @@ mod_chart_wisinj_by_year_server <- function(id, person_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
+        df = person_df() %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
         wisinj_table <-  
-          table(year = lubridate::year(person_df()$CRSHDATE), inj = factor(person_df()$WISINJ, levels = wisinj_factor_levels)) %>%
+          table(year = lubridate::year(df$CRSHDATE), inj = factor(df$WISINJ, levels = wisinj_factor_levels)) %>%
           tibble::as_tibble() %>%
           dplyr::filter(.data$inj != "No Apparent Injury")# get counts, put in a tibble
         # crshsvr_table$month <-

@@ -30,7 +30,7 @@ mod_chart_person_age_gender_server <- function(id, persons_df) {
         )
       } else {
         person <-
-          persons_df()[, .(age_group, SEX)]
+          persons_df() %>% select(age_group, SEX)
         
         age_sex_table <-
           table(age = person$age_group, sex = person$SEX) %>% tibble::as_tibble() # get counts, put in a tibble
