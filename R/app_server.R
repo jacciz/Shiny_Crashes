@@ -99,12 +99,12 @@ app_server <- function( input, output, session ) {
   filtered_crashes <-
     reactive({
       if (length(get_crshflag_list()) == 0) {
-        # if no flags selected
-        return (filtered_crashes_no_flags())
+        # if no flags selected, get data
+        return (mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)) # module
       } else {
         # if at least 1 flag was selected, returns the join with filtered_crashes
         return(semi_join(
-          filtered_crashes_no_flags(),
+          mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input), # module
           filtered_crsh_flags(),
           by = c("CRSHNMBR" = "CRSHNMBR")
         ))
@@ -114,13 +114,13 @@ app_server <- function( input, output, session ) {
   filtered_persons <-
     reactive({
       if (length(get_crshflag_list()) == 0) {
-        # if no flags selected
-        return (filtered_persons_no_flags())
+        # if no flags selected, get data
+        return (mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)) #module
       } else {
         # if at least 1 flag was selected
         # returns the join with filtered_crashes
         return(semi_join(
-          filtered_persons_no_flags(),
+          mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input), # module
           filtered_crsh_flags(),
           by = c("CRSHNMBR" = "CRSHNMBR")
         ))
@@ -128,16 +128,16 @@ app_server <- function( input, output, session ) {
     })
 
   ############# IMPORT DATA FROM SQLITE ##################
-  filtered_crashes_no_flags <- 
-    reactive({
-      # mod_filter_data_server("crash", "crash")
-      mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)
-    })
+  # filtered_crashes_no_flags <- 
+  #   reactive({
+  #     # mod_filter_data_server("crash", "crash")
+  #     mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)
+  #   })
 
-  filtered_persons_no_flags <-
-    reactive({
-    mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)
-    })
+  # filtered_persons_no_flags <-
+  #   reactive({
+  #   mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)
+  #   })
 
   # read vehicles and join with filtered crashes that may have flags
   filtered_vehicles <-

@@ -1,7 +1,7 @@
 About the Project
 -
-This is an interactive crash dashboard made by the Wisconsin Department of Transportation.
-This app uses R Shiny, Leaflet and Plotly. Data can be selected by location, year, crash type, crash flag and features a hexbin analysis to show crash densities.
+This is an interactive crash dashboard made by the Wisconsin Department of Transportation. This app was made in R Shiny and uses Leaflet and Plotly.
+Data can be selected by location, year, crash type, crash flag and features a hexbin analysis to show crash densities. There are four years of data - 2017 - 2020 and data is stored in a SQLite database.
 
 Demo
 -

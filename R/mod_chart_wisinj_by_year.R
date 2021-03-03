@@ -29,11 +29,15 @@ mod_chart_wisinj_by_year_server <- function(id, person_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        df = person_df() %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
-        wisinj_table <-  
-          table(year = lubridate::year(df$CRSHDATE), inj = factor(df$WISINJ, levels = wisinj_factor_levels)) %>%
-          tibble::as_tibble() %>%
-          dplyr::filter(.data$inj != "No Apparent Injury")# get counts, put in a tibble
+        
+        wisinj_table = person_df() %>%
+          dplyr::filter(WISINJ != "No Apparent Injury") %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE)) %>% dplyr::count(year = lubridate::year(CRSHDATE),WISINJ)
+        
+        # df = person_df() %>%
+        #   dplyr::filter(.data$WISINJ != "No Apparent Injury") %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE)) 
+        # wisinj_table <-  
+        #   table(year = lubridate::year(df$CRSHDATE), inj = factor(df$WISINJ, levels = wisinj_factor_levels)) %>%
+        #   tibble::as_tibble()# get counts, put in a tibble
         # crshsvr_table$month <-
         # factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
         
@@ -42,7 +46,7 @@ mod_chart_wisinj_by_year_server <- function(id, person_df) {
           type = 'bar',
           x = ~ year,
           y = ~ .data$n,
-          color = ~ factor(inj, levels = wisinj_factor_levels),
+          color = ~ factor(WISINJ, levels = wisinj_factor_levels),
           colors = ~ color_map_wisinj,
           text = ~sprintf("<b>%s</b>", format(.data$n, big.mark = ",")),
           # bar end number

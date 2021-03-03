@@ -12,7 +12,39 @@ pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 # NON Pool
 # pool <- dbConnect(RSQLite::SQLite(), dbname = "data/vaccine_inventory.db")
 crash_df <-DBI::dbReadTable(pool, "2017crash")
+person_df <-DBI::dbReadTable(pool, "2017person")
 # crash_df %>% mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
+```
+```{r test wisinj chart}
+library(magrittr)
+wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
+
+table_sum <- function(df_here) {
+        df = df_here %>%
+                dplyr::filter(WISINJ != "No Apparent Injury") %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
+        table(
+                year = lubridate::year(df$CRSHDATE),
+                inj = df$WISINJ
+        ) %>%
+                tibble::as_tibble()
+}
+
+
+table_count <- function(df_here) {
+        df_here %>%
+                dplyr::filter(WISINJ != "No Apparent Injury") %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE)) %>% dplyr::count(year = lubridate::year(CRSHDATE),WISINJ)}
+table_baset <- function(df_here) {
+df_here["WISINJ" !=  "No Apparent Injury"] %>% dplyr::mutate(CRSHDATE = lubridate::mdy(CRSHDATE)) %>% dplyr::count(year = lubridate::year(CRSHDATE),WISINJ)}
+
+microbenchmark::microbenchmark(
+table_sum(df_here = person_df),
+table_count(df_here = person_df),
+table_baset(df_here = person_df)
+)
+
+wisinj_table = table_count(df_here = person_df)
+
+
 ```
 
 ```{r}
