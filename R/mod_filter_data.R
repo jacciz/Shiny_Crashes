@@ -34,8 +34,8 @@ mod_filter_data_server <-
            # muni
            ) {
     shiny::moduleServer(id, function(input, output, session) {
-      min = "2017" # min(years())
-      max =  "2017" # max(years())
+      min = min(years())
+      max = max(years())
       # Get all years from min to max and adds db type - i.e. char list of "2017crash
       get_all_years_to_select <- paste0(seq(min,max, by = 1), db_type, sep = "")
      

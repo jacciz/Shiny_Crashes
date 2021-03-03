@@ -4,7 +4,7 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-# SQLite - dates must be in character
+year = "20"
 
 # This script basically readies the data for the dashboard and is exported into teh SQLite database.
 
@@ -201,13 +201,13 @@ import_all_vehicles <- function(csv_name, file_loc = file) {
 }
 
 # input is name of csv, just change year
-all_crashes <- import_all_crashes("17crash")
+all_crashes <- import_all_crashes(paste0(year,"crash"))
 # Note: Creates a newtime field. time of 0 and 999 will be NA
 #
-all_persons <- import_all_persons("17person")
+all_persons <- import_all_persons(paste0(year,"person"))
 # Note: Creates a age_group field, relabels ROLE, SEX
 
-all_vehicles <- import_all_vehicles("17vehicle")
+all_vehicles <- import_all_vehicles(paste0(year,"vehicle"))
 
 # To import county and muni recode to get names
 # county_recode <- fread("Data Prep for R Shiny/county_recode.csv")
@@ -218,9 +218,10 @@ all_vehicles <- import_all_vehicles("17vehicle")
 
 
 #### SAVE TO SQLITE
+fname = paste0("20",year)
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
-DBI::dbWriteTable(pool, "2017crash", all_crashes)
-DBI::dbWriteTable(pool, "2017person", all_persons)
-DBI::dbWriteTable(pool, "2017vehicle", all_vehicles)
+DBI::dbWriteTable(pool, paste0(fname,"crash"), all_crashes)
+DBI::dbWriteTable(pool, paste0(fname,"person"), all_persons)
+DBI::dbWriteTable(pool, paste0(fname,"vehicle"), all_vehicles)
 # make CRSHNMBR primary key

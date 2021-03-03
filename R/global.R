@@ -26,6 +26,8 @@ utils::globalVariables(
     "CNTYCODE",
     "CRSHDATE",
     "muni_recode",
-    "county_recode"
+    "county_recode",
+    "NMTLOC",
+    "drvrpc_count"
   )
 )

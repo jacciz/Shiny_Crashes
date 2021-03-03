@@ -5,7 +5,7 @@ library(memisc)
 library(gdata)
 library(fst)
 
-year = "17"
+year = "20"
 # This script return a dataframe with a list of crshnmbr with flags for each year. The script finds crashes with a certain flag (i.e. older driver, speed),
 # adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe to save to SQLite db.
 

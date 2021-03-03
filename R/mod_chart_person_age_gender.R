@@ -98,10 +98,4 @@ mod_chart_person_age_gender_server <- function(id, persons_df) {
     })
   })
 }
-    
-## To be copied in the UI
-# mod_chart_person_age_gender_ui("chart_person_age_gender_ui_1")
-    
-## To be copied in the server
-# callModule(mod_chart_person_age_gender_server, "chart_person_age_gender_ui_1")
  

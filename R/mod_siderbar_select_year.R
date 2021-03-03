@@ -12,10 +12,11 @@ mod_siderbar_select_year_ui <- function(id) {
   shiny::sliderInput(
     shiny::NS(id, "year"),
     label = "Select Year",
-    value = c(2017, 2019),
+    value = c(2020,2020), # starts with 2020 selected
     min = 2017,
-    max = 2019,
-    sep = ""
+    max = 2020,
+    sep = "",
+    ticks = FALSE
   )
   # return(reactive(input$year))
 }
