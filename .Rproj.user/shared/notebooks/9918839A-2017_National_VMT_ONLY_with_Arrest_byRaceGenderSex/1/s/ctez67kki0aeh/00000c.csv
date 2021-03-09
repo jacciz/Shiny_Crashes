@@ -1,6 +1,0 @@
-"0",""
-"0","# %>% arrange(factor(age_group_10yr, levels  = age_group_10yr_factor_level))"
-"0",""
-"0","# Get drivers in injury/death crashes - alcohol susp"
-"0","persons_drivers %>% get_alcohol_impaired_driver_flag() %>% filter(alcohol_impaireddriver_flag == ""Y"", age_group_10yr != ""Unknown"", CRSHSVR != ""Property Damage"") %>% "
-"0","person_summarise_crash_count(., fields_to_summarise = ""age_group_10yr"") %>% left_join(. , license_count, by = ""age_group_10yr"") %>% mutate(percent_of_crashes = crash_count * 100 / sum(crash_count, na.rm = TRUE), percent_of_lic = total_lic1718 * 100 / sum(total_lic1718, na.rm = TRUE))"

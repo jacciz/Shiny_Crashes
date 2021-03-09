@@ -1,3 +1,0 @@
-"0","# Set working directory to where this notebook is saved"
-"0","knitr::opts_chunk$set(echo = FALSE, comment = NA, warning = FALSE, error = FALSE, message = FALSE, tidy = TRUE, global.par = TRUE, knitr.table.format = ""html"")"
-"0","knitr::opts_knit$set(root.dir = '/...')"

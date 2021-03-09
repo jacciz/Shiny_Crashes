@@ -1,2 +1,0 @@
-"0","persons <- import_db_data(file_loc, ""person"", columns = persons_columns, years = years)"
-"0","vehicles <- import_db_data(file_loc, ""vehicle"", columns = vehicles_columns, years = years)"

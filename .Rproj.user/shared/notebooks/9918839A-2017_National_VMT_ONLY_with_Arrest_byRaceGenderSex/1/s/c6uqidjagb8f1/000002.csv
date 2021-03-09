@@ -1,4 +1,0 @@
-"0","# census_summarise_pop_count # Census Bureau's Population Estimates Program (PEP) - https://api.census.gov/data/2015/pep/charage https://www.census.gov/programs-surveys/popest/technical-documentation/file-layouts.html"
-"0","# https://api.census.gov/data/2017/pep/charage/variables.html   # 2017 POP: 5,772,917"
-"0","# Remove these fields that sum by characteristic"
-"0","census17 <- getCensus(name = ""pep/charage"", key = ""d1b8a9ed12a716ebe87a794a42b806f5783abf68"", vars = c(""AGE"", ""SEX"", ""RACE"", ""HISP"", ""POP""), region = ""state:55"", vintage = 2017) %>% filter(AGE != ""999"", SEX != ""0"",  HISP != ""0"" , !(RACE %in% c(""0"", ""7"", ""8"", ""9"", ""10"", ""11"")))"
