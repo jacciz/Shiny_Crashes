@@ -1,8 +1,10 @@
+# https://cran.r-project.org/web/packages/pool/pool.pdf
+
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
-# NON Pool
+# Use this to "checkout" the connection. Don't use pool.
+conn <-pool::poolCheckout(pool)
+
 # pool <- dbConnect(RSQLite::SQLite(), dbname = "data/vaccine_inventory.db")
-# crash <-DBI::dbReadTable(pool, "17crash")
-# dbDisconnect(pool)
-# dbListFields(pool, "crsh")
-# poolClose(pool)
+# crash <-DBI::dbReadTable(conn, "17crash")
+# dbListFields(conn, "crsh")

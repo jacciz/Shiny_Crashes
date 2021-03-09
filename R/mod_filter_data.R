@@ -36,17 +36,21 @@ mod_filter_data_server <-
     shiny::moduleServer(id, function(input, output, session) {
       min = min(years())
       max = max(years())
+      
+      county_tbl = county()
+      crsh_svr_tbl = crsh_svr()
       # Get all years from min to max and adds db type - i.e. char list of "2017crash
       get_all_years_to_select <- paste0(seq(min,max, by = 1), db_type, sep = "")
      
       read_db_tables <- function(db_name){
-        DBI::dbReadTable(pool, db_name) %>% filter(CNTYCODE %in% county(), CRSHSVR %in% crsh_svr())
+        # Speed test found that dplyr::tbl is 10x faster than pool::dbReadTable. Just can't handle reactives and need to make it into a df.
+        dplyr::tbl(conn, db_name) %>% filter(CNTYCODE %in% county_tbl, CRSHSVR %in% crsh_svr_tbl) %>% as.data.frame() 
       }
       
       # Iterates each year/db type and returns a combined df
       do.call(dplyr::bind_rows, lapply(get_all_years_to_select, read_db_tables))
-      
       # DBI::dbDisconnect(pool)
+      
       
       ## OLD WAY
       

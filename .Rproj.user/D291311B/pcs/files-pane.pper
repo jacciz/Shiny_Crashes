@@ -2,8 +2,8 @@
     "sortOrder": [
         {
             "columnIndex": 2,
-            "ascending": false
+            "ascending": true
         }
     ],
-    "path": "C:/W_shortcut/Shiny_Crashes_Dashboard/R"
+    "path": "C:/W_shortcut/shiny_wisdot_crash_dashboard/R"
 }

@@ -9,7 +9,7 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 ```{r}
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
-# NON Pool
+crash_df %>% select(lng, lat, CRSHSVR) %>%  dplyr::filter(!is.na(lng), !is.na(lat))
 # pool <- dbConnect(RSQLite::SQLite(), dbname = "data/vaccine_inventory.db")
 crash_df <-DBI::dbReadTable(pool, "2017crash")
 person_df <-DBI::dbReadTable(pool, "2017person")
@@ -111,4 +111,11 @@ day_time_data <- df[ , .(.N), by = .(newtime, DAYNMBR)]
             paper_bgcolor = 'rgba(0,0,0,0)'
           ) %>%  config(toImageButtonOptions = list(width = 800, height = 800, filename = "Time of Day Crashes", scale = 2)
           )
+```
+```{r test read from sqlite}
+microbenchmark::microbenchmark(
+# DBI::dbReadTable(pool, "2017crash") %>% filter(CNTYCODE %in% 11, CRSHSVR %in% "Property Damage"), # 450
+pool::dbReadTable(pool, "2017crash") %>% filter(CNTYCODE %in% 11, CRSHSVR %in% "Property Damage"), # 448
+dplyr::tbl(pool, "2017crash") %>% filter(CNTYCODE %in% 11, CRSHSVR %in% "Property Damage") %>% as.data.frame() # 7 #with df 48
+)
 ```

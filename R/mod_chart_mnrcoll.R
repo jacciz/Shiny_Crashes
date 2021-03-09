@@ -43,7 +43,7 @@ mod_chart_mnrcoll_server <- function(id, crash_df) {
           orientation = 'h',
           x = ~ n,
           # y = ~ reorder(mnrcoll, n),
-          y = ~ reorder(stringr::str_wrap(mnrcoll, width = 30), n), 
+          y = ~ stats::reorder(stringr::str_wrap(mnrcoll, width = 30), n), 
           # reorder from big to small values
           marker = list(color = "#4fb9db"),
           # blue!

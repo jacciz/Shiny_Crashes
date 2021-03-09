@@ -117,10 +117,6 @@ theme_grey_light <- dashboardthemes::shinyDashboardThemeDIY(
 #' @title logo_grey_light
 #' @description Grey Light logo for a shinydashboard application
 #'
-#' @param boldText String. Bold text for the logo.
-#' @param mainText String. Main text for the logo.
-#' @param badgeText String. Text for the logo badge.
-#'
 #' @return Object produced by shinyDashboardLogoDIY
 #' @seealso \code{\link{shinyDashboardLogoDIY}}
 #' @export

@@ -29,6 +29,7 @@ mod_siderbar_select_muni_server <- function(id, county_input) {
       shinyWidgets::updatePickerInput(
         session,
         "municode_input",
+        selected = 004,
         choices = stats::setNames(
           muni_cnty_list$MuniCode,
           muni_cnty_list$Municipality_CTV

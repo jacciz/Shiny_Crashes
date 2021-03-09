@@ -22,27 +22,8 @@ app_server <- function( input, output, session ) {
   # Return inputs to filter data based on user selection. When using these variables, include ()
   # since these are reactive expressions
   year_input <- mod_siderbar_select_year_server("year")
-  min_year_input <- reactive(min(year_input()))
-  max_year_input <- reactive(max(year_input()))
-  
   county_input <- mod_siderbar_select_county_server("cntycode_input")
-  municode_input <- mod_siderbar_select_muni_server("municode_input", county_input)
-  
-  # find date range to select, returns min and max year
-  min_date_selected <- reactive({
-    if (min_year_input() != max_year_input()) {
-      return (min_year_input())
-    } else {
-      return (year_input()[1]) # ERROR Warning: All formats failed to parse. No formats found.
-    }
-  })
-  max_date_selected <- reactive({
-    if (min_year_input() != max_year_input()) {
-      return (max_year_input())
-    } else {
-      return (year_input()[1]) # ERROR Warning: All formats failed to parse. No formats found.
-    }
-  })
+  # municode_input <- mod_siderbar_select_muni_server("municode_input", county_input)
   
   # returns list for which crsh svr are selected. List must match Input IDs with field names of data
   crshsvr_selected_inputs <-c("Fatal", "Injury", "Property Damage")
@@ -53,9 +34,10 @@ app_server <- function( input, output, session ) {
     names(data)
   })
   
+  # List of all available crash flags
   crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag", "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")
   
-  # Looks at status of crshsvr buttoms and returns only the ones that are selected (i.e. == TRUE)
+  # Looks at status of crshsvr buttons and returns only the ones that are selected (i.e. == TRUE).
   get_crshflag_list <- reactive({
     data <- sapply(crshflag_selected_inputs, function(x) input[[x]] ) # fields contains all values we want to save, gather all the values based on input
     data <- Filter(function(x) !(all(x == FALSE)), data) # take out FALSE values
@@ -69,7 +51,7 @@ app_server <- function( input, output, session ) {
       if (input$any_or_all) { # default for this button is 'any'
         # selects crash flags, filter each crshflag and finds any_vars == Y
         return(
-          imported_crsh_flags() %>%
+          mod_filter_data_server("crsh_flags", "crsh_flags", county = county_input, crsh_svr = crshsvr_selected, year_input) %>% #module
             select(.data$CRSHNMBR, all_of(crshflag_list)) %>%
             filter_at(vars(all_of(crshflag_list)), any_vars(. == "Y")) %>%
             select(.data$CRSHNMBR)
@@ -77,7 +59,7 @@ app_server <- function( input, output, session ) {
       }
       # Same, but find all_vars == Y
       return(
-        imported_crsh_flags() %>%
+        mod_filter_data_server("crsh_flags", "crsh_flags", county = county_input, crsh_svr = crshsvr_selected, year_input) %>% #module
           select(.data$CRSHNMBR, all_of(crshflag_list)) %>%
           filter_at(vars(all_of(crshflag_list)), all_vars(. == "Y")) %>%
           select(.data$CRSHNMBR)
@@ -127,18 +109,6 @@ app_server <- function( input, output, session ) {
       }
     })
 
-  ############# IMPORT DATA FROM SQLITE ##################
-  # filtered_crashes_no_flags <- 
-  #   reactive({
-  #     # mod_filter_data_server("crash", "crash")
-  #     mod_filter_data_server("crash", "crash", county = county_input, crsh_svr = crshsvr_selected, year_input)
-  #   })
-
-  # filtered_persons_no_flags <-
-  #   reactive({
-  #   mod_filter_data_server("person", "person", county = county_input, crsh_svr = crshsvr_selected, year_input)
-  #   })
-
   # read vehicles and join with filtered crashes that may have flags
   filtered_vehicles <-
     reactive({
@@ -146,17 +116,12 @@ app_server <- function( input, output, session ) {
       dplyr::inner_join(veh, filtered_crashes(), by = "CRSHNMBR") # inner join keeps crashes that match by CRSHNMBR
     })
   
-  imported_crsh_flags <-
-    reactive({
-      mod_filter_data_server("crsh_flags", "crsh_flags", county = county_input, crsh_svr = crshsvr_selected, year_input)
-    })
-  
   ############# IMPORT DATA FROM SQLITE #######################
   # Grabs the lat, longs, and crsh_svr for mapping
   filtered_crash_lat_long <- reactive({
     crash_lat_long_j <-
       filtered_crashes() %>% select(lng, lat, CRSHSVR) %>% # [, .(lng, lat, CRSHSVR)] %>%
-      stats::na.omit() %>%
+      dplyr::filter(!is.na(lng), !is.na(lat)) %>%
       arrange(factor(CRSHSVR, levels  = crshsvr_factor_levels))# remove crashes with no lat/long
     if (dim(crash_lat_long_j)[1] != 0) {
       # convert to sf so we can map it!

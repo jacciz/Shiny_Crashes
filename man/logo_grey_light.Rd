@@ -10,13 +10,6 @@ An object of class \code{html} (inherits from \code{character}) of length 1.
 \usage{
 logo_grey_light
 }
-\arguments{
-\item{boldText}{String. Bold text for the logo.}
-
-\item{mainText}{String. Main text for the logo.}
-
-\item{badgeText}{String. Text for the logo badge.}
-}
 \value{
 Object produced by shinyDashboardLogoDIY
 }

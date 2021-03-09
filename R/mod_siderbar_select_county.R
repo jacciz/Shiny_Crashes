@@ -11,7 +11,8 @@ mod_siderbar_select_county_ui <- function(id) {
   shinyWidgets::pickerInput(
     shiny::NS(id, "cntycode"),
     "County",
-    multiple = TRUE,
+    multiple = FALSE,
+    selected = 40,
     # selectize = FALSE,
     choices = NULL,#stats::setNames(county_recode$CountyCode, county_recode$CountyName),
     options = shinyWidgets::pickerOptions(
@@ -29,6 +30,7 @@ mod_siderbar_select_county_server <- function(id) {
       shinyWidgets::updatePickerInput(
         session,
         "cntycode",
+        selected = 40, # select Milwaukee
         choices = stats::setNames(county_recode$CountyCode, county_recode$CountyName)
       )
     })

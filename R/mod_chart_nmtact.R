@@ -49,7 +49,7 @@ mod_chart_nmtact_server <- function(id, persons_df) {
           orientation = 'h',
           x = ~ n,
           # y = ~ reorder(nmtact_count, n),
-          y = ~ reorder(stringr::str_wrap(nmtact_count, width = 30), n), 
+          y = ~ stats::reorder(stringr::str_wrap(nmtact_count, width = 30), n), 
           # reorder from big to small values, also wrap text
           marker = list(color = "#4fb9db"),
           # blue!

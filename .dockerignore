@@ -6,3 +6,6 @@ rsconnect
 data-raw
 vignettes
 tests
+dev
+tests
+vignettes
