@@ -14,7 +14,7 @@ app_server <- function( input, output, session ) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  # read shapefile for county
+  # read shapefile for county.
   g = app_sys("inst/app/www/county.shp")
   county_geom <- sf::st_read(g)
   # List the first level callModules here
