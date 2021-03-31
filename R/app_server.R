@@ -34,8 +34,8 @@ app_server <- function( input, output, session ) {
     names(data)
   })
   
-  # List of all available crash flags
-  crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag", "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")
+  # List of all available crash flags #distracted_flag
+  crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag", "distracted_flag", "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")
   
   # Looks at status of crshsvr buttons and returns only the ones that are selected (i.e. == TRUE).
   get_crshflag_list <- reactive({
@@ -149,7 +149,18 @@ app_server <- function( input, output, session ) {
   output$get_number_of_NA <- renderText({
     toString(format(sum(is.na(filtered_crashes()$lng)), big.mark = ","))
   })
- 
+  
+ ######### Get Ped/Bike Count ##########
+  # add factor_levels so 0 values will be kept (need .drop = FALSE)
+  bike_ped_count <- reactive({
+    filtered_persons() %>%
+      dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), WISINJ != "No Apparent Injury") %>%
+      mutate(inj = ifelse(WISINJ == "Fatal Injury", "Killed","Injured"),
+             inj = factor(inj, levels =c("Injured","Killed")),
+             ROLE = factor(ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
+      dplyr::count(ROLE,inj, .drop = FALSE) %>% mutate(for_colors = paste0(ROLE,inj)) %>%
+      data.table::as.data.table()
+  })
 
   ################### VALUE BOXES #######################
   output$tot_crash <- renderInfoBox({
@@ -197,7 +208,7 @@ app_server <- function( input, output, session ) {
   ################### BODY - CHARTS MODULES #######################
   #  Charts are in Shiny Modules in chart_modules_ui and in chart_modules_server
   mod_chart_crsh_svr_mth_server("crsh_svr_mth", filtered_crashes)
-  mod_chart_wisinj_by_year_server("wisinj_by_year", filtered_persons)
+  # mod_chart_wisinj_by_year_server("wisinj_by_year", filtered_persons)
   mod_chart_timeofday_heat_server("timeofday_heat", filtered_crashes)
   mod_chart_mnrcoll_server("mnrcoll", filtered_crashes)
   mod_chart_person_role_treemap_server("person_role_treemap", filtered_persons)
@@ -206,6 +217,7 @@ app_server <- function( input, output, session ) {
   mod_chart_nmtact_server("nmtact_chart", filtered_persons)
   mod_chart_nmtloc_server("nmtloc_chart", filtered_persons)
   mod_chart_vehicle_treemap_server("vehicle_treemap", filtered_vehicles)
+  mod_waffle_chart_server("bike", bike_ped_count)
   
   ################### BODY - MAP #######################
   

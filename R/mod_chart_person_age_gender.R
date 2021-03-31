@@ -35,7 +35,7 @@ mod_chart_person_age_gender_server <- function(id, persons_df) {
         age_sex_table <-
           table(age = person$age_group, sex = person$SEX) %>% tibble::as_tibble() # get counts, put in a tibble
         
-        plot_ly(
+        plotly::plot_ly(
           age_sex_table,
           type = 'bar',
           x = ~ age,
@@ -69,7 +69,7 @@ mod_chart_person_age_gender_server <- function(id, persons_df) {
               title = "",
               tickfont = chart_axis,
               tickangle = -45,
-              categoryarray = ~ age,
+              categoryarray = ~ age_group_factor_levels, # sets the order of the age groups
               categoryorder = "array"
             ),
             yaxis = list(

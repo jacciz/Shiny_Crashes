@@ -17,10 +17,25 @@ chart_axis_bar = list(size = 14, color = "#4fb9db", family = "Verdana", face = "
 color_map_svr <- c("Fatal"="#DB7E65", "Injury"="#4AAECF", "Property Damage"="#44DBAE")
 color_map_gender <- c("Female"="#Db7e65", "Male"="#4fb9db", "Unknown" = "#dbb039")
 color_map_wisinj <- c("Suspected Minor Injury" ="#4AAECF", "Possible Injury" = "#58CEF5","Suspected Serious Injury" ="#3D8DA8", "Fatal Injury" = "#265869")
-
+color_map_waffle_inj <- c("BicyclistInjured" = "#3D8DA8", "BicyclistKilled" = "#Db7e65", "PedestrianInjured" = "#4AAECF", "PedestrianKilled" = "#Db7e65")
 # Factor levels
 wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
 
+age_group_factor_levels <-c("0-4",
+"5-9",
+"10-14",
+"15-19",
+"20-24",
+"25-29",
+"30-34",
+"35-39",
+"40-44",
+"45-49",
+"50-54",
+"55-59",
+"60-64",
+"65-69",
+"70+")
 # assigning colors for crash severity for map
 # color_map_svr <- c("Fatal"="#D50032", "Injury"="#428BCA", "Property Damage"="#4DB848")
 # New colors

@@ -10,7 +10,7 @@ shp
 }
 }
 \source{
-\url{http://www.diamondse.info/}
+\url{}
 }
 \usage{
 county_recode

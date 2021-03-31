@@ -44,12 +44,12 @@ mod_filter_data_server <-
      
       read_db_tables <- function(db_name){
         # Speed test found that dplyr::tbl is 10x faster than pool::dbReadTable. Just can't handle reactives and need to make it into a df.
-        dplyr::tbl(conn, db_name) %>% filter(CNTYCODE %in% county_tbl, CRSHSVR %in% crsh_svr_tbl) %>% as.data.frame() 
+        dplyr::tbl(pool, db_name) %>% filter(CNTYCODE %in% county_tbl, CRSHSVR %in% crsh_svr_tbl) %>% as.data.frame() 
       }
       
       # Iterates each year/db type and returns a combined df
       do.call(dplyr::bind_rows, lapply(get_all_years_to_select, read_db_tables))
-      # DBI::dbDisconnect(pool)
+      # DBI::dbDisconnect(conn)
       
       
       ## OLD WAY

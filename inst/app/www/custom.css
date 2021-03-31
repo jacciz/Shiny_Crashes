@@ -27,6 +27,13 @@
 
 .nav-tabs-custom>.nav-tabs>li>a:hover {color:#4fb9db;}
 
+.nav-tabs-custom>.nav-tabs>li.active {border-width:thick !important; border-radius:15px !important} /* tab border */
+
+/* https://tests.christianoliff.com/hex-to-css-filter-generator/ */
+
+.crash_type_svg:hover {filter: invert(54%) sepia(95%) saturate(234%) hue-rotate(148deg) brightness(98%) contrast(108%);}  /* tab icon crash type */
+.driver_beh_svg:hover {filter: invert(54%) sepia(95%) saturate(234%) hue-rotate(148deg) brightness(98%) contrast(108%);}  /* tab icon crash type */
+
 .irs-grid-text {font-size: 12pt;}
       .irs-min {font-size: 12pt;}
       .irs-max {font-size: 12pt;}

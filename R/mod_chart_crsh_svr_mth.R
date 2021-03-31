@@ -114,7 +114,8 @@ mod_chart_crsh_svr_mth_server <- function(id, crash_df) {
             # make transparent background
             paper_bgcolor = 'rgba(0,0,0,0)',
             barmode = 'stack'
-          ) %>% config(
+          ) %>%
+          config(
             toImageButtonOptions = list(
               width = 800,
               height = 800,

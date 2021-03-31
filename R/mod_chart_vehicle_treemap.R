@@ -82,7 +82,7 @@ mod_chart_vehicle_treemap_server <- function(id, vehicles_df) {
                  margin = list(
                    r = 0,
                    l = 0,
-                   b = 0,
+                   b = 10,
                    t = 0
                  ),
                  plot_bgcolor = 'rgba(0,0,0,0)',

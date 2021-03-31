@@ -1,0 +1,189 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(waffle)
+library(ggplot2)
+library(extrafont)
+library(magrittr)
+# emojifont
+```
+
+```{r}
+pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
+person <-DBI::dbReadTable(pool, "2017person")
+
+role <- person %>% filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "13")
+role_table <- table(role$ROLE)
+
+waffle(role_table, rows = get_number_of_rows(role_table), legend_pos = "none", colors = c("blue", "green", "white"))
+
+
+get_number_of_rows <- function(role_table) {
+  if (is.na(role_table["Bicyclist"] | is.na(role_table["Pedestrian"]))){
+    rows = 1
+  }
+  else if (role_table["Bicyclist"] == 1 |
+      role_table["Pedestrian"] == 1) {
+    rows = 1
+  }
+  else if
+    (role_table["Bicyclist"] == 2 |
+       role_table["Pedestrian"] == 2){
+    rows = 2
+    }
+  else if
+    (role_table["Bicyclist"] < 20 |
+       role_table["Pedestrian"] <20){
+    rows = 5
+    }
+  else if
+    (role_table["Bicyclist"] >= 2 |
+       role_table["Pedestrian"] >= 2){
+    rows = 10
+  }
+  rows
+}
+# spec <- table(iris$Species)
+# waffle(spec)
+# fa_grep("spoon")
+# shiny::icon("users")
+
+```
+
+```{r separate}
+role <- person %>% filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "13")
+role_table <- table(role$ROLE)
+
+waffle(role_table, rows = get_number_of_rows(role_table), legend_pos = "none", colors = c("blue", "green", "white"))
+
+
+get_number_of_rows <- function(role) {
+  # if (is.na(role)){
+  #   rows = 1
+  # }
+  if (role == 1) {
+    rows = 1
+  }
+  else if
+    (role== 2){
+    rows = 2
+    }
+  else if
+    (role< 20){
+    rows = 5
+    }
+  else if
+    (role >= 20){
+    rows = 10
+  }
+  rows
+}
+
+
+bike <- person %>% filter(ROLE %in% c("Bicyclist"), CNTYCODE == "1", WISINJ !="No Apparent Injury")
+bike_table <- table(bike$ROLE)
+waffle(bike_table, get_number_of_rows(bike_table["Bicyclist"]), legend_pos = "none", use_glyph = "bicycle", colors = c("#4fb9db", "white"), glyph_size = 6)
+
+ped <- person %>% filter(ROLE %in% c("Pedestrian"), CNTYCODE == "13")
+ped_table <- table(ped$ROLE)
+waffle(ped_table, get_number_of_rows(ped_table["Pedestrian"]), legend_pos = "none", use_glyph = "walking", colors = c("#44dbae", "white"), glyph_size = 5)
+```
+
+
+```{r ggplot bike ped}
+# library(extrafontdb)
+# extrafont::font_import (path="C:\\Users\\dotjaz\\Downloads\\", pattern = "fa-", prompt = FALSE)
+# load.fontawesome(font = "C:/Users/dotjaz/Downloads/web/fa-regular-400.ttf")
+# extrafont::loadfonts(device = "win") 
+```
+
+```{r this works for font}
+extrafont::fonttable() %>% dplyr::as_tibble() %>% dplyr::filter(grepl("Awesom", FamilyName)) %>% select(FamilyName, FontName, fontfile)
+waffle(c(50, 30, 15, 5), rows = 5, use_glyph = "bolt", glyph_size = 4)
+
+# library(showtext)
+sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "C:\\Users\\dotjaz\\Downloads\\FontAwesome5Free-Solid.ttf")
+# sysfonts::font_add(family = "FontAwesome5Free-Regular", regular = "C:\\Users\\dotjaz\\Downloads\\arcive\\FontAwesome5Brands-Regular.ttf")
+# sysfonts::font_add(family = "FontAwesome5Brands-Regular", regular = "C:\\Users\\dotjaz\\Downloads\\fontawesome-webfont.ttf")
+
+showtext::showtext_auto()
+waffle::waffle(c(50, 30, 15, 5), rows = 5, use_glyph = "music")
+library(ggplot2)
+
+person %>% dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "13") %>%
+  dplyr::count(ROLE) %>%
+  ggplot2::ggplot(mapping = ggplot2::aes(label = ROLE, values = n)) +
+  waffle::geom_pictogram(n_rows = 10, aes(colour = ROLE), flip = TRUE, make_proportional = TRUE, show.legend = FALSE) +
+  ggplot2::scale_color_manual(
+    name = NULL,
+    values = c("#a40000", "#c68958")
+    # labels = c("Fruit", "Sammich")
+  ) +
+  waffle::scale_label_pictogram(
+    name = NULL,
+    values = c("bicycle", "walking"),
+    labels = c("Bicyclists", "Pedestrians")
+  )
+
+get_number_of_rows(count$n)
+any(count[ "n"] == 1)
+count <- person %>%
+  dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "4", WISINJ != "No Apparent Injury") %>%
+  mutate( inj = ifelse(WISINJ == "Fatal Injury", "Killed","Injured"), inj = factor(inj, levels =c("Killed","Injured")), ROLE = factor(ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
+        dplyr::count(ROLE,inj, .drop = FALSE)  %>% mutate(for_colors = paste0(ROLE,inj)) %>% data.table::as.data.table()
+wisdotcrashdatabase::find_countycode_fips("Bayfield")
+      bikeped_title <- sprintf(
+        "<span style='font-size:16pt'>
+        %s pedestrians were <span style='color:#Db7e65;'>**killed**</span>,
+        %s were <span style='color:#4AAECF;'>**injured**</span> <br>
+        %s bicyclists were <span style='color:#Db7e65;'>**killed**</span>,
+        %s were <span style='color:#3D8DA8;'>**injured**</span>  </span>",
+        count[for_colors == "PedestrianKilled", n],
+        count[for_colors == "PedestrianInjured", n],
+        count[for_colors == "BicyclistKilled", n],
+        count[for_colors == "BicyclistInjured", n]
+      )
+count
+count %>%
+        ggplot2::ggplot(aes(label = .data$ROLE, values = .data$n)) +
+        waffle::geom_pictogram(aes(color = for_colors),
+                               n_rows = round(sqrt(sum(count$n)),0),
+                               size = 4,
+                               # size = para["size"],
+                               flip = TRUE,
+                               show.legend = FALSE) +
+        ggplot2::scale_color_manual(
+          name = NULL,
+          # values = c("#a40000", "#c68958")
+          values = color_map_waffle_inj[count$for_colors]
+          # labels = c("Fruit", "Sammich")
+        ) +
+        waffle::scale_label_pictogram(
+          name = NULL,
+          # values = color_map_waffle_symbols[count$ROLE]
+          values = c("bicycle", "walking")
+          # labels = c("Bicyclists", "Pedestrians")
+        ) + coord_equal() +
+  theme_classic() +
+  theme(axis.text = element_blank(),
+              axis.line = element_blank(),
+              axis.ticks = element_blank(),
+              plot.title = ggtext::element_markdown(lineheight = 1.1, vjust = .5, hjust = 0),
+        plot.title.position = "plot") +
+        labs(
+          title = bikeped_title
+          # "<span style='font-size:16pt'> Age of
+          # <span style='color:#428BCA;'>**Male**</span> and
+          # <span style='color:#D50032;'>**Female**</span> Motorcyclists in a Crash (2017-2019)
+          # </span>"
+        )
+
+```
+

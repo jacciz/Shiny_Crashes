@@ -162,6 +162,15 @@ app_ui <- function(request) {
               status = "primary"
             ),
             materialSwitch(
+              inputId = "distracted_flag",
+              label = tags$span(
+                HTML(
+                  '<i class="fa fa-mobile-alt" style = "color:rgb(115,115,115);"></i> Distracted &emsp;&ensp; &nbsp;&nbsp; '
+                )
+              ),
+              status = "primary"
+            ),
+            materialSwitch(
               inputId = "lanedepflag",
               label = tags$span(
                 HTML(
@@ -238,7 +247,8 @@ app_ui <- function(request) {
                 )
               ),
               status = "primary"
-            )
+            ),
+            br()
           ),
           # <img src="www/icons8-deer-52.svg"">
           menuItem(
@@ -290,7 +300,7 @@ app_ui <- function(request) {
               tagList(tags$span(
                 HTML(
                   "<h3>Welcome to the WisDOT Interactive Crash Statistics Dashboard.</h3>
-        <h6 style=font-size:14px;>Explore crash statistics by county from 2017 - 2019. Click on the above tabs
+        <h6 style=font-size:14px;>Explore crash statistics by county from 2017 - 2020. Click on the above tabs
           to display different charts and click of the sidebar tabs to select parameters. Charts can be downloaded as a PNG and are also interactive; single click to remove a variable and double
           click to isolate a variable.</h6>
 
@@ -305,14 +315,14 @@ app_ui <- function(request) {
               tagList(shiny::icon("car-crash"), strong("Crash Trends")),
               mod_chart_crsh_svr_mth_ui("crsh_svr_mth"),
               br(),
-              mod_chart_timeofday_heat_ui("timeofday_heat"),
-              br(),
-              mod_chart_wisinj_by_year_ui("wisinj_by_year")
+              mod_chart_timeofday_heat_ui("timeofday_heat")
+              # br(),
+              # mod_chart_wisinj_by_year_ui("wisinj_by_year")
             ),
             tabPanel(tagList(
               tags$span(
                 HTML(
-                  '<img src="www/icons8-car-crash-50.svg" style="width:24px;height:24px;"></i>'
+                  '<img src="www/icons8-car-crash-50.svg" class = "crash_type_svg" style="width:24px;height:24px;"></i>'
                 )
               ), strong("Crash Types")
             ),
@@ -326,7 +336,7 @@ app_ui <- function(request) {
             tabPanel(
               tagList(tags$span(
                 HTML(
-                  '<img src="www/icons8-driver-60.svg" style="width:24px;height:24px;"></i>'
+                  '<img src="www/icons8-driver-60.svg" class = "driver_beh_svg" style="width:24px;height:24px;"></i>'
                 )
               ), strong("Driver Behavior")),
               mod_chart_drvrpc_ui("drvrpc_chart")
@@ -337,6 +347,8 @@ app_ui <- function(request) {
                 shiny::icon("walking"),
                 strong("Bike/Ped. Behavior")
               ),
+              mod_waffle_chart_ui("bike"),
+              br(),
               mod_chart_nmtact_ui("nmtact_chart"),
               # br(),
               # nmtloc_chart_ui("nmtloc_chart")

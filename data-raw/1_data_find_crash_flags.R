@@ -5,7 +5,7 @@ library(memisc)
 library(gdata)
 library(fst)
 
-year = "20"
+year = "19"
 # This script return a dataframe with a list of crshnmbr with flags for each year. The script finds crashes with a certain flag (i.e. older driver, speed),
 # adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe to save to SQLite db.
 
@@ -206,5 +206,5 @@ all_flags_com = all_crashes %>% dplyr::select(CRSHNMBR, CRSHDATE, CNTYCODE, CRSH
 #### SAVE TO SQLITE
 fname = paste0("20",year,"crsh_flags")
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
-DBI::dbWriteTable(pool, fname, all_flags_com)
+DBI::dbWriteTable(pool, fname, all_flags_com, overwrite = TRUE)
 # make CRSHNMBR primary key

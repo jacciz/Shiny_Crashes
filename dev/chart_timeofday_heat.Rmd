@@ -118,4 +118,5 @@ microbenchmark::microbenchmark(
 pool::dbReadTable(pool, "2017crash") %>% filter(CNTYCODE %in% 11, CRSHSVR %in% "Property Damage"), # 448
 dplyr::tbl(pool, "2017crash") %>% filter(CNTYCODE %in% 11, CRSHSVR %in% "Property Damage") %>% as.data.frame() # 7 #with df 48
 )
+
 ```

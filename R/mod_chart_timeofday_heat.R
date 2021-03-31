@@ -75,7 +75,7 @@ mod_chart_timeofday_heat_server <- function(id, crash_df)
           z = m, # crash count
           type = "heatmap",
           colorscale = colz,
-          showscale = FALSE, # No legend
+          # showscale = FALSE, # No legend
           hovertemplate = paste('%{x} %{y}<br>',
                                 '<b>%{z:.0f} Crashes')
         ) %>% 

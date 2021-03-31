@@ -57,7 +57,7 @@ mod_chart_person_role_treemap_server <- function(id, persons_df) {
                  margin = list(
                    r = 0,
                    l = 0,
-                   b = 10,
+                   b = 20,
                    t = 0
                  ),
                  plot_bgcolor = 'rgba(0,0,0,0)',

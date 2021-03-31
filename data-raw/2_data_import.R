@@ -4,7 +4,7 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-year = "20"
+year = "19"
 
 # This script basically readies the data for the dashboard and is exported into teh SQLite database.
 
@@ -169,7 +169,7 @@ import_all_persons <- function(csv_name, file_loc = file) {
   all_persons <- all_persons %>% mutate(SEX = case_when(SEX == "F" ~ "Female", # relabel SEX
                                                         SEX == "M" ~ "Male",
                                                         SEX == "U" ~ "Unknown")) %>% 
-    mutate_at(vars(starts_with(c("DRVRPC","NMTACT"))), as.character)
+    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(c("DRVRPC","NMTACT"))), as.character)
 
   # saveRDS(all_persons, file = paste0(file_loc, csv_name, ".rds"), compress = FALSE)
   # write_fst(all_persons, path = paste0(file_loc, csv_name, ".fst"), compress = 0)
@@ -221,7 +221,7 @@ all_vehicles <- import_all_vehicles(paste0(year,"vehicle"))
 fname = paste0("20",year)
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
-DBI::dbWriteTable(pool, paste0(fname,"crash"), all_crashes)
-DBI::dbWriteTable(pool, paste0(fname,"person"), all_persons)
-DBI::dbWriteTable(pool, paste0(fname,"vehicle"), all_vehicles)
+DBI::dbWriteTable(pool, paste0(fname,"crash"), all_crashes, overwrite = TRUE)
+DBI::dbWriteTable(pool, paste0(fname,"person"), all_persons, overwrite = TRUE)
+DBI::dbWriteTable(pool, paste0(fname,"vehicle"), all_vehicles, overwrite = TRUE)
 # make CRSHNMBR primary key

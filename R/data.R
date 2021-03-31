@@ -9,7 +9,7 @@
 #' @format shp
 #' \describe{
 #' }
-#' @source \url{http://www.diamondse.info/}
+#' @source \url{}
 "county_recode"
 
 #' muni recode
@@ -17,5 +17,5 @@
 #' @format shp
 #' \describe{
 #' }
-#' @source \url{http://www.diamondse.info/}
+#' @source \url{}
 "muni_recode"

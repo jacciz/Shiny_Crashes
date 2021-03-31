@@ -11,12 +11,12 @@ mod_siderbar_select_county_ui <- function(id) {
   shinyWidgets::pickerInput(
     shiny::NS(id, "cntycode"),
     "County",
-    multiple = FALSE,
+    multiple = TRUE,
     selected = 40,
     # selectize = FALSE,
     choices = NULL,#stats::setNames(county_recode$CountyCode, county_recode$CountyName),
     options = shinyWidgets::pickerOptions(
-      actionsBox = FALSE, noneSelectedText = "Select County",  liveSearch = TRUE, size = 10, showContent= FALSE, liveSearchStyle = 'startsWith')
+      actionsBox = TRUE, noneSelectedText = "Select County",  liveSearch = TRUE, size = 10, showContent= FALSE, liveSearchStyle = 'startsWith')
   )
 }
 
