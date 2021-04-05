@@ -4,7 +4,7 @@ library(lubridate) ### MAY have to change date to mdy, ugh formatting
 library(memisc)
 # library(sjmisc)
 
-year = "19"
+year = "20"
 
 # This script basically readies the data for the dashboard and is exported into teh SQLite database.
 
@@ -19,7 +19,8 @@ import_all_crashes <- function(csv_name, file_loc = file) {
   all_crashes <-
     fread(paste0(file_loc, csv_name, ".csv", sep = ""), sep = ",", header = TRUE,
           select = c("CRSHNMBR", "CRSHSVR", "INJSVR", "CRSHDATE", "CRSHTIME", "CRSHMTH", "TOTINJ", "TOTFATL", "TOTUNIT",
-                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL", "LATDECDG", "LONDECDG")
+                     "DAYNMBR", "CNTYCODE", "MUNICODE", "URBRURAL", "MNRCOLL", "LATDECDG", "LONDECDG", "RLTNTRWY")
+                     # "CRSHLOC", "INTTYPE", "INTDIS")
           ) #  "ALCFLAG", "DRUGFLAG", "BIKEFLAG", "CYCLFLAG", "PEDFLAG"
   all_crashes <-
     all_crashes %>% mutate(CRSHDATE = as.character(CRSHDATE)) # convert to date type
@@ -80,6 +81,14 @@ import_all_crashes <- function(csv_name, file_loc = file) {
     ),
     include.lowest = T
   ))
+  # crash_location = dplyr::case_when(
+  #   RLTNTRWY == "Non Trafficway - Parking Lot" ~ "parking lot",
+  #   CRSHLOC %in% c("Private Property","Tribal Land") ~ "private property",
+  #   INTTYPE == "Not At Intersection" ~ "non-intersection",
+  #   INTTYPE != "" ~ "intersection",
+  #   INTDIS > 0 ~ "non-intersection",
+  #   TRUE ~ "intersection"
+  # ))
   
   setnames(all_crashes, "LONDECDG", "lng") # rename so leaflet grabs correct columns
   setnames(all_crashes, "LATDECDG", "lat")

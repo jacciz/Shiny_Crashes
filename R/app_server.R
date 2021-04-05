@@ -35,7 +35,9 @@ app_server <- function( input, output, session ) {
   })
   
   # List of all available crash flags #distracted_flag
-  crshflag_selected_inputs <- c("ALCFLAG", "DRUGFLAG", "speedflag", "distracted_flag", "teenflag", "olderflag", "CYCLFLAG", "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag")
+  crshflag_selected_inputs <-
+    c("ALCFLAG", "DRUGFLAG", "speedflag", "distracted_flag", "teenflag", "olderflag", "CYCLFLAG",
+      "PEDFLAG", "BIKEFLAG", "singlevehflag", "lanedepflag","deerflag","intersection_flag")
   
   # Looks at status of crshsvr buttons and returns only the ones that are selected (i.e. == TRUE).
   get_crshflag_list <- reactive({

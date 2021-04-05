@@ -8,19 +8,24 @@ library(magrittr)
 library(dplyr)
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
-
 crash_df <-DBI::dbReadTable(pool, "2017crash")
 # person_df <-DBI::dbReadTable(pool, "2017person")
 # crash_df %>% mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
 ```
-```{r test wisinj chart}
-crash <- wisdotcrashdatabase::import_db_data(filepath = "C:/CSV/csv_from_sas/fst/", db_type = "crash", columns = c(), years = c("17"))
+```{r find crash location type}
+# library(magrittr)
+# crash <- wisdotcrashdatabase::import_db_data("C:/CSV/csv_from_sas/fst/", "crash", years = "19")
 
-# By CRSHSVR ?
-RLTNJNLC
-
-INTTYPE
-crash %>% count(RLTNJNLC) 28645 + 10088 = 38733
-
-crash %>% count(INTTYPE) 139970 - 20099 - 81429 = 38442
+crash %>% dplyr::mutate(crash_location = dplyr::case_when(
+  RLTNTRWY == "Non Trafficway - Parking Lot" ~ "parking lot",
+  CRSHLOC %in% c("Private Property","Tribal Land") ~ "private property",
+  INTTYPE == "Not At Intersection" ~ "non-intersection",
+  INTTYPE != "" ~ "intersection",
+  INTDIS > 0 ~ "non-intersection",
+  TRUE ~ "intersection"
+)) %>% dplyr::select(RLTNTRWY, CRSHLOC, INTTYPE, INTDIS , crash_location) %>% dplyr::count(crash_location)
+# 2019: 41743 intersection, 14299 parking lot, 2780 private property
+all_flags %>% count(intersection_flag)
+all_flags %>% distinct(CRSHNMBR)
 ```
+

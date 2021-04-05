@@ -5,7 +5,7 @@ library(memisc)
 library(gdata)
 library(fst)
 
-year = "19"
+year = "20"
 # This script return a dataframe with a list of crshnmbr with flags for each year. The script finds crashes with a certain flag (i.e. older driver, speed),
 # adds a column for each flag type with "Y" denotes crshnmb has that flag. Then it combines all flags into one dataframe to save to SQLite db.
 
@@ -35,7 +35,11 @@ import_all_crashes <- function(csv_name, file_loc = file) {
         "BIKEFLAG",
         "CYCLFLAG",
         "PEDFLAG",
-        "CMVFLAG"
+        "CMVFLAG",
+        "CRSHLOC",
+        "RLTNTRWY",
+        "INTTYPE",
+        "INTDIS"
       )
     )
   # Relabel so in consistent format
@@ -128,7 +132,7 @@ get_list_distractedflags     <- function(persons_df) {
     dplyr::select(CRSHNMBR, distracted_flag) # %>% group_by(CRSHNMBR)
   
   distractflags <- unique(distractflags[])
-  return (distractflags)
+  return (distractflags %>%  filter(distracted_flag == "Y"))
 }
 
 get_list_teendrvrflags  <- function(persons_df) {
@@ -171,6 +175,20 @@ get_list_lanedepflags   <- function(crashes_df){
   lanedepflags <- lanedepflags %>% dplyr::select(CRSHNMBR, lanedepflag) #dplyr::filter(!is.na(CRSHNMBR))# %>% group_by(CRSHNMBR)
   return (lanedepflags)
 }
+
+get_list_intersection_flags   <- function(crashes_df){
+  crashes_df %>% dplyr::mutate(crash_location = dplyr::case_when(
+    RLTNTRWY == "Non Trafficway - Parking Lot" ~ "parking lot",
+    CRSHLOC %in% c("Private Property","Tribal Land") ~ "private property",
+    INTTYPE == "Not At Intersection" ~ "non-intersection",
+    INTTYPE != "" ~ "intersection",
+    INTDIS > 0 ~ "non-intersection",
+    TRUE ~ "intersection"
+  ), intersection_flag = ifelse(crash_location == "intersection", "Y","N")) %>%
+    filter(intersection_flag == "Y") %>% 
+    dplyr::select(intersection_flag, CRSHNMBR)
+}
+
 # This finds crashes with a crash flag already in the crash db (i.e. BIKEFLAG)
 get_list_crashflags     <- function(crashes_df){
   crash_flags <- crashes_df %>% dplyr::select(CRSHNMBR, ALCFLAG, DRUGFLAG, BIKEFLAG, CYCLFLAG, PEDFLAG, CMVFLAG)
@@ -187,11 +205,12 @@ singleveh_crshes    <- get_list_singlevehflags(all_crashes)
 deer_crshes         <- get_list_deerflags(all_crashes)
 lanedep_crshes      <- get_list_lanedepflags(all_crashes)
 allcrashflag_crshes <- get_list_crashflags(all_crashes)
+intersection_crshes <- get_list_intersection_flags(all_crashes)
 
 # Combine dataframes - make sure all df are here
 all_flags <- Reduce(function(x, y) merge(x, y, all=TRUE, by = "CRSHNMBR"),
                     list(speedflag_crshes, distractflag_crshes, teenflag_crshes, olderflag_crshes,
-                         singleveh_crshes, lanedep_crshes, deer_crshes, allcrashflag_crshes)) # combine to one df
+                         singleveh_crshes, lanedep_crshes, deer_crshes, allcrashflag_crshes, intersection_crshes)) # combine to one df
 all_flags_com = all_crashes %>% dplyr::select(CRSHNMBR, CRSHDATE, CNTYCODE, CRSHSVR) %>% left_join(all_flags, ., by = "CRSHNMBR")
 
 # Save crash flags as an RDS or FST, no compression so they open faster and are larger in size

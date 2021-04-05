@@ -20,30 +20,43 @@ mod_waffle_chart_server <- function(id, bikepedcount){
     # ERROR: Error in eval(`_inherit`, env, NULL) : object 'GeomText' not found
     # Solution: @import ggplot2
     get_number_of_rows_size <- function(role_count) {
-      if (is.na((any(role_count[ "n"])))){
-        para = c(rows = 1, size = 8)
-      }
-      else if (any(role_count[ "n"] == 1)) {
-        para = c(rows = 1, size = 8)
+      if (sum(role_count$n) == 1) {
+        return(90)
       }
       else if
-      (any(role_count[ "n"] == 2)){
-        para = c(rows = 2, size = 6)
+      (sum(role_count$n) == 2) {
+        return(90)
       }
       else if
-      (any(role_count[ "n"] < 20)){
-        para = c(rows = 5, size = 4)
+      (sum(role_count$n) < 20) {
+        return(30)
       }
       else if
-      (any(role_count["n"] >= 20)){
-        para = c(rows = round(max(role_count["n"])/100,0), size = 3)
+      (sum(role_count$n) < 50) {
+        return(15)
       }
-      para
+      else if
+      (sum(role_count$n) >= 20) {
+        return(3)
+      }
     }
     
     output$waffle_chart <- renderPlot({
-      bikeped_title <- sprintf(
-        "<span style='font-size:16pt;font-family:Verdana;color:#666666'>
+      if (sum(bikepedcount()$n) == 0) {
+        ggplot2::ggplot() +
+          waffle::geom_pictogram() + 
+          theme(axis.text = element_blank(),
+                axis.line = element_blank(),
+                axis.ticks = element_blank(),
+                panel.background = element_rect(fill =  "#f8f8f8"),
+                plot.background = element_rect(fill =  "#f8f8f8"),
+                plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+          labs( title =  "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
+        )
+      } else {
+      
+      bikeped_title <- sprintf( # not found font-family:Verdana
+        "<span style='font-size:16pt;color:#666666'>
         %s pedestrians were <span style='color:#Db7e65;'>**killed,**</span>
         %s <span style='color:#4AAECF;'>**injured**<br></span> 
         %s bicyclists were <span style='color:#Db7e65;'>**killed,**</span>
@@ -55,14 +68,14 @@ mod_waffle_chart_server <- function(id, bikepedcount){
       )
       # count_of_roles <- person_df() %>% dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian")) %>%
       #   dplyr::count(.data$ROLE)
-      
-      # para <- get_number_of_rows_size(count_of_roles)
+      # print(sum(bikepedcount()$n))
+      # para <- get_number_of_rows_size(bikepedcount())
       
       bikepedcount() %>% 
         ggplot2::ggplot(aes(label = .data$ROLE, values = .data$n)) +
         waffle::geom_pictogram(aes(color = for_colors),
-                               n_rows = round(sqrt(sum(bikepedcount()$n)),0),
-                               size = para["size"],
+                               n_rows = round(sqrt(sum(bikepedcount()$n)),0), # sqr root so we can make a square
+                               size = get_number_of_rows_size(bikepedcount()),
                                # size = 4,
                                flip = TRUE,
                                # size = ".4vw",
@@ -88,7 +101,7 @@ mod_waffle_chart_server <- function(id, bikepedcount){
         labs(
           title = bikeped_title
         )
-        
+      }
       # bike <- person_df() %>% dplyr::filter(ROLE %in% c("Bicyclist"), WISINJ !="No Apparent Injury")
       # bike_table <- table(bike$ROLE)
       # waffle::waffle(bike_table, get_number_of_rows(bike_table["Bicyclist"]), legend_pos = "none", use_glyph = "bicycle", colors = c("#4fb9db", "white"), glyph_size = 6)

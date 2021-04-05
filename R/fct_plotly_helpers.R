@@ -42,3 +42,9 @@ age_group_factor_levels <-c("0-4",
 crshsvr_factor_levels <- c("Property Damage", "Injury", "Fatal") # So Fatals will be on top in the map
 # wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
 
+# Import FA fonts for waffle chart
+# extrafont::fonttable() %>% dplyr::as_tibble() %>% dplyr::filter(grepl("Awesom", FamilyName)) %>% dplyr::select(FamilyName, FontName, fontfile)
+# sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "inst/app/www/fonts/FontAwesome5Free-Solid.ttf")
+# sysfonts::font_add(family = "FontAwesome5Free-Regular", regular = "inst/app/www/fonts/FontAwesome5Brands-Regular.ttf")
+# sysfonts::font_add(family = "FontAwesome5Brands-Regular", regular = "inst/app/www/fonts/fontawesome-webfont.ttf")
+

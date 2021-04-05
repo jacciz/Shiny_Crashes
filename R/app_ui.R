@@ -240,6 +240,15 @@ app_ui <- function(request) {
               status = "primary"
             ),
             materialSwitch(
+              inputId = "intersection_flag",
+              label = tags$span(
+                HTML(
+                  '<i class="fa fa-times" style = "color:rgb(115,115,115);"></i> Intersection &nbsp;&ensp;'
+                )
+              ),
+              status = "primary"
+            ),
+            materialSwitch(
               inputId = "deerflag",
               label = tags$span(
                 HTML(
