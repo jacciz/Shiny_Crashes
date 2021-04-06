@@ -106,7 +106,7 @@ waffle(ped_table, get_number_of_rows(ped_table["Pedestrian"]), legend_pos = "non
 
 ```{r this works for font}
 extrafont::fonttable() %>% dplyr::as_tibble() %>% dplyr::filter(grepl("Awesom", FamilyName)) %>% select(FamilyName, FontName, fontfile)
-waffle(c(50, 30, 15, 5), rows = 5, use_glyph = "bolt", glyph_size = 4)
+# waffle(c(50, 30, 15, 5), rows = 5, use_glyph = "bolt", glyph_size = 4)
 
 # library(showtext)
 sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "C:\\Users\\dotjaz\\Downloads\\FontAwesome5Free-Solid.ttf")
@@ -114,76 +114,49 @@ sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "C:\\Users\\dotj
 # sysfonts::font_add(family = "FontAwesome5Brands-Regular", regular = "C:\\Users\\dotjaz\\Downloads\\fontawesome-webfont.ttf")
 
 showtext::showtext_auto()
-waffle::waffle(c(50, 30, 15, 5), rows = 5, use_glyph = "music")
-library(ggplot2)
+```
+```{r}
+library(magrittr)
+library(waffle)
+role_table = person %>%
+      dplyr::filter(.data$ROLE %in% c("Bicyclist", "Pedestrian"), .data$WISINJ != "No Apparent Injury") %>%
+      dplyr::mutate(inj = ifelse(.data$WISINJ == "Fatal Injury", "Killed","Injured"),
+             inj = factor(.data$inj, levels =c("Injured","Killed")),
+             ROLE = factor(.data$ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
+      dplyr::count(.data$ROLE, .data$inj, .drop = FALSE) %>% dplyr::mutate(for_colors = paste0(.data$ROLE, .data$inj)) %>%
+      data.table::as.data.table()
 
-person %>% dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "13") %>%
-  dplyr::count(ROLE) %>%
-  ggplot2::ggplot(mapping = ggplot2::aes(label = ROLE, values = n)) +
-  waffle::geom_pictogram(n_rows = 10, aes(colour = ROLE), flip = TRUE, make_proportional = TRUE, show.legend = FALSE) +
+
+ role_table %>% 
+        ggplot2::ggplot(ggplot2::aes(label = .data$ROLE, values = .data$n, color = .data$for_colors)) +
+        geom_pictogram(
+                               n_rows = 12, # sqr root so we can make a square
+                               size = 4,
+                               # size = 4,
+                               flip = TRUE,
+                               # size = ".4vw",
+                               show.legend = FALSE) +
+   scale_label_pictogram()
+```
+```{r}
+
+role_table %>% 
+  ggplot2::ggplot(ggplot2::aes(label = ROLE, values = n)) +
+  waffle::geom_pictogram(n_rows = 10, ggplot2::aes(colour = ROLE), flip = TRUE, make_proportional = TRUE) +
   ggplot2::scale_color_manual(
     name = NULL,
-    values = c("#a40000", "#c68958")
-    # labels = c("Fruit", "Sammich")
+    values = c("#a40000", "#c68958", "#ae6056"),
+    labels = c("Fruit", "Sammich", "Pizza")
   ) +
   waffle::scale_label_pictogram(
     name = NULL,
-    values = c("bicycle", "walking"),
-    labels = c("Bicyclists", "Pedestrians")
-  )
-
-get_number_of_rows(count$n)
-any(count[ "n"] == 1)
-count <- person %>%
-  dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), CNTYCODE == "4", WISINJ != "No Apparent Injury") %>%
-  mutate( inj = ifelse(WISINJ == "Fatal Injury", "Killed","Injured"), inj = factor(inj, levels =c("Killed","Injured")), ROLE = factor(ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
-        dplyr::count(ROLE,inj, .drop = FALSE)  %>% mutate(for_colors = paste0(ROLE,inj)) %>% data.table::as.data.table()
-wisdotcrashdatabase::find_countycode_fips("Bayfield")
-      bikeped_title <- sprintf(
-        "<span style='font-size:16pt'>
-        %s pedestrians were <span style='color:#Db7e65;'>**killed**</span>,
-        %s were <span style='color:#4AAECF;'>**injured**</span> <br>
-        %s bicyclists were <span style='color:#Db7e65;'>**killed**</span>,
-        %s were <span style='color:#3D8DA8;'>**injured**</span>  </span>",
-        count[for_colors == "PedestrianKilled", n],
-        count[for_colors == "PedestrianInjured", n],
-        count[for_colors == "BicyclistKilled", n],
-        count[for_colors == "BicyclistInjured", n]
-      )
-count
-count %>%
-        ggplot2::ggplot(aes(label = .data$ROLE, values = .data$n)) +
-        waffle::geom_pictogram(aes(color = for_colors),
-                               n_rows = round(sqrt(sum(count$n)),0),
-                               size = 4,
-                               # size = para["size"],
-                               flip = TRUE,
-                               show.legend = FALSE) +
-        ggplot2::scale_color_manual(
-          name = NULL,
-          # values = c("#a40000", "#c68958")
-          values = color_map_waffle_inj[count$for_colors]
-          # labels = c("Fruit", "Sammich")
-        ) +
-        waffle::scale_label_pictogram(
-          name = NULL,
-          # values = color_map_waffle_symbols[count$ROLE]
-          values = c("bicycle", "walking")
-          # labels = c("Bicyclists", "Pedestrians")
-        ) + coord_equal() +
-  theme_classic() +
-  theme(axis.text = element_blank(),
-              axis.line = element_blank(),
-              axis.ticks = element_blank(),
-              plot.title = ggtext::element_markdown(lineheight = 1.1, vjust = .5, hjust = 0),
-        plot.title.position = "plot") +
-        labs(
-          title = bikeped_title
-          # "<span style='font-size:16pt'> Age of
-          # <span style='color:#428BCA;'>**Male**</span> and
-          # <span style='color:#D50032;'>**Female**</span> Motorcyclists in a Crash (2017-2019)
-          # </span>"
-        )
-
+    values = c("apple-alt", "bread-slice", "pizza-slice"),
+    labels = c("Fruit", "Sammich", "Pizza")
+  ) +
+  # ggplot2::coord_equal() +
+  # theme_ipsum_rc(grid="") +
+  # waffle::theme_enhance_waffle() +
+  ggplot2::theme(legend.key.height = unit(2.25, "line")) +
+  ggplot2::theme(legend.text = element_text(size = 10, hjust = 0, vjust = 0.75))
 ```
 

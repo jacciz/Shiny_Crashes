@@ -1,9 +1,13 @@
 #' waffle_chart UI Function
 #'
-#' @description A shiny Module.
+#'
+#' @description A shiny Module. ERROR: Error in eval(`_inherit`, env, NULL) : object 'GeomText' not found
+#' Solution: add require(waffle).
+#' Error in loadNamespace: there is no package called ‘plyr’
+#' Soultuion: add plyr to DESC, I think waffle uses plyr
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
-#' @import ggplot2
+#' @import waffle
 #'
 #' @noRd 
 #'
@@ -17,8 +21,7 @@ mod_waffle_chart_ui <- function(id){
 #' @noRd 
 mod_waffle_chart_server <- function(id, bikepedcount){
   shiny::moduleServer(id, function(input, output, session) {
-    # ERROR: Error in eval(`_inherit`, env, NULL) : object 'GeomText' not found
-    # Solution: @import ggplot2
+    
     get_number_of_rows_size <- function(role_count) {
       total_roles = sum(role_count$n)
       if (total_roles == 1) {
@@ -43,16 +46,18 @@ mod_waffle_chart_server <- function(id, bikepedcount){
     }
     
     output$waffle_chart <- renderPlot({
+      require(waffle)
+      
       if (sum(bikepedcount()$n) == 0) {
         ggplot2::ggplot() +
-          waffle::geom_pictogram() + 
-          theme(axis.text = element_blank(),
+          geom_pictogram() + 
+          ggplot2::theme(axis.text = element_blank(),
                 axis.line = element_blank(),
                 axis.ticks = element_blank(),
                 panel.background = element_rect(fill =  "#f8f8f8"),
                 plot.background = element_rect(fill =  "#f8f8f8"),
                 plot.title = ggtext::element_markdown(lineheight = 1.1)) +
-          labs( title = "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
+          ggplot2::labs( title = "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
         )
       } else {
       
@@ -67,38 +72,37 @@ mod_waffle_chart_server <- function(id, bikepedcount){
         bikepedcount()[for_colors == "BicyclistKilled", n],
         bikepedcount()[for_colors == "BicyclistInjured", n]
       )
-      # count_of_roles <- person_df() %>% dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian")) %>%
-      #   dplyr::count(.data$ROLE)
-      # print(sum(bikepedcount()$n))
-      # para <- get_number_of_rows_size(bikepedcount())
-      
+    
       bikepedcount() %>% 
-        ggplot2::ggplot(aes(label = .data$ROLE, values = .data$n)) +
-        waffle::geom_pictogram(aes(color = .data$for_colors),
+        ggplot2::ggplot() +
+        geom_pictogram(ggplot2::aes(label = .data$ROLE, values = .data$n, color = .data$for_colors),
                                n_rows = round(sqrt(sum(bikepedcount()$n)),0), # sqr root so we can make a square
                                size = get_number_of_rows_size(bikepedcount()),
+                               # family = "FontAwesome5Free-Solid",
                                # size = 4,
                                flip = TRUE,
                                # size = ".4vw",
                                show.legend = FALSE) +
-        ggplot2::scale_color_manual(
+        # scale_label_pictogram()
+        scale_color_manual(
           name = NULL,
           # values = c("#a40000", "#c68958")
           values = color_map_waffle_inj[bikepedcount()$for_colors]
           # labels = c("Fruit", "Sammich")
         ) +
-        waffle::scale_label_pictogram(
+        scale_label_pictogram(
           name = NULL,
-          values = c("bicycle", "walking")
-          # labels = c("Bicyclists", "Pedestrians")
+          values = c("bicycle", "walking"),
+          labels = c("Bicyclists", "Pedestrians")
         ) + #coord_equal() + # this makes it a square
         theme_classic() +
-        theme(axis.text = element_blank(),
+        theme_enhance_waffle() +
+        theme(panel.background = element_rect(fill =  "#f8f8f8"),
+              plot.background = element_rect(fill =  "#f8f8f8"),
               axis.line = element_blank(),
               axis.ticks = element_blank(),
-              panel.background = element_rect(fill =  "#f8f8f8"),
-              plot.background = element_rect(fill =  "#f8f8f8"),
               plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+        
         labs(
           title = bikeped_title
         )

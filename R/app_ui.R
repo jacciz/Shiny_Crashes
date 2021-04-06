@@ -317,7 +317,7 @@ app_ui <- function(request) {
             <img src=www/tops-lab-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248)>
             <img src=www/zero-logo.png style=height:100px;display:inline-block;background-color:rgb(248,248,248);>"
                 )
-              ))
+              )),
             ),
             tabPanel(
               # NOTE   br(), adds space between charts
