@@ -20,23 +20,24 @@ mod_waffle_chart_server <- function(id, bikepedcount){
     # ERROR: Error in eval(`_inherit`, env, NULL) : object 'GeomText' not found
     # Solution: @import ggplot2
     get_number_of_rows_size <- function(role_count) {
-      if (sum(role_count$n) == 1) {
+      total_roles = sum(role_count$n)
+      if (total_roles == 1) {
         return(90)
       }
       else if
-      (sum(role_count$n) == 2) {
+      (total_roles == 2) {
         return(90)
       }
       else if
-      (sum(role_count$n) < 20) {
+      (total_roles < 20) {
         return(30)
       }
       else if
-      (sum(role_count$n) < 50) {
+      (total_roles < 50) {
         return(15)
       }
       else if
-      (sum(role_count$n) >= 20) {
+      (total_roles >= 20) {
         return(3)
       }
     }
@@ -51,7 +52,7 @@ mod_waffle_chart_server <- function(id, bikepedcount){
                 panel.background = element_rect(fill =  "#f8f8f8"),
                 plot.background = element_rect(fill =  "#f8f8f8"),
                 plot.title = ggtext::element_markdown(lineheight = 1.1)) +
-          labs( title =  "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
+          labs( title = "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
         )
       } else {
       
@@ -73,7 +74,7 @@ mod_waffle_chart_server <- function(id, bikepedcount){
       
       bikepedcount() %>% 
         ggplot2::ggplot(aes(label = .data$ROLE, values = .data$n)) +
-        waffle::geom_pictogram(aes(color = for_colors),
+        waffle::geom_pictogram(aes(color = .data$for_colors),
                                n_rows = round(sqrt(sum(bikepedcount()$n)),0), # sqr root so we can make a square
                                size = get_number_of_rows_size(bikepedcount()),
                                # size = 4,

@@ -9,7 +9,6 @@
 #' @format shp
 #' \describe{
 #' }
-#' @source \url{}
 "county_recode"
 
 #' muni recode
@@ -17,5 +16,4 @@
 #' @format shp
 #' \describe{
 #' }
-#' @source \url{}
 "muni_recode"

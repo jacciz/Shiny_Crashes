@@ -41,6 +41,15 @@
       .hexbin_svg {display: inline-block; width: 15px; height: 15px; background-size: cover;
       filter: invert(80%) sepia(84%) saturate(3572%) hue-rotate(177deg) brightness(102%) contrast(92%);}
 
+     .driver_svg {width: 15px; height: 15px; background-size: cover;
+	filter: invert(46%) sepia(0%) saturate(0%) hue-rotate(92deg) brightness(99%) contrast(100%);}
+
+     .traffic-accident_svg {width: 15px; height: 15px; background-size: cover;
+	filter: invert(46%) sepia(0%) saturate(0%) hue-rotate(92deg) brightness(99%) contrast(100%);}
+
+      .deer_svg {width: 15px; height: 15px; background-size: cover;
+	filter: invert(46%) sepia(0%) saturate(0%) hue-rotate(92deg) brightness(99%) contrast(100%);}
+
       .cluster_on_svg {display: inline-block; width: 20px; height: 20px; background-size: cover;
       filter: invert(71%) sepia(82%) saturate(941%) hue-rotate(323deg) brightness(97%) contrast(96%);}
 

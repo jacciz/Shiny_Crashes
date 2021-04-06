@@ -29,6 +29,7 @@ utils::globalVariables(
     "county_recode",
     "NMTLOC",
     "drvrpc_count",
-    "WISINJ"
+    "WISINJ",
+    "for_colors"
   )
 )

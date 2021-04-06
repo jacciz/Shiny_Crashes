@@ -156,11 +156,11 @@ app_server <- function( input, output, session ) {
   # add factor_levels so 0 values will be kept (need .drop = FALSE)
   bike_ped_count <- reactive({
     filtered_persons() %>%
-      dplyr::filter(ROLE %in% c("Bicyclist", "Pedestrian"), WISINJ != "No Apparent Injury") %>%
-      mutate(inj = ifelse(WISINJ == "Fatal Injury", "Killed","Injured"),
-             inj = factor(inj, levels =c("Injured","Killed")),
-             ROLE = factor(ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
-      dplyr::count(ROLE,inj, .drop = FALSE) %>% mutate(for_colors = paste0(ROLE,inj)) %>%
+      dplyr::filter(.data$ROLE %in% c("Bicyclist", "Pedestrian"), .data$WISINJ != "No Apparent Injury") %>%
+      mutate(inj = ifelse(.data$WISINJ == "Fatal Injury", "Killed","Injured"),
+             inj = factor(.data$inj, levels =c("Injured","Killed")),
+             ROLE = factor(.data$ROLE, levels =c("Bicyclist","Pedestrian"))) %>% 
+      dplyr::count(.data$ROLE, .data$inj, .drop = FALSE) %>% mutate(for_colors = paste0(.data$ROLE, .data$inj)) %>%
       data.table::as.data.table()
   })
 

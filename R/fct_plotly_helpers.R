@@ -21,6 +21,10 @@ color_map_waffle_inj <- c("BicyclistInjured" = "#3D8DA8", "BicyclistKilled" = "#
 # Factor levels
 wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
 
+day_factor_levels <- c("Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday") #newtime
+newtime_factor_levels = c("12am","1am","2am","3am", "4am","5am", "6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm",
+      "5pm","6pm","7pm","8pm","9pm","10pm","11pm")   
+
 age_group_factor_levels <-c("0-4",
 "5-9",
 "10-14",
@@ -42,9 +46,9 @@ age_group_factor_levels <-c("0-4",
 crshsvr_factor_levels <- c("Property Damage", "Injury", "Fatal") # So Fatals will be on top in the map
 # wisinj_factor_levels <- c("Possible Injury", "Suspected Minor Injury", "Suspected Serious Injury", "Fatal Injury")
 
-# Import FA fonts for waffle chart
+# Import FA fonts for waffle chart - not sure if needed
 # extrafont::fonttable() %>% dplyr::as_tibble() %>% dplyr::filter(grepl("Awesom", FamilyName)) %>% dplyr::select(FamilyName, FontName, fontfile)
-# sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "inst/app/www/fonts/FontAwesome5Free-Solid.ttf")
+sysfonts::font_add(family = "FontAwesome5Free-Solid", regular = "inst/app/www/fonts/FontAwesome5Free-Solid.ttf")
 # sysfonts::font_add(family = "FontAwesome5Free-Regular", regular = "inst/app/www/fonts/FontAwesome5Brands-Regular.ttf")
 # sysfonts::font_add(family = "FontAwesome5Brands-Regular", regular = "inst/app/www/fonts/fontawesome-webfont.ttf")
-
+showtext::showtext_auto()

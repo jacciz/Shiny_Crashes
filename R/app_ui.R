@@ -185,7 +185,7 @@ app_ui <- function(request) {
               inputId = "teenflag",
               label = tags$span(
                 HTML(
-                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i> Teen driver &emsp;&nbsp; &nbsp; '
+                  '</svg><image class="driver_svg" src="www/icons8-driver-60.svg"/> Teen driver &emsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -194,7 +194,7 @@ app_ui <- function(request) {
               inputId = "olderflag",
               label = tags$span(
                 HTML(
-                  '<img src="www/icons8-driver-60.svg" style="width:16px;height:16px;"></i> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
+                  '</svg><image class="driver_svg" src="www/icons8-driver-60.svg"/> Older driver &ensp;&nbsp;&nbsp; &nbsp; '
                 )
               ),
               status = "primary"
@@ -234,7 +234,7 @@ app_ui <- function(request) {
               inputId = "singlevehflag",
               label = tags$span(
                 HTML(
-                  '<img src="www/icons8-traffic-accident-50.svg" style="width:16px;height:16px;"></i> Single Vehicle &nbsp;'
+                  '</svg><image class="traffic-accident_svg" src="www/icons8-traffic-accident-50.svg"/> Single Vehicle &nbsp;'
                 )
               ),
               status = "primary"
@@ -252,7 +252,7 @@ app_ui <- function(request) {
               inputId = "deerflag",
               label = tags$span(
                 HTML(
-                  '<img src="www/icons8-deer-52.svg" style="width:15px;height:15px;"></i> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
+                  '</svg><image class="deer_svg" src="www/icons8-deer-52.svg"/> Deer &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;'
                 )
               ),
               status = "primary"

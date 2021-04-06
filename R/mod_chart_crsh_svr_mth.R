@@ -29,38 +29,16 @@ mod_chart_crsh_svr_mth_server <- function(id, crash_df) {
           paper_bgcolor = 'rgba(0,0,0,0)'
         )
       } else {
-        crshsvr_table <-
-          table(month = crash_df()$CRSHMTH, svr = crash_df()$CRSHSVR) %>% tibble::as_tibble() # get counts, put in a tibble
-        crshsvr_table$month <-
-          factor(crshsvr_table$month, levels = month.name) # factors month names, in month.name order
+       
+        crash = crash_df() %>%
+          dplyr::mutate(svr = factor(.data$CRSHSVR, levels = crshsvr_factor_levels),
+                        CRSHMTH = factor(.data$CRSHMTH, levels = base::month.name))
         
-        month_order <-
-          c(
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-          ) # rename months
-        crshsvr_table$month <-
-          month.abb[crshsvr_table$month] # abbreviate months
-        # month_factor = month.name
-        
-        # Finds months not in df and adds those rows then replaces NA with 0
-        add <- month_order[!month_order %in% crshsvr_table$month]
-        crshsvr_table <-
-          if (length(add) != 0) {
-            crshsvr_table %>% dplyr::add_row(month = add) %>% tidyr::replace_na(list(n = 0, svr = "Fatal"))
-          } else{
-            crshsvr_table
-          }
+        crash$CRSHMTH <- month.abb[crash$CRSHMTH]
+        crshsvr_table <- 
+          crash %>%
+          dplyr::mutate(CRSHMTH = factor(.data$CRSHMTH, levels = base::month.abb)) %>%
+          dplyr::count(month = CRSHMTH, svr = svr, .drop = FALSE)
         
         plot_ly(
           crshsvr_table,
@@ -98,7 +76,7 @@ mod_chart_crsh_svr_mth_server <- function(id, crash_df) {
               title = "",
               tickfont = chart_axis,
               tickangle = -0,
-              categoryarray = ~ month_order,
+              categoryarray = ~ base::month.abb,
               categoryorder = "array" # sets order
               # ticktext = ~month.abb[crshsvr_table$month],
               # automargin = TRUE,
