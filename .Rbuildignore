@@ -9,3 +9,7 @@ $run_dev.*
 ^README\.Rmd$
 ^app\.R$
 ^rsconnect$
+^scripts$
+^stacks$
+^tests$
+^.dockerignore$

@@ -25,6 +25,7 @@ Imports:
     pkgload,
     plotly,
     plyr,
+    qpdf,
     RSQLite,
     remotes,
     rlang,

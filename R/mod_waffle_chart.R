@@ -1,13 +1,8 @@
 #' waffle_chart UI Function
 #'
-#'
-#' @description A shiny Module. ERROR: Error in eval(`_inherit`, env, NULL) : object 'GeomText' not found
-#' Solution: add require(waffle).
-#' Error in loadNamespace: there is no package called ‘plyr’
-#' Soultuion: add plyr to DESC, I think waffle uses plyr
+#' @description A shiny Modul
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
-#' @import waffle
 #'
 #' @noRd 
 #'
@@ -17,7 +12,11 @@ mod_waffle_chart_ui <- function(id){
 }
     
 #' waffle_chart Server Function
-#'
+#' 
+#' ERROR: Error in eval#(_inherit`, env, NULL) : object 'GeomText' not found.
+#' Solution: add if(require("waffle")).
+#' Error in loadNamespace: there is no package called ‘plyr’
+#' Solution: add plyr to DESC, I think waffle uses plyr
 #' @noRd 
 mod_waffle_chart_server <- function(id, bikepedcount){
   shiny::moduleServer(id, function(input, output, session) {
@@ -46,71 +45,69 @@ mod_waffle_chart_server <- function(id, bikepedcount){
     }
     
     output$waffle_chart <- renderPlot({
-      require(waffle)
-      
-      if (sum(bikepedcount()$n) == 0) {
-        ggplot2::ggplot() +
-          geom_pictogram() + 
-          ggplot2::theme(axis.text = element_blank(),
-                axis.line = element_blank(),
-                axis.ticks = element_blank(),
-                panel.background = element_rect(fill =  "#f8f8f8"),
-                plot.background = element_rect(fill =  "#f8f8f8"),
-                plot.title = ggtext::element_markdown(lineheight = 1.1)) +
-          ggplot2::labs( title = "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
-        )
-      } else {
-      
-      bikeped_title <- sprintf( # not found font-family:Verdana
-        "<span style='font-size:16pt;color:#666666'>
-        %s pedestrians were <span style='color:#Db7e65;'>**killed,**</span>
-        %s <span style='color:#4AAECF;'>**injured**<br></span> 
-        %s bicyclists were <span style='color:#Db7e65;'>**killed,**</span>
-        %s <span style='color:#3D8DA8;'>**injured**</span>  </span>",
-        bikepedcount()[for_colors == "PedestrianKilled", n],
-        bikepedcount()[for_colors == "PedestrianInjured", n],
-        bikepedcount()[for_colors == "BicyclistKilled", n],
-        bikepedcount()[for_colors == "BicyclistInjured", n]
-      )
-    
-      bikepedcount() %>% 
-        ggplot2::ggplot() +
-        geom_pictogram(ggplot2::aes(label = .data$ROLE, values = .data$n, color = .data$for_colors),
-                               n_rows = round(sqrt(sum(bikepedcount()$n)),0), # sqr root so we can make a square
-                               size = get_number_of_rows_size(bikepedcount()),
-                               # family = "FontAwesome5Free-Solid",
-                               # size = 4,
-                               flip = TRUE,
-                               # size = ".4vw",
-                               show.legend = FALSE) +
-        # scale_label_pictogram()
-        scale_color_manual(
-          name = NULL,
-          # values = c("#a40000", "#c68958")
-          values = color_map_waffle_inj[bikepedcount()$for_colors]
-          # labels = c("Fruit", "Sammich")
-        ) +
-        scale_label_pictogram(
-          name = NULL,
-          values = c("bicycle", "walking"),
-          labels = c("Bicyclists", "Pedestrians")
-        ) + #coord_equal() + # this makes it a square
-        theme_classic() +
-        theme_enhance_waffle() +
-        theme(panel.background = element_rect(fill =  "#f8f8f8"),
-              plot.background = element_rect(fill =  "#f8f8f8"),
-              axis.line = element_blank(),
-              axis.ticks = element_blank(),
-              plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+      # library(waffle)
+      if(require("waffle")) {
+      # if (requireNamespace("waffle", quietly = TRUE)) {
+        if (sum(bikepedcount()$n) == 0) {
+          ggplot2::ggplot() +
+            waffle::geom_pictogram() + 
+            ggplot2::theme(axis.text = ggplot2::element_blank(),
+                  axis.line = ggplot2::element_blank(),
+                  axis.ticks = ggplot2::element_blank(),
+                  panel.background = ggplot2::element_rect(fill =  "#f8f8f8"),
+                  plot.background = ggplot2::element_rect(fill =  "#f8f8f8"),
+                  plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+            ggplot2::labs( title = "<span style='font-size:16pt;color:#666666'>No pedestrians or bicyclists</span>"
+          )
+        } else {
         
-        labs(
-          title = bikeped_title
+        bikeped_title <- sprintf( # not found font-family:Verdana
+          "<span style='font-size:16pt;color:#666666'>
+          %s pedestrians were <span style='color:#Db7e65;'>**killed,**</span>
+          %s <span style='color:#4AAECF;'>**injured**<br></span> 
+          %s bicyclists were <span style='color:#Db7e65;'>**killed,**</span>
+          %s <span style='color:#3D8DA8;'>**injured**</span>  </span>",
+          bikepedcount()[for_colors == "PedestrianKilled", n],
+          bikepedcount()[for_colors == "PedestrianInjured", n],
+          bikepedcount()[for_colors == "BicyclistKilled", n],
+          bikepedcount()[for_colors == "BicyclistInjured", n]
         )
+      
+        bikepedcount() %>% 
+          ggplot2::ggplot() +
+          waffle::geom_pictogram(ggplot2::aes(label = .data$ROLE, values = .data$n, color = .data$for_colors),
+                                 n_rows = round(sqrt(sum(bikepedcount()$n)), 0), # sqr root so we can make a square
+                                 size = get_number_of_rows_size(bikepedcount()),
+                                 # family = "FontAwesome5Free-Solid",
+                                 # size = 4,
+                                 flip = TRUE,
+                                 # size = ".4vw",
+                                 show.legend = FALSE) +
+          # scale_label_pictogram()
+          ggplot2::scale_color_manual(
+            name = NULL,
+            values = color_map_waffle_inj[bikepedcount()$for_colors]
+            # labels = c("Fruit", "Sammich")
+          ) +
+          waffle::scale_label_pictogram(
+            name = NULL,
+            values = c("bicycle", "walking"),
+            labels = c("Bicyclists", "Pedestrians")
+          ) + #coord_equal() + # this makes it a square
+          ggplot2::theme_classic() +
+          waffle::theme_enhance_waffle() +
+          ggplot2::theme(panel.background = ggplot2::element_rect(fill =  "#f8f8f8"),
+                plot.background = ggplot2::element_rect(fill =  "#f8f8f8"),
+                axis.line = ggplot2::element_blank(),
+                axis.ticks = ggplot2::element_blank(),
+                plot.title = ggtext::element_markdown(lineheight = 1.1)) +
+          
+          ggplot2::labs(
+            title = bikeped_title
+          )
+        }
       }
-      # bike <- person_df() %>% dplyr::filter(ROLE %in% c("Bicyclist"), WISINJ !="No Apparent Injury")
-      # bike_table <- table(bike$ROLE)
-      # waffle::waffle(bike_table, get_number_of_rows(bike_table["Bicyclist"]), legend_pos = "none", use_glyph = "bicycle", colors = c("#4fb9db", "white"), glyph_size = 6)
-    })
+      })
   
   })
 }

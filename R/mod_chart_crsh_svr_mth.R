@@ -38,7 +38,7 @@ mod_chart_crsh_svr_mth_server <- function(id, crash_df) {
         crshsvr_table <- 
           crash %>%
           dplyr::mutate(CRSHMTH = factor(.data$CRSHMTH, levels = base::month.abb)) %>%
-          dplyr::count(month = CRSHMTH, svr = svr, .drop = FALSE)
+          dplyr::count(month = .data$CRSHMTH, svr = .data$svr, .drop = FALSE)
         
         plot_ly(
           crshsvr_table,

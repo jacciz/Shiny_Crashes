@@ -1,0 +1,34 @@
+FROM rocker/shiny-verse:4.0.3
+# Rocker image includes R, Shiny, and tidyverse
+# It uses files in /stacks and /scripts
+# Golem will create a new Dockerfile. must use this as a template. Need to copy install package part.
+
+LABEL org.label-schema.license="GPL-2.0" \
+      org.label-schema.vcs-url="https://github.com/rocker-org/rocker-versioned" \
+      org.label-schema.vendor="Rocker Project" \
+      maintainer="Carl Boettiger <cboettig@ropensci.org>"
+
+# Found in /scripts
+RUN /rocker_scripts/install_geospatial.sh
+
+# copy necessary files
+## app folder
+COPY . ./app
+
+# renv package to take a snapshot of packages (optional)
+## renv.lock file
+# COPY /renv.lock ./renv.lock
+
+# Don't need tidyverse as that is in the Rocker image # REMOVE all tidyverse packages, pkgload, knitr, testthat, plyr, rmarkdown, remotes, attempt, processx, config, rlang
+
+
+RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
+# RUN R -e 'install.packages("remotes")'
+# RUN R -e 'remotes::install_github("r-lib/remotes", ref = "97bbf81")'
+
+# PUT PACKAGES TO INSTALL HERE
+
+# expose port
+EXPOSE 3838
+
+CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]

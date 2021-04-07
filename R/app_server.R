@@ -14,9 +14,9 @@ app_server <- function( input, output, session ) {
       sidebarUserPanel()              # sidebar panel stuff ?
     }
   })
-  # read shapefile for county.
-  g = app_sys("inst/app/www/county.shp")
-  county_geom <- sf::st_read(g)
+  # read shapefile for county 
+  county_geom <- app_sys("inst/app/www/county.shp") %>% sf::st_read(.)
+  
   # List the first level callModules here
   ################### SIDEBAR Data Inputs #######################
   # Return inputs to filter data based on user selection. When using these variables, include ()

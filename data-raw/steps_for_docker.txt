@@ -1,40 +1,32 @@
-Test Performance
+Steps to Containerize App via Docker
 
-1) Run locally:
-# shiny::runApp(host ="0.0.0.0", port = 3838, launch.browser = FALSE)
+https://hub.docker.com/r/rocker/shiny/
+https://juanitorduz.github.io/dockerize-a-shinyapp/
 
-Press STOP
+1) Open Docker and Powershell and navigate to app file.
+Be sure to update Dockerfile if needed
+cd "C:/Users/jacci/Documents/DS 710/Shiny_Crashes/"
 
-profvis::profvis({ # see performance
-  shiny::runApp(
-    port = 8888,
-    launch.browser = FALSE,
-    quiet = TRUE)
-})
+2) Build Image (last part is what you name it)
+# This could take 1 hour, 'non-Windows Docker host' is normal
+docker build -t crash_dashboard .
 
-Load Testing
-1)Record a session, close tab, output recording files is saved
-shinyloadtest::record_session(shiny::runApp(host ="0.0.0.0", port = 3838, launch.browser = TRUE), output_file = "C:/W_shortcut/recording.log")
+3) Push to Docker
+docker push jacciz/crash_dashboard 
 
-OR 
-shinyloadtest::record_session(
-    runApp(),
-    host = "127.0.0.1",
-    port = 8600,
-    output_file = "recording.log",
-    open_browser = TRUE
-)
+4) Create a container to run it locally (optional)
+docker run -it -p 3838:3838 crash_dashboard
+View it:localhost:3838 or http://127.0.0.1:3838/
 
-2) Run ShinyCannon, output are test-logs
-# video 22:00 rstudio.com/resources/webinars/load-testing-shiny
-cd "C:/W_shortcut/"
+5) Shinyproxy it
 
-java -jar shinycannon-1.0.0-9b22a92.jar recording.log http://127.0.0.1:3838 --workers 1  --output-dir run1
+run shinyproxy - run.bat
+http://localhost:8080/
+user/pass tesla password
+6) Run Shiny Server
+docker run --rm -p 3838:3838 rocker/shiny
 
-3) Load into R to examine results as an HTML
+7) go to vaccine and run:
+docker-compose up
 
-setwd() <- "C:/W_shortcut/"
-df1 <- shinyloadtest::load_runs("run1" = "C:/W_shortcut/crashes_testapp/run1")
-shinyloadtest::shinyloadtest_report(df1, "report.html")
-
-4) Analyse Results
+docker run -it -p 3839:3838 vaccine_distribution_shiny

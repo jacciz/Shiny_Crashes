@@ -4,12 +4,13 @@ output: html_notebook
 ---
 
 ```{r}
+ppl %>% filter(CRSHDATE >= "07-01-2020",WISINJ == "Fatal Injury") %>% count(ROLE)
 library(magrittr)
 library(dplyr)
 pool <- pool::dbPool(RSQLite::SQLite(), dbname = "inst/app/www/crash_db.db")
 
 crash_df <-DBI::dbReadTable(pool, "2017crash")
-# person_df <-DBI::dbReadTable(pool, "2017person")
+person_df <-DBI::dbReadTable(pool, "2017person")
 # crash_df %>% mutate(CRSHDATE = lubridate::mdy(CRSHDATE))
 ```
 ```{r find crash location type}

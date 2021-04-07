@@ -49,7 +49,7 @@ app_ui <- function(request) {
         sidebarMenu(
           # Remove the sidebar toggle element
           tags$script(
-            DT::JS(
+            htmlwidgets::JS(
               "document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';"
             )
           ),
