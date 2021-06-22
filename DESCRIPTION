@@ -32,6 +32,7 @@ Imports:
     scales,
     sf,
     shiny,
+    shinybusy,
     shinydashboard,
     shinyWidgets,
     showtext,

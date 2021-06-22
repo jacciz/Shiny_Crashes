@@ -78,8 +78,8 @@
       .skin-blue .wrapper {background-color: rgb(240,240,240)}  /* background color */
 
       .main-header .logo {font-size: 20px; font-weight: normal;}
-      .main-header .navbar-custom-menu, .main-header .navbar-right {float: right}
-      .skin-blue .main-header .navbar {background: #1d4f81; color:rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: normal; padding: 0px 40px 0px 0px; vertical-align: middle }
+      .main-header .navbar-custom-menu, .main-header .navbar-right {float: right; }
+      .skin-blue .main-header .navbar {background: #1d4f81; color:rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: normal; padding: 0px 40px 0px 0px; vertical-align: middle; box-shadow: none;}
 
       .skin-blue .main-header .logo  {background: #1d4f81;}
 

@@ -28,15 +28,15 @@ mod_waffle_chart_server <- function(id, bikepedcount){
       }
       else if
       (total_roles == 2) {
-        return(90)
+        return(80)
       }
       else if
       (total_roles < 20) {
-        return(30)
+        return(20)
       }
       else if
       (total_roles < 50) {
-        return(15)
+        return(5)
       }
       else if
       (total_roles >= 20) {

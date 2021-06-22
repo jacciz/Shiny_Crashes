@@ -16,6 +16,14 @@
 
 app_ui <- function(request) {
   tagList(
+    shinybusy::add_busy_spinner(
+      spin = "semipolar",
+      position = "top-left",
+      color = "#9F2042",
+      # height = "400px",
+      # width = "400px",
+      margins = c(300, 500)
+    ),
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # List the first level UI elements here
@@ -34,7 +42,7 @@ app_ui <- function(request) {
           tags$style(".main-header .logo {height: 50px}")
         ),
         #horizontal-align: left;
-        tags$li(class = "dropdown", style = "", tags$div(
+        tags$li(class = "dropdown", style = "margin-top:15px;", tags$div(
           HTML(
             '<span><a href=mailto:CrashDataAnalysis@dot.wi.gov>Questions about this page: CrashDataAnalysis@dot.wi.gov</a></span>'
           )
@@ -118,7 +126,7 @@ app_ui <- function(request) {
             startExpanded = FALSE,
             # start expanded
             # <br> add a break line
-            tags$h5("Selection type:", style = "display:inline-block; margin-top: 10px;"),
+            tags$h5("Selection type:", style = "display:inline-block; margin-top: 10px; margin-right:-10px;"),
             tags$h5(
               switchInput(
                 inputId = "any_or_all",

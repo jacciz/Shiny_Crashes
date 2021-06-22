@@ -17,6 +17,16 @@ app_server <- function( input, output, session ) {
   # read shapefile for county 
   county_geom <- app_sys("inst/app/www/county.shp") %>% sf::st_read(.)
   
+  # Show this at startup.
+  showModal(modalDialog(
+    title = tags$div(
+      HTML("<img src=www/wisdot-agency-name-logo-red-blue-ms.png style=height:80px;margin-left:85px;>
+      <h5><br>Welcome!<br><br>
+           To start, select at least 1 county.</h6>")),
+                        size = "s",
+                        easyClose = TRUE
+                        ))
+  
   # List the first level callModules here
   ################### SIDEBAR Data Inputs #######################
   # Return inputs to filter data based on user selection. When using these variables, include ()
@@ -168,13 +178,13 @@ app_server <- function( input, output, session ) {
   output$tot_crash <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
+        '<p style="font-size:1.7vmin; color:rgb(15,15,15)">',
         format(nrow(filtered_crashes()), big.mark = ","),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-car-crash" style = "color:grey;font-size: 2vmin;"></i><p style="font-size:1vmin;display:inline-block;padding-right:20px;color:rgb(15,15,15);">&ensp;Crashes</p>'
+        '<i class="fa fa-car-crash" style = "color:grey;font-size: 2.2vmin;"></i><p style="font-size:1.2vmin;display:inline-block;padding-right:20px;color:rgb(15,15,15);">&ensp;Crashes</p>'
       )
     ),
     color = "red")
@@ -183,26 +193,26 @@ app_server <- function( input, output, session ) {
   output$tot_inj <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
+        '<p style="font-size:1.7vmin; color:rgb(15,15,15)">',
         filtered_crashes() %>% summarise(x = format(sum(.data$TOTINJ), big.mark = ",")),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-first-aid" style = "color:#428BCA;font-size: 2vmin;"></i><p style="font-size: 1vmin;color:rgb(15,15,15);text-align:center;display:inline-block;padding-right:20px;">&ensp;People injured</p>'
+        '<i class="fa fa-first-aid" style = "color:#428BCA;font-size: 2.2vmin;"></i><p style="font-size: 1.2vmin;color:rgb(15,15,15);text-align:center;display:inline-block;padding-right:20px;">&ensp;People injured</p>'
       )),
     color = "red")
   })
   output$tot_fatal <- renderInfoBox({
     valueBox(tags$span(HTML(
       paste0(
-        '<p style="font-size:1.5vmin; color:rgb(15,15,15)">',
+        '<p style="font-size:1.7vmin; color:rgb(15,15,15)">',
         filtered_crashes() %>% summarise(x = format(sum(.data$TOTFATL), big.mark = ",")),
         '</p>')
     )),
     tags$li(
       HTML(
-        '<i class="fa fa-heartbeat" style = "color:#D50032;font-size: 2vmin;"></i><p style="font-size:1vmin;color:rgb(15,15,15);display:inline-block;padding-right:20px;">&ensp;People killed</p>'
+        '<i class="fa fa-heartbeat" style = "color:#D50032;font-size: 2.2vmin;"></i><p style="font-size:1.2vmin;color:rgb(15,15,15);display:inline-block;padding-right:20px;">&ensp;People killed</p>'
       )),
     color = "red")
   })

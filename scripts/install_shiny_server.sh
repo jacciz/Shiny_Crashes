@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 SHINY_SERVER_VERSION=${1:-${SHINY_SERVER_VERSION:-latest}}
@@ -56,3 +56,4 @@ chmod +x /etc/services.d/shiny-server/run
 
 # Clean up
 rm -rf /var/lib/apt/lists/*
+rm -rf /tmp/downloaded_packages

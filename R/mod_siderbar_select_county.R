@@ -30,7 +30,8 @@ mod_siderbar_select_county_server <- function(id) {
       shinyWidgets::updatePickerInput(
         session,
         "cntycode",
-        selected = 40, # select Milwaukee
+        # selected = 40, # select Milwaukee
+        selected = NULL,
         choices = stats::setNames(county_recode$CountyCode, county_recode$CountyName)
       )
     })

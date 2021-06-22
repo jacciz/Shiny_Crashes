@@ -29,4 +29,16 @@ crash %>% dplyr::mutate(crash_location = dplyr::case_when(
 all_flags %>% count(intersection_flag)
 all_flags %>% distinct(CRSHNMBR)
 ```
+```{r}
+crash_dt <- dplyr::tbl(pool, "2020crash") %>% dtplyr::lazy_dt() #%>% filter(CNTYCODE %in% 40, CRSHSVR %in% "Fatal") 
+microbenchmark::microbenchmark(
+dplyr::tbl(pool, "2020crash") %>% filter(CNTYCODE %in% 40, CRSHSVR %in% "Fatal") %>% as.data.frame(), # 45439 microseconds
+crash_dt %>% filter(CNTYCODE %in% 40, CRSHSVR %in% "Fatal") # 535
+)
+
+microbenchmark::microbenchmark(
+  dplyr::tbl(pool, "2020crash") %>% dtplyr::lazy_dt()
+)
+
+```
 

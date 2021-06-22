@@ -47,7 +47,7 @@ mod_chart_mnrcoll_server <- function(id, crash_df) {
           # reorder from big to small values
           marker = list(color = "#4fb9db"),
           # blue!
-          hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br>'),
+          hovertemplate = paste('%{y}', '<br>%{x: .0f} Crashes<br><extra></extra>'),
           text = ~sprintf("<b>%s</b>", format(n, big.mark = ",")),
           # bar end number
           textfont = chart_axis_bar,

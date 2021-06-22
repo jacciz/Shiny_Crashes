@@ -12,7 +12,8 @@ cd "C:/Users/jacci/Documents/DS 710/Shiny_Crashes/"
 docker build -t crash_dashboard .
 
 3) Push to Docker
-docker push jacciz/crash_dashboard 
+docker tag 7b0b8556c077 jacciz/crash_dashboard:v1.2.0
+docker push jacciz/crash_dashboard:v1.2.0 
 
 4) Create a container to run it locally (optional)
 docker run -it -p 3838:3838 crash_dashboard
@@ -26,7 +27,7 @@ user/pass tesla password
 6) Run Shiny Server
 docker run --rm -p 3838:3838 rocker/shiny
 
-7) go to vaccine and run:
+7) go to app folder and run:
 docker-compose up
 
 docker run -it -p 3839:3838 vaccine_distribution_shiny
